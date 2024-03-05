@@ -12,19 +12,24 @@ const Signup = () => {
 
   const handleBack  = ()=>{
     navigate('/');
-  }
+  };
+
+  const gotoLogin = ()=>{
+    navigate( '/login')
+  };
+
   return (
     <div
       className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90%
     flex items-center justify-center h-screen "
     >
-      <div className="max-w-[960px] relative bg-black bg-opacity-50 grid grid-cols-2 items-center p-5 rounded-2xl gap-20">
-        <div className="relative">
+      <div className="max-w-[960px] relative bg-black bg-opacity-50 grid grid-cols-1 md:grid-cols-2 items-center p-5 rounded-2xl gap-10 md:gap-20">
+        <div className="relative hidden md:block">
           <img src={signupImage} alt="" />
           <img src={teamworkImage} alt="" className="absolute top-36" />
         </div>
         <div className="max-w-80 grid gap-5 ">
-          <button onClick={handleBack} className="text-white text-2xl absolute top-2 right-2">
+          <button onClick={handleBack} className="text-gray-300 text-2xl absolute top-3 right-3 hover:bg-blue-400 hover:text-white hover:rounded-full hover:p-1">
             <FaTimes />
           </button>
           
@@ -80,7 +85,7 @@ const Signup = () => {
           <div className="text-white text-opacity-70 border-t border-white border-opacity-40 pt-4 space-y-4 text-sm">
             <p>
               If you already have an account?{" "}
-              <a className="text-blue-600 font-semibold cursor-pointer">
+              <a onClick={gotoLogin} className="text-blue-600 font-semibold cursor-pointer">
                 Log In
               </a>
             </p>

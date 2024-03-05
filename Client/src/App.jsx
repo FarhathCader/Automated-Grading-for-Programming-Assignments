@@ -25,6 +25,7 @@ function App() {
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/student" element={<Register />} />
         <Route path="/lecturer" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
     
