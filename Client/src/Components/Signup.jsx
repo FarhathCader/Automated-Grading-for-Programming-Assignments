@@ -5,8 +5,14 @@ import { FaLock, FaTimes } from "react-icons/fa";
 import { FaEnvelopeOpen } from "react-icons/fa6";
 import { IoLockClosedSharp } from "react-icons/io5";
 import { FaUserGraduate } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const  navigate = useNavigate();
+
+  const handleBack  = ()=>{
+    navigate('/');
+  }
   return (
     <div
       className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90%
@@ -18,9 +24,10 @@ const Signup = () => {
           <img src={teamworkImage} alt="" className="absolute top-36" />
         </div>
         <div className="max-w-80 grid gap-5 ">
-          <button className="text-white text-2xl absolute right-0 top-0">
+          <button onClick={handleBack} className="text-white text-2xl absolute top-2 right-2">
             <FaTimes />
           </button>
+          
           <h1 className="text-5xl font-bold text-white">SignUp</h1>
           <p className="text-white text-opacity-70">
             Create your account. It's free and only takes a minute.
