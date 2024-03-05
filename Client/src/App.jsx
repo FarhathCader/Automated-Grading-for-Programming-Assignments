@@ -10,13 +10,17 @@ import {BrowserRouter ,Routes, Route} from "react-router-dom";
 import FrontSignup from "./Components/FrontSignup";
 import MainSignup from "./Pages/MainSignup";
 import ContactUs from "./Pages/ContactUs";
+import Sample from "./Pages/Sample";
+import Nav from "./Components/Nav";
+import AddSample from "./Pages/AddSample";
 
 function App() {
   return (
     
     <BrowserRouter>
+      <Nav/>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<AddSample/>} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
       </Routes>
