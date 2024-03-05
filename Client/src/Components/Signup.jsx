@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import signupImage from "../assets/Images/signup-background.svg";
 import teamworkImage from "../assets/Images/teamwork.svg";
 import { FaLock, FaTimes } from "react-icons/fa";
@@ -12,6 +12,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const  navigate = useNavigate();
+
+
 
   const [username,setUsername] = useState('');  
   const [email,setEmail] = useState('');
