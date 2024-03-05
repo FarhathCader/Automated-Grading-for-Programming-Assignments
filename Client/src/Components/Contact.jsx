@@ -22,9 +22,9 @@ const Contact = () => {
       };
     
   return (
-    <div className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90% min-h-screen flex items-center justify-center">
-    <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact Us</h2>
+    <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center">
+    <form className="bg-white shadow-md rounded px-8 pt-2 pb-8 mb-4 mt-12 w-full max-w-md" onSubmit={handleSubmit}>
+      <h2 className="text-2xl font-bold text-violet-700 mb-4">Contact Us</h2>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
           Name
