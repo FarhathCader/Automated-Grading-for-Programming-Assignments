@@ -12,12 +12,13 @@ const Register = () => {
       className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90%
     flex items-center justify-center h-screen "
     >
-      <div className="max-w-[960px] bg-black bg-opacity-50 grid grid-cols-2 items-center p-5 rounded-2xl gap-20">
+      <div className="max-w-[960px]  bg-black bg-opacity-50 grid grid-cols-2 items-center p-5 rounded-2xl gap-20">
         <div className="relative">
           <img src={signupImage} alt="" />
           <img src={teamworkImage} alt="" className="absolute top-36" />
         </div>
         <div className="max-w-80 grid gap-5">
+       
           <h1 className="text-5xl font-bold text-white">Register</h1>
           <p className="text-white text-opacity-70">
             Create your account. It's free and only takes a minute.

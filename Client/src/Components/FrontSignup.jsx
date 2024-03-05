@@ -1,6 +1,18 @@
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom'
 const FrontSignup = () => {
+
+  const navigate = useNavigate();
+  const lecturerSignup = ()=>{
+
+    navigate('/lecturer')
+  }
+
+  const studentSignup = ()=>{
+
+    navigate('/student')
+  }
+
   return (
     <div>
       <div className='bg-gray-200 w-full min-h-screen flex items-center justify-center'>
@@ -9,10 +21,10 @@ const FrontSignup = () => {
         <h1 className="text-3xl font-bold text-violet-700 mb-4">SignUp As</h1>
         <div className="mb-6 flex  items-center justify-center space-x-5">
          
-          <button className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <button  onClick={studentSignup} className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             Student
           </button>
-          <button className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <button onClick={lecturerSignup} className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             Lecturer
           </button>
         </div>
