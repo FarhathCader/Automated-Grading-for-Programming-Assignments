@@ -13,8 +13,13 @@ import Sample from "./Pages/Sample";
 import Nav from "./Components/Nav";
 import Register from "./Components/Register";
 import Signup from "./Components/Signup";
+
 import Res from "./Pages/Res";
 import For from "./Pages/For";
+
+import Reset from "./Pages/Reset";
+import Forgot from "./Pages/Forgot";
+
 //import AddSample from "./Pages/AddSample";
 
 function App() {
@@ -28,8 +33,13 @@ function App() {
         <Route path="/student" element={<Register />} />
         <Route path="/lecturer" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+
         <Route path="/reset/:token" element={<Res/>} />
         <Route path="/forgot" element={<For/>} />
+
+
+        <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/resetpassword" element={<Reset />} />
 
       </Routes>
     </BrowserRouter>

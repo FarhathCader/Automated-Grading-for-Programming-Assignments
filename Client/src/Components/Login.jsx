@@ -55,15 +55,19 @@ const Login = () => {
 
   const gotoSignup = ()=>{
     navigate('/signup');
-  }
+  };
+
+  const gotoForgot = ()=>{
+    navigate('/forgotpassword');
+  };
 
   return (
     <div
       className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90%
     flex items-center justify-center h-screen "
     >
-      <div className="max-w-[960px] relative bg-black bg-opacity-50 grid grid-cols-2 items-center p-5 rounded-2xl gap-20">
-        <div className="relative">
+      <div className="max-w-[960px] relative bg-black bg-opacity-50 grid grid-cols-1 md:grid-cols-2 items-center p-5 rounded-2xl gap-10 md:gap-20">
+        <div className="relative hidden md:block">
           <img src={signupImage} alt="" />
           <img src={teamworkImage} alt="" className="absolute top-36" />
         </div>
@@ -125,10 +129,17 @@ const Login = () => {
               </a>
             </p>
             <p>
+
               Forgot password?{" "}
               <Link  className="text-blue-600 font-semibold cursor-pointer" to = '/forgot'>
                 Reset password
               </Link>
+=======
+              Forgot my password?{" "}
+              <a onClick={gotoForgot} className="text-blue-600 font-semibold cursor-pointer">
+                Forgot password
+              </a>
+
             </p>
           </div>
         </div>
