@@ -36,11 +36,27 @@ const Login = () => {
       }
       if (response.ok) {
         // toast("Logged in Successfully",{type: "success"})
-        toast.success(json.msg);
+        toast.success("Login success");
         console.log("success")
+        if(json.msg === 'student'){
+          setTimeout(() => {
+            navigate('/dashboard_std');
+          },1000)
+        }
+        else if (json.msg === 'lecturer'){
+          setTimeout(() => {
+            navigate('/dashboard_lec');
+          },1000)
+        }
+      else{
         setTimeout(() => {
-          navigate('/');
+          navigate('/admin');
         },1000)
+      
+
+
+      }
+        
       }
      
     }
@@ -130,11 +146,11 @@ const Login = () => {
             </p>
             <p>
 
-              Forgot password?{" "}
+              {/* Forgot password?{" "}
               <Link  className="text-blue-600 font-semibold cursor-pointer" to = '/forgot'>
                 Reset password
-              </Link>
-=======
+              </Link> */}
+
               Forgot my password?{" "}
               <a onClick={gotoForgot} className="text-blue-600 font-semibold cursor-pointer">
                 Forgot password
