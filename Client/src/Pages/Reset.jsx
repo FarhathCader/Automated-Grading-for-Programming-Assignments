@@ -4,6 +4,11 @@ import { FaLock, FaTimes } from "react-icons/fa";
 import { IoLockClosedSharp } from "react-icons/io5";
 import reset from "../assets/Images/reset.jpg";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Reset = () => {
   const  navigate = useNavigate();
@@ -11,6 +16,42 @@ const Reset = () => {
   const handleBack = ()=>{
     navigate('/login');
   };
+
+  const [password,setPassword] = useState()
+  const [cpassword,setCPassword] = useState()
+  const {token} = useParams()
+  const [isRegistering, setIsRegistering] = useState(false);
+
+
+  const handleSubmit = async (e) =>{
+      e.preventDefault()
+      if(isRegistering)return;
+      setIsRegistering(true);
+      console.log("passed",token)
+
+      if(password !== cpassword){
+        toast('Passwords do not match',{type: "error"})
+        return;
+      }
+      const response = await fetch(`http://localhost:4000/api/user/reset/${token}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password})
+        });
+        const json = await response.json();
+
+        if(response.ok){
+          console.log(json.msg)
+        }
+        else{
+          console.log(json.error);
+        }
+
+        setIsRegistering(false)
+      
+  }
 
   return (
     <div
@@ -34,12 +75,14 @@ const Reset = () => {
             {/* Enter your Email Address below and we will send you a link to reset password. */}
             Enter your new Password and confirm it below.
           </p>
-          <form action="" className="space-y-6 text-white">
+          <form action="" className="space-y-6 text-white" onSubmit={handleSubmit}>
             <div className="relative">
               <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
                 <FaLock />
               </div>
               <input
+                value={password}
+                onChange={(e)=>setPassword(e.target.value)}
                 type="password"
                 placeholder="Enter your New Password"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
@@ -51,6 +94,8 @@ const Reset = () => {
               </div>
               <input
                 type="password"
+                value={cpassword}
+                onChange={(e)=>setCPassword(e.target.value)}
                 placeholder="Confirm Password"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
               />
@@ -59,6 +104,18 @@ const Reset = () => {
               Reset
             </button>
           </form>
+          <ToastContainer 
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition: Bounce/>
         </div>
       </div>
     </div>

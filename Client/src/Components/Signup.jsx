@@ -225,11 +225,15 @@ const Signup = () => {
         setShowOtpInput(true);
       }
     }
-    setIsRegistering(false); // Reset isRegistering to allow further submissions
+    setTimeout(() => {
+      setIsRegistering(false);
+      },1800) // Reset isRegistering to allow further submissions
   };
 
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
+    if(isRegistering)return;
+    setIsRegistering(true);
     if (otp === OTP.toString()) {
       toast.success('OTP Verified');
       setTimeout(() => {
@@ -238,6 +242,10 @@ const Signup = () => {
     } else {
       toast.error('Invalid OTP',OTP);
     }
+
+    setTimeout(() => {
+      setIsRegistering(false);
+      },1800)
   };
 
   const handleBack = () => {
@@ -346,7 +354,6 @@ const Signup = () => {
             pauseOnHover
             theme="light"
           />
-          <p>OTP IS {OTP} == otp is  {otp}</p>
           <div className="text-white text-opacity-70 border-t border-white border-opacity-40 pt-4 space-y-4 text-sm">
             <p>
               If you already have an account?{" "}
