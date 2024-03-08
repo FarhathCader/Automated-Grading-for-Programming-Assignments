@@ -19,6 +19,9 @@ import For from "./Pages/For";
 
 import Reset from "./Pages/Reset";
 import Forgot from "./Pages/Forgot";
+import LecturerDashBoard from "./Pages/LecturerDashBoard";
+import StudentDashboard from "./Pages/StudentDashboard";
+import AdminDashBoard from "./Pages/AdminDashBoard";
 
 //import AddSample from "./Pages/AddSample";
 
@@ -34,12 +37,16 @@ function App() {
         <Route path="/lecturer" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        <Route path="/reset/:token" element={<Res/>} />
+        <Route path="/reset/:token" element={<Reset/>} />
         <Route path="/forgot" element={<For/>} />
+        <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
+        <Route path="/dashboard_std" element={<StudentDashboard/>} />
+        <Route path="/admin" element={<AdminDashBoard/>} />
+
+        
 
 
         <Route path="/forgotpassword" element={<Forgot />} />
-        <Route path="/resetpassword" element={<Reset />} />
 
       </Routes>
     </BrowserRouter>

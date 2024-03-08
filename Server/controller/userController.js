@@ -21,11 +21,12 @@ function generateSecureOTP(length) {
 }
 
 // Example usage:
-const otp = generateSecureOTP(6);
+let otp;
 
 
 const sendOtp =  (email)=>{
 
+    otp = generateSecureOTP(6);
     let transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
