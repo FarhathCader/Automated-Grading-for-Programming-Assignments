@@ -5,12 +5,12 @@ const FrontSignup = () => {
   const navigate = useNavigate();
   const lecturerSignup = ()=>{
 
-    navigate('/lecturer')
+    navigate('/register',{state : {usertype: 'lecturer'}})
   }
 
   const studentSignup = ()=>{
 
-    navigate('/student')
+    navigate('/register',{state : {usertype: 'student'}})
   }
 
   return (

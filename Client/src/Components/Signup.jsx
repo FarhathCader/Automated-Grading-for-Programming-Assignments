@@ -174,7 +174,7 @@
 // export default Signup;
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import signupImage from "../assets/Images/signup-background.svg";
 import teamworkImage from "../assets/Images/teamwork.svg";
 import { FaLock, FaTimes } from "react-icons/fa";
@@ -196,6 +196,9 @@ const Signup = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [OTP,setOTP] = useState();
+
+
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
