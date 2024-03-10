@@ -5,15 +5,16 @@ const FrontSignup = () => {
   const navigate = useNavigate();
   const lecturerSignup = ()=>{
 
-    navigate('/lecturer')
+    navigate('/register',{state : {usertype: 'lecturer'}})
   }
 
   const studentSignup = ()=>{
 
-    navigate('/student')
+    navigate('/register',{state : {usertype: 'student'}})
   }
 
   return (
+    
     <div>
       <div className='bg-gray-200 w-full min-h-screen flex items-center justify-center'>
         

@@ -43,10 +43,13 @@ const Reset = () => {
         const json = await response.json();
 
         if(response.ok){
-          console.log(json.msg)
+          toast(json.msg,{type: "success"})
+          setTimeout(() => {
+            navigate('/login');
+          },1000)
         }
         else{
-          console.log(json.error);
+          toast(json.error,{type: "error"});
         }
 
         setIsRegistering(false)

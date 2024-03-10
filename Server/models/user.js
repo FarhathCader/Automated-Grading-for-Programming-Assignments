@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     usertype: {
         type: String,
         required: true
-    }
+    },
 },
 {timestamps: true}
 );
