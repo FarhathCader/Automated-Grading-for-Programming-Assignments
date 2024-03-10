@@ -14,6 +14,7 @@ const FrontSignup = () => {
   }
 
   return (
+    
     <div>
       <div className='bg-gray-200 w-full min-h-screen flex items-center justify-center'>
         
