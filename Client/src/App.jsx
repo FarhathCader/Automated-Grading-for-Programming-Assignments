@@ -44,10 +44,16 @@ function App() {
         <Route path="/register" element={<Register />} />
         {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
+
         <Route path="/reset/:token" element={<Reset/>} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
-        <Route path="/admin" element={<AdminDashBoard/>} />        
+        <Route path="/admin" element={<AdminDashBoard/>} />
+
+        
+
+
         <Route path="/forgotpassword" element={<Forgot />} />
+
         <Route path="/dashboard_std" element={<StudentDashboard/>} />
         <Route path="/available" element={<AvailableContest/>} />
         <Route path="/completed" element={<CompletedContest/>} />
