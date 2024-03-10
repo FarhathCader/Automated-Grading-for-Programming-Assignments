@@ -177,10 +177,10 @@
 import React, { useState } from "react";
 import signupImage from "../assets/Images/signup-background.svg";
 import teamworkImage from "../assets/Images/teamwork.svg";
-import { FaLock, FaTimes } from "react-icons/fa";
+import { FaLock, FaTimes, FaUser } from "react-icons/fa";
 import { FaEnvelopeOpen } from "react-icons/fa6";
 import { IoLockClosedSharp } from "react-icons/io5";
-import { FaUserGraduate } from "react-icons/fa6";
+//import { FaUserGraduate } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -273,7 +273,7 @@ const Signup = () => {
           <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
             <div className="relative">
               <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
-                <FaUserGraduate />
+                <FaUser />
               </div>
               <input
                 type="text"

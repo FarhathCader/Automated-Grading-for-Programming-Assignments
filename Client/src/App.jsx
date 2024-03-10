@@ -22,6 +22,8 @@ import Forgot from "./Pages/Forgot";
 import LecturerDashBoard from "./Pages/LecturerDashBoard";
 import StudentDashboard from "./Pages/StudentDashboard";
 import AdminDashBoard from "./Pages/AdminDashBoard";
+import AvailableContest from "./Pages/AvailableContest";
+import CompletedContest from "./Pages/CompletedContest";
 
 //import AddSample from "./Pages/AddSample";
 
@@ -30,7 +32,8 @@ function App() {
     
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        {/* <Route path="/" element={<Home/>} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/student" element={<Register />} />
@@ -40,7 +43,6 @@ function App() {
         <Route path="/reset/:token" element={<Reset/>} />
         <Route path="/forgot" element={<For/>} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
-        <Route path="/dashboard_std" element={<StudentDashboard/>} />
         <Route path="/admin" element={<AdminDashBoard/>} />
 
         
