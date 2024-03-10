@@ -23,7 +23,11 @@ export default function LecturerDashBoard() {
       setUser(data.user)
     }).catch(err=>{
       toast.error(err.response.data.error)
-      navigate('/',{state: {cause: 'session expired'}})
+      setTimeout(() => {
+        navigate('/')
+      }
+      ,1000)
+
     })
   }
   

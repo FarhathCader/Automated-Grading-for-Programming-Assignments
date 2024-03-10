@@ -7,6 +7,8 @@ import { useNavigate ,Link} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store";
 
 
 const Login = () => {
@@ -14,6 +16,7 @@ const Login = () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const dispatch = useDispatch()
 
 
   // const handleLogin = async (e)=>{
@@ -67,6 +70,20 @@ const Login = () => {
   // }
 
 
+  // const sendRequest = async () =>{
+  //   const res = await axios.post('http://localhost:4000/api/user/login', { email, password }, {
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     }
+  //   })
+  //   .catch(err=>{
+  //     toast.error(err.response.data.error)
+  //   })
+  //   const data = await res.data;
+  //   return data
+
+  // }
+
 const handleLogin = async (e) => {
   e.preventDefault();
   if (isRegistering) return; // Prevent multiple submissions
@@ -75,17 +92,19 @@ const handleLogin = async (e) => {
     toast.error('All fields are required');
   } else {
     try {
-      const response = await axios.post('http://localhost:4000/api/user/login', { email, password }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.post('http://localhost:4000/api/user/login', { email, password });
       const json = response.data;
+      console.log(json)
       if (!response.status === 200) {
+        console.log(json)
         toast.error(json.error);
       } else {
+        dispatch(authActions.login())
+        
         toast.success("Login success");
         console.log("success");
+
+
         if (json.msg === 'student') {
           setTimeout(() => {
             navigate('/dashboard_std');
@@ -100,15 +119,14 @@ const handleLogin = async (e) => {
           }, 1000);
         }
       }
-    } catch (error) {
-      toast.error('An error occurred while processing your request.');
-      console.error('Error:', error);
-    } finally {
+    } catch (err) {
+      toast.error(err.response.data.error);
+    }
       setTimeout(() => {
         setIsRegistering(false);
       }, 1800);
     }
-  }
+  
 };
 
 

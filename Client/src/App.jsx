@@ -24,10 +24,15 @@ import StudentDashboard from "./Pages/StudentDashboard";
 import AdminDashBoard from "./Pages/AdminDashBoard";
 import AvailableContest from "./Pages/AvailableContest";
 import CompletedContest from "./Pages/CompletedContest";
+import Practice from "./Components/Practice";
+import { useSelector } from "react-redux";
 
 //import AddSample from "./Pages/AddSample";
 
 function App() {
+
+  const isLoggedin = useSelector((state) => state.isLoggedin)
+  console.log(isLoggedin)
   return (
     
     <BrowserRouter>
@@ -40,11 +45,15 @@ function App() {
         {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/reset/:token" element={<Reset/>} />
-        <Route path="/forgot" element={<For/>} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
         <Route path="/admin" element={<AdminDashBoard/>} />        
         <Route path="/forgotpassword" element={<Forgot />} />
         <Route path="/dashboard_std" element={<StudentDashboard/>} />
+        <Route path="/available" element={<AvailableContest/>} />
+        <Route path="/completed" element={<CompletedContest/>} />
+        <Route path="/practice" element={<Practice/>} />
+        
+
 
       </Routes>
     </BrowserRouter>
