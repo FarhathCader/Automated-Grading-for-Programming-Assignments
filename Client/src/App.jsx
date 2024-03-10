@@ -36,8 +36,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
-        <Route path="/student" element={<Register />} />
-        <Route path="/lecturer" element={<Signup />} />
+        <Route path="/register" element={<Register />} />
+        {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
 
         <Route path="/reset/:token" element={<Reset/>} />

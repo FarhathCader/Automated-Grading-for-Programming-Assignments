@@ -174,7 +174,7 @@
 // export default Signup;
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import signupImage from "../assets/Images/signup-background.svg";
 import teamworkImage from "../assets/Images/teamwork.svg";
 import { FaLock, FaTimes, FaUser } from "react-icons/fa";
@@ -192,10 +192,19 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cpassword, setCpassword] = useState('');
-  const [otp, setOtp] = useState('');
+  // const [otp, setOtp] = useState('');
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [OTP,setOTP] = useState();
+  const {state} = useLocation();
+
+
+  useEffect(() => {
+    if (!state) navigate('/signup');
+    // Reset showOtpInput state when the component mounts
+    setShowOtpInput(false);
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -207,21 +216,23 @@ const Signup = () => {
     } else if (cpassword !== password) {
       toast.error('Passwords do not match');
     } else {
-      const response = await fetch('http://localhost:4000/api/user/signup', {
+      console.log("usertype is ",state.usertype)
+      const response = await fetch('http://localhost:4000/api/user/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, email, password, usertype: 'student' })
+        body: JSON.stringify({ username, email, password,usertype:state.usertype})
       });
       const json = await response.json();
+      // console.log(json)
       if (!response.ok) {
         toast.error(json.error);
       } else {
         // toast("Registered Successfully", { type: "success" });
-        toast("OTP sended to the email")
-        console.log(json)
-        setOTP(json.otp);
+        toast(json.msg)
+        // console.log(json)
+        // setOTP(json.otp);
         setShowOtpInput(true);
       }
     }
@@ -234,14 +245,28 @@ const Signup = () => {
     e.preventDefault();
     if(isRegistering) return;
     setIsRegistering(true);
-    if (otp === OTP.toString()) {
+    const response = await fetch('http://localhost:4000/api/user/signup',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username,email,password, OTP,usertype : state.usertype })
+    })
+
+    const json = await response.json();
+    console.log(json)
+    if (!response.ok) {
+      toast.error(json.error);
+    }
+
+    else{
       toast.success('OTP Verified');
       setTimeout(() => {
         navigate('/login'); // Navigate to the dashboard upon successful OTP verification
       }, 1000);
-    } else {
-      toast.error('Invalid OTP',OTP);
     }
+
     setTimeout(() => {
       setIsRegistering(false);
       },1800)
@@ -331,8 +356,8 @@ const Signup = () => {
             <form className="space-y-6 text-white" onSubmit={handleOTPSubmit}>
               <input
                 type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                value={OTP}
+                onChange={(e) => setOTP(e.target.value)}
                 placeholder="Enter OTP"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
               />
