@@ -6,6 +6,7 @@ import { FaEnvelopeOpen } from "react-icons/fa6";
 import { useNavigate ,Link} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 
 const Login = () => {
@@ -15,55 +16,101 @@ const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
 
 
-  const handleLogin = async (e)=>{
-    e.preventDefault();
-    if (isRegistering) return; // Prevent multiple submissions
-    setIsRegistering(true); 
-    if(email === '' || password === ''){
-      toast.error('All fields are required');
-    }
-    else{
-      const response = await fetch('http://localhost:4000/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-      const json = await response.json();
-      if (!response.ok) {
-        toast.error(json.error);
-      }
-      if (response.ok) {
-        // toast("Logged in Successfully",{type: "success"})
-        toast.success("Login success");
-        console.log("success")
-        if(json.msg === 'student'){
-          setTimeout(() => {
-            navigate('/dashboard_std');
-          },1000)
-        }
-        else if (json.msg === 'lecturer'){
-          setTimeout(() => {
-            navigate('/dashboard_lec');
-          },1000)
-        }
-      else{
-        setTimeout(() => {
-          navigate('/admin');
-        },1000)
+  // const handleLogin = async (e)=>{
+  //   e.preventDefault();
+  //   if (isRegistering) return; // Prevent multiple submissions
+  //   setIsRegistering(true); 
+  //   if(email === '' || password === ''){
+  //     toast.error('All fields are required');
+  //   }
+  //   else{
+  //     const response = await fetch('http://localhost:4000/api/user/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({ email, password })
+  //     });
+  //     const json = await response.json();
+  //     if (!response.ok) {
+  //       toast.error(json.error);
+  //     }
+  //     if (response.ok) {
+  //       // toast("Logged in Successfully",{type: "success"})
+  //       toast.success("Login success");
+  //       console.log("success")
+  //       if(json.msg === 'student'){
+  //         setTimeout(() => {
+  //           navigate('/dashboard_std');
+  //         },1000)
+  //       }
+  //       else if (json.msg === 'lecturer'){
+  //         setTimeout(() => {
+  //           navigate('/dashboard_lec');
+  //         },1000)
+  //       }
+  //     else{
+  //       setTimeout(() => {
+  //         navigate('/admin');
+  //       },1000)
       
 
 
-      }
+  //     }
         
-      }
+  //     }
      
+  //   }
+  //   setTimeout(() => {
+  //     setIsRegistering(false);
+  //     },1800)
+  // }
+
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  if (isRegistering) return; // Prevent multiple submissions
+  setIsRegistering(true);
+  if (email === '' || password === '') {
+    toast.error('All fields are required');
+  } else {
+    try {
+      const response = await axios.post('http://localhost:4000/api/user/login', { email, password }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const json = response.data;
+      if (!response.status === 200) {
+        toast.error(json.error);
+      } else {
+        toast.success("Login success");
+        console.log("success");
+        if (json.msg === 'student') {
+          setTimeout(() => {
+            navigate('/dashboard_std');
+          }, 1000);
+        } else if (json.msg === 'lecturer') {
+          setTimeout(() => {
+            navigate('/dashboard_lec');
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            navigate('/admin');
+          }, 1000);
+        }
+      }
+    } catch (error) {
+      toast.error('An error occurred while processing your request.');
+      console.error('Error:', error);
+    } finally {
+      setTimeout(() => {
+        setIsRegistering(false);
+      }, 1800);
     }
-    setTimeout(() => {
-      setIsRegistering(false);
-      },1800)
   }
+};
+
 
   const handleBack  = ()=>{
     navigate('/');

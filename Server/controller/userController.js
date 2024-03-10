@@ -84,6 +84,7 @@ const sendOtp = async(req,res)=>{
         // return res.json({msg: 'User created successfully', otp});
         }
         catch(error){
+            console.log(error)
            return res.status(400).json({error: error.message});
         }
         
@@ -160,7 +161,7 @@ const login = async (req,res)=>{
             res.cookie(String(user._id),token,{
                 path : '/',
                 httpOnly:true,
-                expires : new Date(Date.now() + 1000*60*30),
+                expires : new Date(Date.now() + 1000*60*5),
                 sameSite : 'lax'
             }
                 )
