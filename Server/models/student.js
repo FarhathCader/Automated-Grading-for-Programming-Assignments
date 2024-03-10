@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: true
     },
@@ -19,6 +19,12 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    regNo: {
+        type: String,
+        unique: true
+    },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+
 
 },
 {timestamps: true}
