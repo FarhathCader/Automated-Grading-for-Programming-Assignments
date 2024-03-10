@@ -123,8 +123,6 @@ console.log(`OTP ${OTP} otp ${otp}`)
             const lectr = await Lecturer.create({username,email : email.toLowerCase(),password : hashedPassword,userId : user._id});
 
             }else{
-
-                console.log(usertype)
                 // const availableUser =  await student.findOne({email});
                 // if(availableUser){
                 // console.log("stdnt exist")
@@ -139,7 +137,6 @@ console.log(`OTP ${OTP} otp ${otp}`)
     return res.status(200).json({msg: 'User created successfully'});
     }
     catch(error){
-        console.log(error.message)
        return res.status(400).json({error: error.message});
     }
     
