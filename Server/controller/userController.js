@@ -197,6 +197,7 @@ const login = async (req,res)=>{
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
+   
     if(!cookie){
         return res.status(401).json({error: 'Session Expired Please login again'});
     }
@@ -215,20 +216,34 @@ const verifyToken = (req,res,next)=>{
     
 }
 
-const getUser = async (req,res)=>{
+// const getUser = async (req,res)=>{
+//     const userId = req.id;
+//     let user;
+//     try{
+//         user = await User.findById(userId,'-password');
+//     }catch(err){
+//         return res.status(400).json({error: err.message});
+//     }
+//     if(!user){
+//         return res.status(404).json({error: 'User not found'});
+//     }
+
+//     return res.status(200).json({user});
+// }
+const getUser = async (req, res) => {
     const userId = req.id;
     let user;
-    try{
-        user = await User.findById(userId,'-password');
-    }catch(err){
-        return new Error(err.message);
+    try {
+        user = await User.findById(userId, '-password');
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return res.status(200).json({ user }); // Send the user data if found
+    } catch (err) {
+        return res.status(404).json({ error: err.message }); // Send the error response if user not found or any other error occurs
     }
-    if(!user){
-        return res.status(404).json({error: 'User not found'});
-    }
-
-    return res.status(200).json({user});
 }
+
 
 
 const forgotPassword = 
@@ -320,6 +335,29 @@ const forgotPassword =
         }
     
 
+const logout =  (req,res,next)=>{
+
+    const cookie = req.headers.cookie;
+    if(!cookie){
+        return res.status(401).json({error: 'Session Expired Please login again'});
+    }
+    const token = cookie.split('=')[1];
+    if(token == null){
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+    jwt.verify(token,process.env.ACCESS_TOKEN,(err,user)=>{
+        if(err){
+            return res.status(403).json({error: 'Forbidden'});
+        }
+        req.id = user.id;
+    })
+    res.clearCookie(String(req.id));
+    req.cookies[`${req.id}`] = '';
+    return res.status(200).json({msg: 'Logged out successfully'});
+    
+
+}
+
   
 
 
@@ -330,5 +368,6 @@ module.exports = {
     resetPassword,
     verifyToken,
     getUser,
-    sendOtp
+    sendOtp,
+    logout
 }

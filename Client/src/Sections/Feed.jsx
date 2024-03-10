@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import { Link } from "react-router-dom";
 
 const Feed = () => {
   return (
@@ -15,12 +16,15 @@ const Feed = () => {
             skills.
           </p>
           <div className="flex justify-center items-center gap-4">
+            <Link to={'/available'}>
             <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
               Available Contests
-            </button>
+            </button></Link>
+          
+            <Link to={'/practice'}>
             <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 focus:outline-none">
               Start Practice
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>
