@@ -8,7 +8,7 @@ import { IoLockClosedSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios'
+import axios from 'axios';
 
 const Signup = () => {
   const navigate = useNavigate();
