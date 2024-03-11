@@ -8,7 +8,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { authActions } from "../store";
 
 
 const Login = () => {
@@ -16,118 +15,143 @@ const Login = () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const dispatch = useDispatch()
-
-
-  // const handleLogin = async (e)=>{
-  //   e.preventDefault();
-  //   if (isRegistering) return; // Prevent multiple submissions
-  //   setIsRegistering(true); 
-  //   if(email === '' || password === ''){
-  //     toast.error('All fields are required');
-  //   }
-  //   else{
-  //     const response = await fetch('http://localhost:4000/api/user/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ email, password })
-  //     });
-  //     const json = await response.json();
-  //     if (!response.ok) {
-  //       toast.error(json.error);
-  //     }
-  //     if (response.ok) {
-  //       // toast("Logged in Successfully",{type: "success"})
-  //       toast.success("Login success");
-  //       console.log("success")
-  //       if(json.msg === 'student'){
-  //         setTimeout(() => {
-  //           navigate('/dashboard_std');
-  //         },1000)
-  //       }
-  //       else if (json.msg === 'lecturer'){
-  //         setTimeout(() => {
-  //           navigate('/dashboard_lec');
-  //         },1000)
-  //       }
-  //     else{
-  //       setTimeout(() => {
-  //         navigate('/admin');
-  //       },1000)
-      
-
-
-  //     }
-        
-  //     }
-     
-  //   }
-  //   setTimeout(() => {
-  //     setIsRegistering(false);
-  //     },1800)
-  // }
-
+  const [type, setType] = useState('admin');
 
   // const sendRequest = async () =>{
-  //   const res = await axios.post('http://localhost:4000/api/user/login', { email, password }, {
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .catch(err=>{
-  //     toast.error(err.response.data.error)
-  //   })
-  //   const data = await res.data;
-  //   return data
+  
+  //   try{
+  //     const res = await axios.post('http://localhost:4000/api/user/login', { email, password })
+  //     console.log("res",res)
+  //     const data = await res.data;
+  //     console.log(data.msg)
+  //     return data.msg
+
+  //   }catch (err){
+  //     console.log("error",err)
+  //     return err.response.data.error;
+  //   }
 
   // }
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  if (isRegistering) return; // Prevent multiple submissions
-  setIsRegistering(true);
-  if (email === '' || password === '') {
-    toast.error('All fields are required');
-  } else {
-    try {
-      const response = await axios.post('http://localhost:4000/api/user/login', { email, password });
-      const json = response.data;
-      console.log(json)
-      if (!response.status === 200) {
-        console.log(json)
-        toast.error(json.error);
-      } else {
-        dispatch(authActions.login())
+// const handleLogin =  (e) => {
+//   e.preventDefault();
+//   if (isRegistering) return; // Prevent multiple submissions
+//   setIsRegistering(true);
+//   if (email === '' || password === '') {
+//     toast.error('All fields are required');
+//   } else {
+
+//     sendRequest().then((data)=> (
+//     setType(data.msg)     
+//     )).then((data) => {
+//       console.log(data);
+//       toast.success("Login success");
+//         if (type === 'student') {
+//           setTimeout(() => {
+//             navigate('/dashboard_std');
+//           }, 1000);
+//         } else if (type === 'lecturer') {
+//           setTimeout(() => {
+//             navigate('/dashboard_lec');
+//           }, 1000);
+//         } else {
+//           setTimeout(() => {
+//             navigate('/admin');
+//           }, 1000);
+//         }
+//     }).catch(err => {
+//       toast.error(err.response.data.error);
+//     });
+
         
-        toast.success("Login success");
-        console.log("success");
+//       }
+ 
+//       setTimeout(() => {
+//         setIsRegistering(false);    
+//       }, 1800);
 
+//     }
+  
 
-        if (json.msg === 'student') {
-          setTimeout(() => {
-            navigate('/dashboard_std');
-          }, 1000);
-        } else if (json.msg === 'lecturer') {
-          setTimeout(() => {
-            navigate('/dashboard_lec');
-          }, 1000);
-        } else {
-          setTimeout(() => {
-            navigate('/admin');
-          }, 1000);
+    // const handleLogin = async (e) => {
+    //   e.preventDefault();
+    //   if (isRegistering) return; // Prevent multiple submissions
+    //   setIsRegistering(true);
+    //   if (email === '' || password === '') {
+    //     toast.error('All fields are required');
+    //   } else {
+    //     sendRequest().then((data) => {
+    //       console.log(data);
+    //     }).catch(err => {
+    //       console.log("err",err)
+    //     })
+    //       // .then((data) => {
+    //       //   // console.log(data.msg);
+    //       //   // setType(data.msg); // Set the type here
+    //       //   toast.success("Login success");
+    //       //   if (data.msg === 'student') {
+    //       //     setTimeout(() => {
+    //       //       navigate('/dashboard_std');
+    //       //     }, 1000);
+    //       //   } else if (data.msg === 'lecturer') {
+    //       //     setTimeout(() => {
+    //       //       navigate('/dashboard_lec');
+    //       //     }, 1000);
+    //       //   } else {
+    //       //     setTimeout(() => {
+    //       //       navigate('/admin');
+    //       //     }, 1000);
+    //       //   }
+    //       // })
+    //       // .catch(err => {
+    //       //   console.log(err)
+    //       //   // toast.error(err.response.data.error);
+    //       // })
+          
+    //   }
+    //   setTimeout(() => {
+    //     setIsRegistering(false);
+    //   }, 1600);
+    // };
+    
+
+    const handleLogin = async (e) =>{
+      e.preventDefault();
+      if(isRegistering) return;
+      setIsRegistering(true);
+      if(email === '' || password === ''){
+        toast.error('All fields are required');
+      }
+      else{
+        try{
+          const res = await axios.post('http://localhost:4000/api/user/login', { email, password })
+          const data = await res.data;
+          console.log(data.msg)
+          toast.success(data.msg);
+          if(data.msg === 'student'){
+            setTimeout(() => {
+              navigate('/dashboard_std');
+            }, 1000);
+          }else if(data.msg === 'lecturer'){
+            setTimeout(() => {
+              navigate('/dashboard_lec');
+            }, 1000);
+          }else{
+            setTimeout(() => {
+              navigate('/admin');
+            }, 1000);
+          }
+        }catch(err){
+          toast.error(err.response.data.error);
         }
       }
-    } catch (err) {
-      toast.error(err.response.data.error);
-    }
+   
+
       setTimeout(() => {
         setIsRegistering(false);
-      }, 1800);
+      }, 1600);
     }
-  
-};
+
 
 
   const handleBack  = ()=>{
@@ -181,7 +205,7 @@ const handleLogin = async (e) => {
               <input
               value={password}
               onChange={(e)=>setPassword(e.target.value)}
-                type="text"
+                type="password"
                 placeholder="Password"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
               />
