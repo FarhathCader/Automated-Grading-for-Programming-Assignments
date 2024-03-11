@@ -11,25 +11,35 @@ export default function LecturerDashBoard() {
   const navigate = useNavigate();
 
   const [user, setUser] = useState();
-  const sendRequest = async()=>{
-    const res = await axios.get('http://localhost:4000/api/user/user', {withCredentials: true})
-    return res.data
-  }
-  
-  useEffect(()=>{
-    if(shouldLog.current){
-      shouldLog.current = false;
-    sendRequest().then(data=>{
-      setUser(data.user)
-    }).catch(err=>{
-      toast.error(err.response.data.error)
-      setTimeout(() => {
-        navigate('/')
-      }
-      ,1000)
+ 
 
-    })
-  }
+  // const sednRequest = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:4000/api/user/user", {
+  //       withCredentials: true,
+  //     })
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return data;
+  // };
+
+  useEffect(()=>{
+    if (shouldLog.current) {
+      shouldLog.current = false;
+      const fetchData = async () => {
+        const res = await axios.get('http://localhost:4000/api/user/user',{withCredentials:true})
+        .catch(err=> {toast.error(err.response.data.error)
+          setTimeout(() => {
+            navigate('/login')
+          }, 1000);
+      
+      })
+        const data = res && await res.data;
+        if(data)setUser(data.user);
+        // setUser(data.user);
+      }
+      fetchData();
+    }
   
   },[])
 
