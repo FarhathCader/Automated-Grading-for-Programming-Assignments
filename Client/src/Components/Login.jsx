@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { useDispatch } from "react-redux";
+axios.defaults.withCredentials = true;
 
 
 const Login = () => {
@@ -124,7 +125,7 @@ const Login = () => {
       }
       else{
         try{
-          const res = await axios.post('http://localhost:4000/api/user/login', { email, password })
+          const res = await axios.post('http://localhost:4000/api/user/login', { email, password },{withCredentials: true, credentials: 'include'})
           const data = await res.data;
           console.log(data.msg)
           toast.success(data.msg);
