@@ -134,7 +134,7 @@ const Sidebar = () => {
       </div>
       <div
         id="expanded-icon"
-        className="bg-blue-300 text-blue-900 p-2 rounded-full cursor-pointer absolute -right-4 bottom-20 md:bottom-40 md:flex hidden"
+        className="bg-blue-300 text-blue-900 p-2 rounded-full cursor-pointer absolute -right-4 bottom-20 md:bottom-40 md:flex hidden hover:bg-blue-200"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <FaArrowRight />

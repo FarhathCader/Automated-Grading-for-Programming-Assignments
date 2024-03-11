@@ -5,7 +5,7 @@ import Footer from "./Components/Footer";
 import Front from "./Components/Front";
 import Login from "./Components/Login";
 
-import {BrowserRouter ,Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FrontSignup from "./Components/FrontSignup";
 import MainSignup from "./Pages/MainSignup";
 import ContactUs from "./Pages/ContactUs";
@@ -22,14 +22,21 @@ import StudentDashboard from "./Pages/StudentDashboard";
 import AdminDashBoard from "./Pages/AdminDashBoard";
 import AvailableContest from "./Pages/AvailableContest";
 import CompletedContest from "./Pages/CompletedContest";
-import Practice from "./Components/Practice";
 
-//import AddSample from "./Pages/AddSample";
+import StudentProfile from "./Pages/StudentProfile";
+import Practice from "./Pages/Practice";
+import SidebarLecturer from "./Sections/SidebarLecturer";
+import LecturerProfile from "./Pages/LecturerProfile";
+import QuestionBank from "./Pages/QuestionBank";
+import Sidebar from "./Sections/Sidebar";
+
+
+
+
 
 function App() {
 
   return (
-    
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<Home/>} /> */}
@@ -40,14 +47,18 @@ function App() {
         {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
 
-        <Route path="/reset/:token" element={<Reset/>} />
-        <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
-        <Route path="/admin" element={<AdminDashBoard/>} />
+
+
+        <Route path="/reset/:token" element={<Reset />} />
+        <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
+        <Route path="/admin" element={<AdminDashBoard />} />
+
+        <Route path="/forgotpassword" element={<Forgot />} />
+
 
         
 
 
-        <Route path="/forgotpassword" element={<Forgot />} />
 
         <Route path="/dashboard_std" element={<StudentDashboard/>} />
         <Route path="/available" element={<AvailableContest/>} />
@@ -56,10 +67,9 @@ function App() {
         
 
 
+
       </Routes>
     </BrowserRouter>
-    
-   
   );
 }
 

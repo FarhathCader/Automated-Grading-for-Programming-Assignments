@@ -11,41 +11,43 @@ const CompletedContest = () => {
       ];
   return (
     <main className="w-full h-screen flex justify-between items-start">
-    <Sidebar />
-    <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-      <Header />
-      <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
-        <h2 className="text-xl font-semibold mb-4 text-blue-950">
-          Completed Contests
-        </h2>
-        <table className="w-full">
-          <thead>
-            <tr className="bg-blue-200">
-              <th className="px-6 py-3 text-left text-blue-800">Name</th>
-              <th className="px-6 py-3 text-left text-blue-800">Date</th>
-              <th className="px-6 py-3 text-left text-blue-800">Time</th>
-              <th className="px-6 py-3 text-left text-blue-800">Grade</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contests.map((contest, index) => (
-              <tr
-                key={index}
-                className={
-                  index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
-                }
-              >
-                <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                <td className="px-6 py-4 text-blue-200">{contest.date}</td>
-                <td className="px-6 py-4 text-blue-200">{contest.time}</td>
-                <td className="px-6 py-4 text-blue-200">{contest.grade}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+      <Sidebar />
+      <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+        <Header />
+        <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 overflow-x-auto">
+          <h2 className="text-xl font-semibold mb-4 text-blue-950">
+            Completed Contests
+          </h2>
+          <div className="w-full overflow-x-auto">
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-blue-200">
+                  <th className="px-4 py-3 text-left text-blue-800">Name</th>
+                  <th className="px-4 py-3 text-left text-blue-800">Date</th>
+                  <th className="px-4 py-3 text-left text-blue-800">Time</th>
+                  <th className="px-4 py-3 text-left text-blue-800">Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {contests.map((contest, index) => (
+                  <tr
+                    key={index}
+                    className={
+                      index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
+                    }
+                  >
+                    <td className="px-4 py-2 text-blue-200">{contest.name}</td>
+                    <td className="px-4 py-2 text-blue-200">{contest.date}</td>
+                    <td className="px-4 py-2 text-blue-200">{contest.time}</td>
+                    <td className="px-4 py-2 text-blue-200">{contest.grade}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
 
