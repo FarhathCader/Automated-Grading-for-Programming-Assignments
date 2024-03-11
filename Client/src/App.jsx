@@ -14,8 +14,7 @@ import Nav from "./Components/Nav";
 import Register from "./Components/Register";
 import Signup from "./Components/Signup";
 
-import Res from "./Pages/Res";
-import For from "./Pages/For";
+
 
 import Reset from "./Pages/Reset";
 import Forgot from "./Pages/Forgot";
@@ -25,14 +24,11 @@ import AdminDashBoard from "./Pages/AdminDashBoard";
 import AvailableContest from "./Pages/AvailableContest";
 import CompletedContest from "./Pages/CompletedContest";
 import Practice from "./Components/Practice";
-import { useSelector } from "react-redux";
 
 //import AddSample from "./Pages/AddSample";
 
 function App() {
 
-  const isLoggedin = useSelector((state) => state.isLoggedin)
-  console.log(isLoggedin)
   return (
     
     <BrowserRouter>
