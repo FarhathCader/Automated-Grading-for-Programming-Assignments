@@ -84,9 +84,11 @@ const Header = () => {
   const sendRequest = async () => {
     try {
       const res = await axios.get('http://localhost:4000/api/user/user', { withCredentials: true });
-      return res.data.user; // Return user data from response
-    } catch (error) {
-      toast.error(error.response.data.error);
+      clg(res)
+      return res.data; // Return user data from response
+    } catch (err) {
+      // toast.error(err.response.data.error);
+      console.log("error",err)
       setTimeout(() => {
         navigate('/')
       }, 1000); // Throw error message and redirect to homepage
@@ -98,11 +100,24 @@ const Header = () => {
   useEffect(() => {
     if (shouldLog.current) {
       shouldLog.current = false;
-      sendRequest()
-        .then(data => {
-          setUser(data); // Set user data when fetched successfully
-        });
+      const fetchData = async () => {
+        const res = await axios.get('http://localhost:4000/api/user/user',{withCredentials:true})
+        .catch(err=> {toast.error(err.response.data.error)
+          setTimeout(() => {
+            navigate('/login')
+          }, 1000);
+      
+      })
+        const data = res && await res.data;
+        if(data)setUser(data.user);
+
+        
+        // setUser(data.user);
+      }
+      fetchData();
+      setTimeout(()=> setLoading(false),1000)
     }
+
   }, []);
 
   // Display loading indicator if loading
