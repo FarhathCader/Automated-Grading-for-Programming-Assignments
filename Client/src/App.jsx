@@ -30,12 +30,10 @@ import SidebarLecturer from "./Sections/SidebarLecturer";
 import LecturerProfile from "./Pages/LecturerProfile";
 import QuestionBank from "./Pages/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
-import SidebarAdmin from "./Sections/SidebarAdmin";
-
-import Practice from "./Components/Practice";
 
 
-//import AddSample from "./Pages/AddSample";
+
+
 
 function App() {
 
@@ -43,7 +41,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<Home/>} /> */}
-        <Route path="/" element={<LecturerDashBoard />} />
+        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/register" element={<Register />} />
@@ -52,7 +50,6 @@ function App() {
 
 
         <Route path="/reset/:token" element={<Reset />} />
-        <Route path="/forgot" element={<For />} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
         <Route path="/admin" element={<AdminDashBoard />} />
 
