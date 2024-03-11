@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-import React from "react";
+
 import SidebarLecturer from "../Sections/SidebarLecturer";
 import Header from "../Sections/Header";
-=======
+
 import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 axios.defaults.withCredentials = true
@@ -49,7 +48,7 @@ export default function LecturerDashBoard() {
   },[])
 
 
->>>>>>> 28deef1ac6d80666c4106d7d514e40a607256e79
+
 
 const LecturerDashBoard = () => {
   return (
@@ -81,4 +80,4 @@ const LecturerDashBoard = () => {
   );
 };
 
-export default LecturerDashBoard;
+}
