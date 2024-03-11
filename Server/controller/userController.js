@@ -123,6 +123,8 @@ console.log(`OTP ${OTP} otp ${otp}`)
             const lectr = await Lecturer.create({username,email : email.toLowerCase(),password : hashedPassword,userId : user._id});
 
             }else{
+
+                console.log(usertype)
                 // const availableUser =  await student.findOne({email});
                 // if(availableUser){
                 // console.log("stdnt exist")
@@ -137,6 +139,7 @@ console.log(`OTP ${OTP} otp ${otp}`)
     return res.status(200).json({msg: 'User created successfully'});
     }
     catch(error){
+        console.log(error.message)
        return res.status(400).json({error: error.message});
     }
     
@@ -161,10 +164,9 @@ const login = async (req,res)=>{
             res.cookie(String(user._id),token,{
                 path : '/',
                 httpOnly:true,
-                expires : new Date(Date.now() + 1000*60*5),
+                expires : new Date(Date.now() + 1000*60*60*24),
                 sameSite : 'lax'
-            }
-                )
+            })
 
            
             if(user.usertype === 'lecturer'){
@@ -194,23 +196,38 @@ const login = async (req,res)=>{
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
+   
     if(!cookie){
-        return res.status(401).json({error: 'Session Expired Please login again'});
+         res.status(401).json({error: 'Session Expired Please login again'});
+         return;
     }
     const token = cookie.split('=')[1];
        if(token == null){
-        return res.status(401).json({error: 'Unauthorized'});
+         res.status(401).json({error: 'Unauthorized'});
+            return;
     }
-    jwt.verify(token,process.env.ACCESS_TOKEN,(err,user)=>{
+    console.log(cookie,token)
+
+
+    jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,user)=>{
         if(err){
-            return res.status(403).json({error: 'Forbidden'});
+             res.status(403).json({error: 'Forbidden'});
+                return;
         }
-        req.id = user.id;
+        else{
+            req.id = user.id;
+            console.log("user id first",req.id)
+
+        }
+      
+       
     })
     next();
   
     
 }
+
+
 
 const getUser = async (req,res)=>{
     const userId = req.id;
@@ -218,7 +235,7 @@ const getUser = async (req,res)=>{
     try{
         user = await User.findById(userId,'-password');
     }catch(err){
-        return new Error(err.message);
+        return res.status(400).json({error: err.message});
     }
     if(!user){
         return res.status(404).json({error: 'User not found'});
@@ -226,6 +243,8 @@ const getUser = async (req,res)=>{
 
     return res.status(200).json({user});
 }
+
+
 
 
 const forgotPassword = 
@@ -317,6 +336,29 @@ const forgotPassword =
         }
     
 
+const logout =  (req,res,next)=>{
+
+    const cookie = req.headers.cookie;
+    if(!cookie){
+        return res.status(401).json({error: 'Session Expired Please login again'});
+    }
+    const token = cookie.split('=')[1];
+    if(token == null){
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+    jwt.verify(token,process.env.ACCESS_TOKEN,(err,user)=>{
+        if(err){
+            return res.status(403).json({error: 'Forbidden'});
+        }
+        req.id = user.id;
+    })
+    res.clearCookie(String(req.id));
+    req.cookies[`${req.id}`] = '';
+    return res.status(200).json({msg: 'Logged out successfully'});
+    
+
+}
+
   
 
 
@@ -327,5 +369,6 @@ module.exports = {
     resetPassword,
     verifyToken,
     getUser,
-    sendOtp
+    sendOtp,
+    logout
 }

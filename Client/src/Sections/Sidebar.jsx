@@ -1,10 +1,17 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link, useLocation } from "react-router-dom"; // Import Link and useLocation from React Router
 import { MdDashboard, MdPerson, MdSchool, MdLogout } from "react-icons/md";
 import { RiTaskFill } from "react-icons/ri";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+axios.defaults.withCredentials = true;
 
 const variants = {
   expanded: { width: "20%" },
@@ -15,28 +22,35 @@ const navItems = [
   {
     name: "Student Dashboard",
     icon: MdDashboard,
+    link: "/dashboard_std",
   },
   {
     name: "Available Contest",
     icon: MdSchool,
+    link: "/available",
   },
   {
     name: "Completed Contest",
     icon: RiTaskFill,
+    link: "/completed",
   },
   {
     name: "Practice",
     icon: BsPersonWorkspace,
+    link: "/practice",
   },
   {
     name: "Profile",
     icon: MdPerson,
+    link: "/profile",
   },
 ];
 
 const Sidebar = () => {
-  const [activeNavIndex, setActiveNavIndex] = useState(0);
+  const navigate = useNavigate(); // Get the navigate function
+  const location = useLocation(); // Get the current location
   const [isExpanded, setIsExpanded] = useState(true);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,6 +65,23 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleLogout = async () => {
+    // Handle logout
+    const response = await axios.post('http://localhost:4000/api/user/logout',null,{withCredentials: true})
+    const data = await response.data;
+    if(response.status === 200){
+      toast.success(data.msg)
+      setTimeout( ()=>
+        navigate('/')
+      ,1000)
+
+    }
+    else{
+      toast.error(data.response.data.error)
+    }
+
+  }
 
   return (
     <motion.section
@@ -79,18 +110,17 @@ const Sidebar = () => {
           className="flex flex-col justify-center items-start gap-5 w-full mt-5"
         >
           {navItems.map((item, index) => (
-            <div
+            <Link
               key={item.name}
+              to={item.link}
               id="link-box"
               className={
                 "flex justify-start items-center gap-4 w-full cursor-pointer rounded-xl " +
-                (activeNavIndex === index
+                (location.pathname === item.link
                   ? "bg-blue-300 text-blue-900"
                   : "text-white") +
                 (isExpanded ? " px-6 py-2" : " p-2")
               }
-              onClick={() => setActiveNavIndex(index)}
-              
             >
               <div className="bg-blue-100 text-blue-900 p-2 rounded-full ">
                 <item.icon className="md:w-6 w-4 h-4 md:h-6" />
@@ -98,7 +128,7 @@ const Sidebar = () => {
               <span className={"text-lg " + (isExpanded ? "flex" : "hidden")}>
                 {item?.name}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -112,6 +142,7 @@ const Sidebar = () => {
       <div
         id="logout-box"
         className="w-full flex flex-col justify-start items-center gap-4 cursor-pointer"
+        onClick={handleLogout}
       >
         <div className="bg-blue-300 w-full h-[0.5px]"></div>
         <div className="flex justify-center items-center gap-2 ">
@@ -122,6 +153,7 @@ const Sidebar = () => {
             Logout
           </span>
         </div>
+        <ToastContainer/>
       </div>
     </motion.section>
   );
