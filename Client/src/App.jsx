@@ -14,8 +14,7 @@ import Nav from "./Components/Nav";
 import Register from "./Components/Register";
 import Signup from "./Components/Signup";
 
-import Res from "./Pages/Res";
-import For from "./Pages/For";
+
 
 import Reset from "./Pages/Reset";
 import Forgot from "./Pages/Forgot";
@@ -24,6 +23,7 @@ import StudentDashboard from "./Pages/StudentDashboard";
 import AdminDashBoard from "./Pages/AdminDashBoard";
 import AvailableContest from "./Pages/AvailableContest";
 import CompletedContest from "./Pages/CompletedContest";
+
 import StudentProfile from "./Pages/StudentProfile";
 import Practice from "./Pages/Practice";
 import SidebarLecturer from "./Sections/SidebarLecturer";
@@ -32,9 +32,13 @@ import QuestionBank from "./Pages/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
 import SidebarAdmin from "./Sections/SidebarAdmin";
 
+import Practice from "./Components/Practice";
+
+
 //import AddSample from "./Pages/AddSample";
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -46,12 +50,25 @@ function App() {
         {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
 
+
         <Route path="/reset/:token" element={<Reset />} />
         <Route path="/forgot" element={<For />} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
         <Route path="/admin" element={<AdminDashBoard />} />
 
         <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/reset/:token" element={<Reset/>} />
+        <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
+        <Route path="/admin" element={<AdminDashBoard/>} />        
+        <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/dashboard_std" element={<StudentDashboard/>} />
+        <Route path="/available" element={<AvailableContest/>} />
+        <Route path="/completed" element={<CompletedContest/>} />
+        <Route path="/practice" element={<Practice/>} />
+        
+
+
+
       </Routes>
     </BrowserRouter>
   );
