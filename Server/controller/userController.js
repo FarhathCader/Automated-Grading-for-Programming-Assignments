@@ -193,7 +193,6 @@ const login = async (req,res)=>{
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
-   
     if(!cookie){
          res.status(401).json({error: 'Session Expired Please login again'});
          return;
@@ -203,43 +202,67 @@ const verifyToken = (req,res,next)=>{
          res.status(401).json({error: 'Unauthorized'});
             return;
     }
-    console.log(cookie,token)
+    console.log("cookie",cookie);
+    console.log("token",token);
 
 
     jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,user)=>{
         if(err){
-             res.status(403).json({error: 'Forbidden'});
-                return;
+             return res.status(403).json({error: 'Forbidden'});
+            //  console.log("error",err.message)
+            // return;
         }
         else{
+            // res.status(200).json({msg: 'success'});
             req.id = user.id;
-            console.log("user id first",req.id)
+            console.log("user id first",user.id)
+            next();
+
 
         }
       
        
     })
-    next();
   
     
 }
 
+const getUser = async (req, res) => {
+    try {
+        const userId = req.id;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID not provided' });
+        }
+        
+        const user = await User.findById(userId, '-password');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-
-const getUser = async (req,res)=>{
-    const userId = req.id;
-    let user;
-    try{
-        user = await User.findById(userId,'-password');
-    }catch(err){
-        return res.status(400).json({error: err.message});
+        return res.status(200).json({ user });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-    if(!user){
-        return res.status(404).json({error: 'User not found'});
-    }
-
-    return res.status(200).json({user});
 }
+
+
+// const getUser = async (req,res)=>{
+//     const userId = req.id;
+//     let user;
+//     try{
+//         user = await User.findById(userId,'-password');
+//     }catch(err){
+//         return res.status(400).json({error: err.message});
+//     }
+//     if(!user){
+//         return res.status(404).json({error: 'User not found'});
+//     }
+
+//     return res.status(200).json({user});
+// }
+
+
 
 
 

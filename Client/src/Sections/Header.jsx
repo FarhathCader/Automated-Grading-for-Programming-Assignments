@@ -103,6 +103,7 @@ const Header = () => {
       const fetchData = async () => {
         const res = await axios.get('http://localhost:4000/api/user/user',{withCredentials:true})
         .catch(err=> {toast.error(err.response.data.error)
+          console.log("error",err)
           setTimeout(() => {
             navigate('/login')
           }, 1000);

@@ -12,7 +12,6 @@ import ContactUs from "./Pages/ContactUs";
 import Sample from "./Pages/Sample";
 import Nav from "./Components/Nav";
 import Register from "./Components/Register";
-import Signup from "./Components/Signup";
 
 
 
