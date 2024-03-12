@@ -75,7 +75,6 @@ function App() {
         <Route path="/available" element={<AvailableContest/>} />
         <Route path="/completed" element={<CompletedContest/>} />
         <Route path="/practice" element={<Practice/>} />  
-
         <Route path="/qbank" element={<QuestionBank/>} />
 
         <Route path="/profile_lec" element={<StudentProfile/>} />  
