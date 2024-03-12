@@ -43,7 +43,7 @@ const navItems = [
   {
     name: "Profile",
     icon: MdPerson,
-    link: "/profile",
+    // link: "/dashboard_std",
   },
 ];
 
@@ -73,9 +73,9 @@ const Sidebar = () => {
     const data = await response.data;
     if(response.status === 200){
       toast.success(data.msg)
-      setTimeout( ()=>
-        navigate('/login')
-      ,1000)
+      // setTimeout( ()=>
+      //   navigate('/login')
+      // ,1000)
 
       dispatch(authActions.logout())
 
