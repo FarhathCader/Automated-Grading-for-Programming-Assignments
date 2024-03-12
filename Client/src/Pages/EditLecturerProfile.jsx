@@ -1,9 +1,10 @@
 import React from "react";
-import LecturerSidebar from "../Sections/SidebarLecturer";
+import LecturerSidebar from "../Sections/LecturerSidebar";
 import Header from "../Sections/Header";
+import Feed from "../Sections/Feed";
 import Logo from "../assets/Images/client.jpg";
 
-const LecturerProfile = () => {
+const EditLectureProfile = () => {
   return (
     <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
       <LecturerSidebar />
@@ -16,7 +17,7 @@ const LecturerProfile = () => {
                 <div className="relative">
                   <img
                     src={Logo}
-                    className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
+                    className="rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
                   />
                 </div>
               </div>
@@ -36,7 +37,12 @@ const LecturerProfile = () => {
                             >
                               Name:
                             </label>
-                            <p className="text-gray-800 text-lg">John Doe</p>
+                            <input
+                              type="text"
+                              className="border-b border-gray-500 rounded text-gray-800 text-lg focus:outline-none px-2 py-1"
+                              defaultValue="John Doe"
+                              onChange={(e) => console.log(e.target.value)}
+                            />
                           </div>
                           <div className="flex items-center mb-6">
                             <label
@@ -45,13 +51,20 @@ const LecturerProfile = () => {
                             >
                               Email:
                             </label>
-                            <p className="text-gray-800 text-lg">
-                              johndoe@example.com
-                            </p>
+                            <input
+                              type="email"
+                              className="border-b border-gray-500 rounded text-gray-800 text-lg focus:outline-none px-2 py-1"
+                              defaultValue="johndoe@example.com"
+                              onChange={(e) => console.log(e.target.value)}
+                            />
                           </div>
-                          <div className="text-center">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                              Edit Profile
+
+                          <div className="flex justify-center text-center">
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-10 mr-5">
+                              Cancel
+                            </button>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-5">
+                              Save
                             </button>
                           </div>
                         </div>
@@ -68,4 +81,4 @@ const LecturerProfile = () => {
   );
 };
 
-export default LecturerProfile;
+export default EditLectureProfile;
