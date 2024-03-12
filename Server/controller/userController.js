@@ -143,49 +143,120 @@ console.log(`OTP ${OTP} otp ${otp}`)
 }
 
 
-const login = async (req,res)=>{
+// const login = async (req,res)=>{
 
-    const {email,password} = req.body;
-    console.log(req.body);
+//     const {email,password} = req.body;
 
-        const user = await User.findOne({email : email.toLowerCase()});
-        if(user && (await bcrypt.compare(password,user.password))){
-            const token = jwt.sign(
-                {id : user._id }, 
+//         const user = await User.findOne({email : email.toLowerCase()});
+//         if(user && (await bcrypt.compare(password,user.password))){
+//             const token = jwt.sign(
+//                 {id : user._id }, 
+//             process.env.ACCESS_TOKEN,
+//             {
+//                 expiresIn: '1d'
+//             })
+
+            
+//             const cookie = req.headers.cookie;
+//             const Token = cookie && cookie.split('=')[1];
+
+//             if(cookie && Token){
+//                 console.log("cookie",cookie);
+//                 console.log("Token",Token);
+//                 jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,decoded)=>{
+//                     if(!err){
+//                         console.log("decoded",decoded.id);
+//                         req.id = decoded.id;
+//                         res.clearCookie(String(req.id));
+//                         req.cookies[`${req.id}`] = '';
+                        
+                        
+//                     }
+         
+                  
+                   
+//                 })
+//             }
+
+//             res.cookie(String(user._id),token,{
+//                 path : '/',
+//                 httpOnly:true,
+//                 expires : new Date(Date.now() + 1000*60*60*24),
+//                 sameSite : 'lax'
+//             })
+
+           
+//             if(user.usertype === 'lecturer'){
+//                 return res.status(200).json({msg : "lecturer"}); // ?return added
+//             }
+//             else if(user.usertype === 'student'){
+//                 return res.status(200).json({msg : "student"});
+//             }
+//             else{
+//                 return res.status(200).json({msg : "admin"});
+//             }
+
+//         }
+    
+        
+//         else{
+       
+//            return res.status(400).json({error: "invalid email or password"});
+//         }
+        
+
+        
+// }
+
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(400).json({ error: "Invalid email or password" });
+        }
+
+        const token = jwt.sign(
+            { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
                 expiresIn: '1d'
-            })
-
-            console.log(`token is ${token} user is ${user}`)
-            res.cookie(String(user._id),token,{
-                path : '/',
-                httpOnly:true,
-                expires : new Date(Date.now() + 1000*60*60*24),
-                sameSite : 'lax'
-            })
-
-           
-            if(user.usertype === 'lecturer'){
-                return res.status(200).json({msg : "lecturer"}); // ?return added
             }
-            else if(user.usertype === 'student'){
-                return res.status(200).json({msg : "student"});
-            }
-            else{
-                return res.status(200).json({msg : "admin"});
-            }
+        );
 
+        // Clear all cookies
+        res.clearCookie();
+
+        // Set the new cookie
+        res.cookie(String(user._id), token, {
+            path: '/',
+            httpOnly: true,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            sameSite: 'lax'
+        });
+
+        req.cookies.remo
+        req.cookies[`${user._id}`] = token;
+
+        let userType = '';
+        if (user.usertype === 'lecturer') {
+            userType = 'lecturer';
+        } else if (user.usertype === 'student') {
+            userType = 'student';
+        } else {
+            userType = 'admin';
         }
-        
-        else{
-       
-           return res.status(400).json({error: "invalid email or password"});
-        }
-        
 
-        
-}
+        return res.status(200).json({ msg: userType });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
 
 
 
@@ -193,6 +264,9 @@ const login = async (req,res)=>{
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
+    const tokens = cookie.split(' ');
+    // console.log("tokens",tokens);
+
     if(!cookie){
          res.status(401).json({error: 'Session Expired Please login again'});
          return;
@@ -215,7 +289,7 @@ const verifyToken = (req,res,next)=>{
         else{
             // res.status(200).json({msg: 'success'});
             req.id = user.id;
-            console.log("user id first",user.id)
+            // console.log("user id first",user.id)
             next();
 
 

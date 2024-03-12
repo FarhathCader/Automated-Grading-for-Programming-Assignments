@@ -29,6 +29,10 @@ import SidebarLecturer from "./Sections/SidebarLecturer";
 import LecturerProfile from "./Pages/LecturerProfile";
 import QuestionBank from "./Pages/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import RequireAuth from "./Components/RequireAuth";
+import { useEffect } from "react";
+import { authActions } from "./store";
 
 
 
@@ -36,40 +40,56 @@ import Sidebar from "./Sections/Sidebar";
 
 function App() {
 
+  const isLoggedin = useSelector(state => state.isLoggedin)
+  const dispatch = useDispatch();
+  // console.log(isLoggedin)
+
+  // useEffect(() => {
+  //   // Dispatch action to update auth state when component mounts
+  //   const storedAuth = localStorage.getItem('isLoggedin');
+  //   if (storedAuth !== null) {
+  //     dispatch(authActions[storedAuth === 'true' ? 'login' : 'logout']());
+  //   }
+  // }, [dispatch]);
+
+  useEffect(() => {
+    // Dispatch action to update auth state when component mounts
+    const storedAuth = localStorage.getItem('isLoggedin');
+    const storedUserType = localStorage.getItem('userType');
+    if (storedAuth !== null) {
+      if (storedUserType !== null) {
+        dispatch(authActions.login({ userType: storedUserType }));
+      } else {
+        dispatch(authActions[storedAuth === 'true' ? 'login' : 'logout']());
+      }
+    }
+  }, [dispatch]);
+  // console.log(isLoggedin)
   return (
-    <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Home/>} /> */}
+        <Route element = {<RequireAuth/>}>      
+        <Route path="/dashboard_lec" element={<LecturerDashBoard />}  />
+        <Route path="/admin" element={<AdminDashBoard />}  />
+        <Route path="/dashboard_std" element={<StudentDashboard/>} />
+        <Route path="/available" element={<AvailableContest/>} />
+        <Route path="/completed" element={<CompletedContest/>} />
+        <Route path="/practice" element={<Practice/>} />  
+        </Route>
+        
+        <Route>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path="/lecturer" element={<Signup />} /> */}
         <Route path="/login" element={<Login />} />
-
-
-
         <Route path="/reset/:token" element={<Reset />} />
-        <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
-        <Route path="/admin" element={<AdminDashBoard />} />
-
         <Route path="/forgotpassword" element={<Forgot />} />
 
+        </Route>
 
+   
         
-
-
-
-        <Route path="/dashboard_std" element={<StudentDashboard/>} />
-        <Route path="/available" element={<AvailableContest/>} />
-        <Route path="/completed" element={<CompletedContest/>} />
-        <Route path="/practice" element={<Practice/>} />
-        
-
-
-
       </Routes>
-    </BrowserRouter>
   );
 }
 
