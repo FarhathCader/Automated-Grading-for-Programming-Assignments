@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../Sections/Header";
 import SidebarAdmin from "../Sections/SidebarAdmin";
+import { Link } from "react-router-dom";
 
 export default function AdminDashBoard() {
   return (
@@ -10,7 +11,7 @@ export default function AdminDashBoard() {
         <Header />
         <div className="w-100 p-6 bg-blue-100 rounded-xl shadow-lg flex flex-col items-center mt-20">
           <h1 className="text-3xl font-bold text-violet-700 mb-4">
-            Welcome Rifab Ahamed!{" "}
+            Welcome Admin!{" "}
           </h1>
           <div className="mb-6 flex flex-col items-center justify-center">
             <p className="text-gray-600 text-lg mb-4">
@@ -19,12 +20,19 @@ export default function AdminDashBoard() {
               ensuring smooth operations within our educational ecosystem.
             </p>
             <div className="flex justify-center items-center gap-4">
+              <Link>
               <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
                 Manage Lecturers
               </button>
+              </Link>
+
+              <Link>
               <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 focus:outline-none">
                 Manage Students
               </button>
+              </Link>
+          
+            
             </div>
           </div>
         </div>
