@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import signupImage from "../assets/Images/signup-background.svg";
 import teamworkImage from "../assets/Images/teamwork.svg";
 import { FaLock, FaTimes } from "react-icons/fa";
@@ -7,7 +7,8 @@ import { useNavigate ,Link} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 
 
@@ -16,7 +17,24 @@ const Login = () => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const [type, setType] = useState('admin');
+  const dispatch = useDispatch();
+  const isLoggedin = useSelector(state => state.isLoggedin);
+  const userType = useSelector(state => state.userType);
+  console.log(isLoggedin, userType)
+
+
+  useEffect(() => {
+    // Redirect user to appropriate dashboard if already logged in
+    if (isLoggedin) {
+      if (userType === 'student') {
+        navigate('/dashboard_std');
+      } else if (userType === 'lecturer') {
+        navigate('/dashboard_lec');
+      } else if (userType === 'admin') {
+        navigate('/admin');
+      }
+    }
+  }, [isLoggedin, userType, navigate]);
 
   // const sendRequest = async () =>{
   
@@ -114,6 +132,21 @@ const Login = () => {
     //     setIsRegistering(false);
     //   }, 1600);
     // };
+
+    // useEffect(() => {
+    //   // If user is already logged in, redirect to appropriate dashboard
+    //   if (isLoggedin) {
+    //     // Assuming you have stored user type in Redux store as well
+    //     const userType = useSelector(state => state.auth.userType);
+    //     if (userType === 'student') {
+    //       navigate('/dashboard_std');
+    //     } else if (userType === 'lecturer') {
+    //       navigate('/dashboard_lec');
+    //     } else {
+    //       navigate('/admin');
+    //     }
+    //   }
+    // }, [isLoggedin, navigate]);
     
 
     const handleLogin = async (e) =>{
@@ -129,6 +162,7 @@ const Login = () => {
           const data = await res.data;
           console.log(data.msg)
           toast.success(data.msg);
+          dispatch(authActions.login({ userType: `${data.msg}`}));
           if(data.msg === 'student'){
             setTimeout(() => {
               navigate('/dashboard_std');

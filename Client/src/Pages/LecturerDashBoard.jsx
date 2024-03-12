@@ -8,11 +8,15 @@ axios.defaults.withCredentials = true
 import { ToastContainer,toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux";
 
 export default function LecturerDashBoard() {
 
   const shouldLog = useRef(true);
   const navigate = useNavigate();
+  const isLoggedin = useSelector(state => state.isLoggedin);
+  const userType = useSelector(state => state.userType);
+  console.log(isLoggedin, userType)
 
   const [user, setUser] = useState();
  
@@ -28,6 +32,8 @@ export default function LecturerDashBoard() {
   // };
 
   useEffect(()=>{
+
+    if(userType === 'lecturer'){
     if (shouldLog.current) {
       shouldLog.current = false;
       const fetchData = async () => {
@@ -44,13 +50,13 @@ export default function LecturerDashBoard() {
       }
       fetchData();
     }
+  }else{
+    if(userType === 'student')navigate('/dashboard_std')
+    else navigate('/admin')
+  }
   
   },[])
 
-
-
-
-const LecturerDashBoard = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarLecturer />
@@ -80,4 +86,4 @@ const LecturerDashBoard = () => {
   );
 };
 
-}
+

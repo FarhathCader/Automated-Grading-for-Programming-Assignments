@@ -1,8 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 const FrontSignup = () => {
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const isLoggedin = useSelector(state => state.isLoggedin);
+  const userType = useSelector(state => state.userType);
+  console.log(isLoggedin, userType)
+
+  useEffect(() => {
+    // Redirect user to appropriate dashboard if already logged in
+    if (isLoggedin) {
+      if (userType === 'student') {
+        navigate('/dashboard_std');
+      } else if (userType === 'lecturer') {
+        navigate('/dashboard_lec');
+      } else if (userType === 'admin') {
+        navigate('/admin');
+      }
+    }
+  }, [isLoggedin, userType, navigate]);
+
+
   const lecturerSignup = ()=>{
 
     navigate('/register',{state : {usertype: 'lecturer'}})
@@ -12,6 +33,8 @@ const FrontSignup = () => {
 
     navigate('/register',{state : {usertype: 'student'}})
   }
+
+
 
   return (
     

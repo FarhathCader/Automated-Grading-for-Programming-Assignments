@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 
 const variants = {
@@ -50,7 +51,7 @@ const Sidebar = () => {
   const navigate = useNavigate(); // Get the navigate function
   const location = useLocation(); // Get the current location
   const [isExpanded, setIsExpanded] = useState(true);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,8 +74,10 @@ const Sidebar = () => {
     if(response.status === 200){
       toast.success(data.msg)
       setTimeout( ()=>
-        navigate('/')
+        navigate('/login')
       ,1000)
+
+      dispatch(authActions.logout())
 
     }
     else{
