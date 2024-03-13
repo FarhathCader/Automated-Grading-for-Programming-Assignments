@@ -21,8 +21,7 @@ const studentSchema = new mongoose.Schema({
     },
     regNo: {
         type: String,
-        unique: true,
-        sparse: true, 
+        unique: true
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
@@ -30,6 +29,5 @@ const studentSchema = new mongoose.Schema({
 },
 {timestamps: true}
 );
-
 
 module.exports = mongoose.model('Student', studentSchema);

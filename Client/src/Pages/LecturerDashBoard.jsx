@@ -6,13 +6,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 axios.defaults.withCredentials = true
 import { ToastContainer,toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux";
 
 export default function LecturerDashBoard() {
 
   const shouldLog = useRef(true);
   const navigate = useNavigate();
+  const isLoggedin = useSelector(state => state.isLoggedin);
+  const userType = useSelector(state => state.userType);
+  console.log(isLoggedin, userType)
 
   const [user, setUser] = useState();
  
@@ -28,6 +32,8 @@ export default function LecturerDashBoard() {
   // };
 
   useEffect(()=>{
+
+    if(userType === 'lecturer'){
     if (shouldLog.current) {
       shouldLog.current = false;
       const fetchData = async () => {
@@ -44,13 +50,13 @@ export default function LecturerDashBoard() {
       }
       fetchData();
     }
+  }else{
+    if(userType === 'student')navigate('/dashboard_std')
+    else navigate('/admin')
+  }
   
   },[])
 
-
-
-
-const LecturerDashBoard = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarLecturer />
@@ -66,9 +72,12 @@ const LecturerDashBoard = () => {
               skills.
             </p>
             <div className="flex justify-center items-center gap-4">
+              <Link to = '/qbank'>
               <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none">
                 Questions Bank
               </button>
+              </Link>
+           
               <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 focus:outline-none">
                 Contests
               </button>
@@ -80,4 +89,4 @@ const LecturerDashBoard = () => {
   );
 };
 
-}
+

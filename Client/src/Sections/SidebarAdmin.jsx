@@ -7,6 +7,12 @@ import { FaArrowRight } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa";
 import { MdManageAccounts } from "react-icons/md";
 import { MdOutlineManageAccounts } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store";
+import axios from "axios";
+axios.defaults.withCredentials = true;
+
+
 import { Link, useLocation } from "react-router-dom";
 
 const variants = {
@@ -38,23 +44,47 @@ const navItems = [
 ];
 
 const SidebarAdmin = () => {
+   
+    const dispatch = useDispatch();
+
+  
+    useEffect(() => {
+      const handleResize = () => {
+        const width = window.innerWidth;
+        if (width < 768) {
+          setIsExpanded(false);
+        } else {
+          setIsExpanded(true);
+        }
+      };
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const handleLogout = async () => {
+      // Handle logout
+      const response = await axios.post('http://localhost:4000/api/user/logout',null,{withCredentials: true})
+      const data = await response.data;
+      if(response.status === 200){
+        console.log(data.msg)
+        // setTimeout( ()=>
+        //   navigate('/login')
+        // ,1000)
+  
+        dispatch(authActions.logout())
+  
+      }
+      else{
+        console.log(data.response.data.error)
+      }
+  
+    }
   const location = useLocation();
   const [activeNavIndex, setActiveNavIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(true);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setIsExpanded(false);
-      } else {
-        setIsExpanded(true);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+ 
   return (
     <motion.section
       animate={isExpanded ? "expanded" : "collapsed"}
@@ -115,7 +145,8 @@ const SidebarAdmin = () => {
       <div
         id="logout-box"
         className="w-full flex flex-col justify-start items-center gap-4 cursor-pointer"
-      >
+        onClick={handleLogout}
+    >
         <div className="bg-blue-300 w-full h-[0.5px]"></div>
         <div className="flex justify-center items-center gap-2 ">
           <MdLogout className="w-6 h-6 text-white hover:text-blue-400" />

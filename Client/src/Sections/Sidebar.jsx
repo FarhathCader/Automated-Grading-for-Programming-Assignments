@@ -7,10 +7,11 @@ import { RiTaskFill } from "react-icons/ri";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 
 const variants = {
@@ -42,7 +43,9 @@ const navItems = [
   {
     name: "Profile",
     icon: MdPerson,
-    link: "/profile",
+
+    link: "/profile_std",
+
   },
 ];
 
@@ -50,7 +53,7 @@ const Sidebar = () => {
   const navigate = useNavigate(); // Get the navigate function
   const location = useLocation(); // Get the current location
   const [isExpanded, setIsExpanded] = useState(true);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
@@ -68,20 +71,27 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     // Handle logout
-    const response = await axios.post('http://localhost:4000/api/user/logout',null,{withCredentials: true})
+    const response = await axios.post(
+      "http://localhost:4000/api/user/logout",
+      null,
+      { withCredentials: true }
+    );
     const data = await response.data;
+
     if(response.status === 200){
       toast.success(data.msg)
-      setTimeout( ()=>
-        navigate('/')
-      ,1000)
+      // setTimeout( ()=>
+      //   navigate('/login')
+      // ,1000)
 
-    }
-    else{
-      toast.error(data.response.data.error)
-    }
+      dispatch(authActions.logout())
 
-  }
+
+      dispatch(authActions.logout());
+    } else {
+      toast.error(data.response.data.error);
+    }
+  };
 
   return (
     <motion.section
@@ -148,12 +158,15 @@ const Sidebar = () => {
         <div className="flex justify-center items-center gap-2 ">
           <MdLogout className="w-6 h-6 text-white hover:text-blue-400" />
           <span
-            className={"text-white text-lg hover:text-blue-400 " + (isExpanded ? "flex" : "hidden")}
+            className={
+              "text-white text-lg hover:text-blue-400 " +
+              (isExpanded ? "flex" : "hidden")
+            }
           >
             Logout
           </span>
         </div>
-        <ToastContainer/>
+        <ToastContainer />
       </div>
     </motion.section>
   );
