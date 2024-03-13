@@ -196,7 +196,7 @@ const navItems = [
   {
     name: "Profile",
     icon: FaUserGraduate,
-    // link: "/profile",
+    link: "/profile_lec",
   },
 ];
 

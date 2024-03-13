@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sections/Sidebar";
 import Header from "../Sections/Header";
 import Logo from "../assets/Images/client.jpg";
 import EditStudentProfile from "../Pages/EditStudentProfile";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+axios.defaults.withCredentials = true;
 
 const StudentProfile = () => {
   const student = {
@@ -11,6 +14,33 @@ const StudentProfile = () => {
     email: "johndoe@example.com",
     registrationNumber: "123456789",
   };
+
+  const shouldLog = useRef(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // State for loading indicator
+  const [user, setUser] = useState(null); 
+  useEffect(() => {
+    if (shouldLog.current) {
+      shouldLog.current = false;
+      const fetchData = async () => {
+        const res = await axios
+          .get("http://localhost:4000/api/user/user", { withCredentials: true })
+          .catch((err) => {
+            toast.error(err.response.data.error);
+            console.log("error", err);
+            setTimeout(() => {
+              navigate("/login");
+            }, 1000);
+          });
+        const data = res && (await res.data);
+        if (data) setUser(data.user);
+
+        // setUser(data.user);
+      };
+      fetchData();
+      setTimeout(() => setLoading(false), 1000);
+    }
+  }, []);
 
   const [editProfile, setEditProfile] = useState(false);
 
@@ -58,9 +88,9 @@ const StudentProfile = () => {
                               >
                                 Name:
                               </label>
-                              <p className="text-gray-800 text-lg">
-                                {student.name}
-                              </p>
+                             {user && <p className="text-gray-800 text-lg">
+                                {user.username}
+                              </p> } 
                             </div>
                             <div className="flex items-center mb-6">
                               <label
@@ -69,9 +99,9 @@ const StudentProfile = () => {
                               >
                                 Email:
                               </label>
-                              <p className="text-gray-800 text-lg">
-                                {student.email}
-                              </p>
+                             {user &&  <p className="text-gray-800 text-lg">
+                                {user.email}
+                              </p>}
                             </div>
                             <div className="flex items-center mb-4">
                               <label
@@ -80,9 +110,9 @@ const StudentProfile = () => {
                               >
                                 Registration Number:
                               </label>
-                              <p className="text-gray-800 text-lg">
-                                {student.registrationNumber}
-                              </p>
+                             {user &&  <p className="text-gray-800 text-lg">
+                                {/* {user.regNo} */}
+                              </p>}
                             </div>
                             <div className="text-center">
                               <button

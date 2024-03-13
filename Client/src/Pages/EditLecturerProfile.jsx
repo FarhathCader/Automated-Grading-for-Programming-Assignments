@@ -40,7 +40,7 @@ const EditLectureProfile = () => {
                             <input
                               type="text"
                               className="border-b border-gray-500 rounded text-gray-800 text-lg focus:outline-none px-2 py-1"
-                              defaultValue="John Doe"
+                              // defaultValue="John Doe"
                               onChange={(e) => console.log(e.target.value)}
                             />
                           </div>
@@ -54,7 +54,7 @@ const EditLectureProfile = () => {
                             <input
                               type="email"
                               className="border-b border-gray-500 rounded text-gray-800 text-lg focus:outline-none px-2 py-1"
-                              defaultValue="johndoe@example.com"
+                              // defaultValue="johndoe@example.com"
                               onChange={(e) => console.log(e.target.value)}
                             />
                           </div>

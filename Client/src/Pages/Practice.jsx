@@ -9,7 +9,7 @@ const Practice = () => {
         { name: "Fibonacci", status: "Try Again" },
         { name: "Counting Bits", status: "Completed" },
     ];
-
+        
     const getStatusColor = (status) => {
         switch (status) {
             case "Completed":
