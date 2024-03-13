@@ -1,9 +1,48 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LecturerSidebar from "../Sections/SidebarLecturer";
 import Header from "../Sections/Header";
 import Logo from "../assets/Images/client.jpg";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const LecturerProfile = () => {
+
+  const shouldLog = useRef(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // State for loading indicator
+  const [user, setUser] = useState(null); 
+  useEffect(() => {
+    if (shouldLog.current) {
+      shouldLog.current = false;
+      const fetchData = async () => {
+        const res = await axios
+          .get("http://localhost:4000/api/user/user", { withCredentials: true })
+          .catch((err) => {
+            toast.error(err.response.data.error);
+            console.log("error", err);
+            setTimeout(() => {
+              navigate("/login");
+            }, 1000);
+          });
+        const data = res && (await res.data);
+        if (data) setUser(data.user);
+
+        // setUser(data.user);
+      };
+      fetchData();
+      setTimeout(() => setLoading(false), 1000);
+    }
+  }, []);
+
+  const handleProfile = () => {
+    setEditProfile(true);
+  };
+
+  const cancel = () => {
+    setEditProfile(false);
+  };
+
   return (
     <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
       <LecturerSidebar />
@@ -36,7 +75,9 @@ const LecturerProfile = () => {
                             >
                               Name:
                             </label>
-                            <p className="text-gray-800 text-lg">John Doe</p>
+                            {user && 
+                            <p className="text-gray-800 text-lg">{user.username}</p>
+                          }
                           </div>
                           <div className="flex items-center mb-6">
                             <label
@@ -45,9 +86,9 @@ const LecturerProfile = () => {
                             >
                               Email:
                             </label>
-                            <p className="text-gray-800 text-lg">
-                              johndoe@example.com
-                            </p>
+                           {user && <p className="text-gray-800 text-lg">
+                              {user.email}
+                            </p>} 
                           </div>
                           <div className="text-center">
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

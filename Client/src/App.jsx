@@ -34,6 +34,7 @@ import RequireAuth from "./Components/RequireAuth";
 import { useEffect } from "react";
 import { authActions } from "./store";
 import EditStudentProfile from "./Pages/EditStudentProfile";
+import ManageLecturers from "./Pages/ManageLecturers";
 
 
 
@@ -77,8 +78,13 @@ function App() {
         <Route path="/practice" element={<Practice/>} />  
         <Route path="/qbank" element={<QuestionBank/>} />
 
-        <Route path="/profile_lec" element={<StudentProfile/>} />  
-        <Route path="/profile_lec/edit" element={<EditStudentProfile/>} />  
+        <Route path="/profile_std" element={<StudentProfile/>} />  
+        <Route path="/profile_std/edit" element={<EditStudentProfile/>} />
+        <Route path="/managelecturer" element={<ManageLecturers/>} />  
+        <Route path="/profile_lec" element={<LecturerProfile/>} />  
+
+
+
 
 
         </Route>
