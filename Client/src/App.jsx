@@ -30,6 +30,7 @@ import SidebarLecturer from "./Sections/SidebarLecturer";
 import LecturerProfile from "./Pages/LecturerProfile";
 import QuestionBank from "./Pages/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
+import ManageLecturers from "./Pages/ManageLecturers";
 
 
 
@@ -41,7 +42,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<Home/>} /> */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home   />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/register" element={<Register />} />
@@ -51,11 +52,9 @@ function App() {
 
         <Route path="/reset/:token" element={<Reset />} />
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
-        <Route path="/admin" element={<AdminDashBoard />} />
+        <Route path="/managelecturer" element={<ManageLecturers />} />
 
-        <Route path="/forgotpassword" element={<Forgot />} />
         <Route path="/reset/:token" element={<Reset/>} />
-        <Route path="/dashboard_lec" element={<LecturerDashBoard/>} />
         <Route path="/admin" element={<AdminDashBoard/>} />        
         <Route path="/forgotpassword" element={<Forgot />} />
         <Route path="/dashboard_std" element={<StudentDashboard/>} />
