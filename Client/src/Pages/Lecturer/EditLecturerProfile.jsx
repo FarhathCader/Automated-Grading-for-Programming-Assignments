@@ -1,7 +1,7 @@
 import React from "react";
 import LecturerSidebar from "../Sections/LecturerSidebar";
-import Header from "../Sections/Header";
-import Feed from "../Sections/Feed";
+import Header from "../../Sections/Header";
+import Feed from "../../Sections/Feed";
 import Logo from "../assets/Images/client.jpg";
 
 const EditLectureProfile = () => {

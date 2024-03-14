@@ -2,7 +2,7 @@ import React from "react";
 import { FaLock, FaTimes } from "react-icons/fa";
 
 import { IoLockClosedSharp } from "react-icons/io5";
-import reset from "../assets/Images/reset.jpg";
+import reset from "../../assets/Images/reset.jpg";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState } from "react";

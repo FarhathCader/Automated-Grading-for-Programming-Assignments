@@ -1,6 +1,6 @@
 
-import SidebarLecturer from "../Sections/SidebarLecturer";
-import Header from "../Sections/Header";
+import SidebarLecturer from "../../Sections/SidebarLecturer";
+import Header from "../../Sections/Header";
 
 import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'

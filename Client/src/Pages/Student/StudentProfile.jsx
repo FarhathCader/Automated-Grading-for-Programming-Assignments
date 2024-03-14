@@ -1,56 +1,79 @@
 import React, { useEffect, useRef } from "react";
-import Sidebar from "../Sections/Sidebar";
-import Header from "../Sections/Header";
-import Logo from "../assets/Images/client.jpg";
-import EditStudentProfile from "../Pages/EditStudentProfile";
+import Sidebar from "../../Sections/Sidebar";
+import Header from "../../Sections/Header";
+import Logo from '../../assets/Images/client.jpg'
+import EditStudentProfile from "../Student/EditStudentProfile";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+
+import { ToastContainer,toast } from 'react-toastify';
 axios.defaults.withCredentials = true;
 
 const StudentProfile = () => {
-  const student = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    registrationNumber: "123456789",
-  };
+ 
 
   const shouldLog = useRef(true);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // State for loading indicator
   const [user, setUser] = useState(null); 
-  useEffect(() => {
-    if (shouldLog.current) {
-      shouldLog.current = false;
-      const fetchData = async () => {
-        const res = await axios
-          .get("http://localhost:4000/api/user/user", { withCredentials: true })
-          .catch((err) => {
-            toast.error(err.response.data.error);
-            console.log("error", err);
-            setTimeout(() => {
-              navigate("/login");
-            }, 1000);
-          });
-        const data = res && (await res.data);
-        if (data) setUser(data.user);
-
-        // setUser(data.user);
-      };
-      fetchData();
-      setTimeout(() => setLoading(false), 1000);
-    }
-  }, []);
-
+  const [student, setStudent] = useState(null); 
   const [editProfile, setEditProfile] = useState(false);
+
+
+  const load = () => {
+    useEffect(() => {
+      if (shouldLog.current) {
+        shouldLog.current = false;
+        const fetchData = async () => {
+          const res = await axios
+            .get("http://localhost:4000/api/user/user", { withCredentials: true })
+            .catch((err) => {
+              toast.error(err.response.data.error);
+              setTimeout(() => {
+                navigate("/login");
+              }, 1000);
+            });
+          const data = res && (await res.data);
+          if (data) setUser(data.user);
+  
+          // setUser(data.user);
+        };
+        fetchData();
+  
+  
+  
+        setTimeout(() => setLoading(false), 1000);
+      }
+    }, [editProfile]);
+  
+    useEffect(() => {
+      const fetchStudent = async () => {
+        const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
+        const data = res && (await res.data);
+        if (data) setStudent(data);
+        setTimeout(() => setLoading(false), 1000);
+  
+      };
+      fetchStudent();
+    }, [user,editProfile]);
+  }
+
+ load()
+
 
   const handleProfile = () => {
     setEditProfile(true);
+    load();
   };
 
   const cancel = () => {
     setEditProfile(false);
+    // load();
   };
+
+  
 
   return (
     <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
@@ -58,7 +81,7 @@ const StudentProfile = () => {
       <div className="w-4/5 grow flex flex-col">
         <Header />
         {editProfile ? (
-          <EditStudentProfile cancel = {cancel} />
+          <EditStudentProfile cancel = {cancel} student = {student} load = {load} />
         ) : (
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
             <div className="px-6">
@@ -88,8 +111,8 @@ const StudentProfile = () => {
                               >
                                 Name:
                               </label>
-                             {user && <p className="text-gray-800 text-lg">
-                                {user.username}
+                             {student && <p className="text-gray-800 text-lg">
+                                {student.username}
                               </p> } 
                             </div>
                             <div className="flex items-center mb-6">
@@ -99,8 +122,8 @@ const StudentProfile = () => {
                               >
                                 Email:
                               </label>
-                             {user &&  <p className="text-gray-800 text-lg">
-                                {user.email}
+                             {student &&  <p className="text-gray-800 text-lg">
+                                {student.email}
                               </p>}
                             </div>
                             <div className="flex items-center mb-4">
@@ -110,8 +133,8 @@ const StudentProfile = () => {
                               >
                                 Registration Number:
                               </label>
-                             {user &&  <p className="text-gray-800 text-lg">
-                                {/* {user.regNo} */}
+                             {student &&  <p className="text-gray-800 text-lg">
+                                {student.regNo}
                               </p>}
                             </div>
                             <div className="text-center">
@@ -133,6 +156,8 @@ const StudentProfile = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
+
     </main>
   );
 };
