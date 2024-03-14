@@ -118,7 +118,6 @@ const Header = () => {
       const res = await axios.get("http://localhost:4000/api/user/user", {
         withCredentials: true,
       });
-      clg(res);
       return res.data; // Return user data from response
     } catch (err) {
       // toast.error(err.response.data.error);
@@ -155,13 +154,13 @@ const Header = () => {
   }, []);
 
   // Display loading indicator if loading
-  if (loading) {
-    return (
-      <div className="w-full bg-blue-300 h-20 flex justify-center items-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="w-full bg-blue-300 h-20 flex justify-center items-center">
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <section className="w-full bg-blue-300 lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4">

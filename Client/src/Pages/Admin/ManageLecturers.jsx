@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../Sections/Header";
-import SidebarAdmin from "../Sections/SidebarAdmin";
+import Header from "../../Sections/Header";
+import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa"; // Import the search, edit, and delete icons
 
 const ManageLecturers = () => {

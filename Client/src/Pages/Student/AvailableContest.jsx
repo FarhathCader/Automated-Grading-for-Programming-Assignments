@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "../Sections/Sidebar";
-import Header from "../Sections/Header";
+import Sidebar from "../../Sections/Sidebar";
+import Header from "../../Sections/Header";
 
 const AvailableContest = () => {
   // Dummy contest data

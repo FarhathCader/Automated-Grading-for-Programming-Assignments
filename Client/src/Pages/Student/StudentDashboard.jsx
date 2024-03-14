@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 //import { Link } from 'react-router-dom'
-import Sidebar from '../Sections/Sidebar'
-import Feed from '../Sections/Feed'
+import Sidebar from '../../Sections/Sidebar'
+import Feed from '../../Sections/Feed'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
