@@ -39,11 +39,6 @@ const Header = () => {
     if (shouldLog.current) {
       shouldLog.current = false;
       const fetchData = async () => {
-
-        try {
-          const res = await axios.get("http://localhost:4000/api/user/user", {
-            withCredentials: true,
-
         const res = await axios
           .get("http://localhost:4000/api/user/user", { withCredentials: true })
           .catch((err) => {
@@ -54,22 +49,16 @@ const Header = () => {
             setTimeout(() => {
               navigate("/login");
             }, 1000);
-          }),
-          const data = res.data;
-          setUser(data.user);
-        } catch (err) {
-          toast.error(err.response.data.error);
-          console.log("error", err);
-          setTimeout(() => {
-            navigate("/login");
-          }, 1000);
-        } finally {
-          setLoading(false);
-        }
+          });
+        const data = res && (await res.data);
+        if (data) setUser(data.user);
+
+        // setUser(data.user);
       };
       fetchData();
+      setTimeout(() => setLoading(false), 1000);
     }
-  }, [navigate]);
+  }, []);
 
   // Display loading indicator if loading
   // if (loading) {
