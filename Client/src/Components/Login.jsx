@@ -20,7 +20,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const isLoggedin = useSelector(state => state.isLoggedin);
   const userType = useSelector(state => state.userType);
-  console.log(isLoggedin, userType)
 
 
   useEffect(() => {
