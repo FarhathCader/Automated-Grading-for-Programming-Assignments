@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../Sections/Header";
-import SidebarAdmin from "../Sections/SidebarAdmin";
+import Header from "../../Sections/Header";
+import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { Link } from "react-router-dom";
 
 export default function AdminDashBoard() {

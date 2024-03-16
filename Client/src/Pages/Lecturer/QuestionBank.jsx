@@ -38,8 +38,8 @@
 
 import React from "react";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-import SidebarLecturer from "../Sections/SidebarLecturer";
-import Header from "../Sections/Header";
+import SidebarLecturer from "../../Sections/SidebarLecturer";
+import Header from "../../Sections/Header";
 
 const QuestionBank = () => {
   

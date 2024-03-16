@@ -87,7 +87,6 @@ const Sidebar = () => {
       dispatch(authActions.logout())
 
 
-      dispatch(authActions.logout());
     } else {
       toast.error(data.response.data.error);
     }

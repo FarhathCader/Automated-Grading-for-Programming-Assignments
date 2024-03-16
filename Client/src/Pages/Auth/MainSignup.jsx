@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "../Components/Navbar";
-import FrontSignup from "../Components/FrontSignup";
-import Footer from "../Components/Footer";
+import Navbar from "../../Components/Navbar";
+import FrontSignup from "../../Components/FrontSignup";
+import Footer from "../../Components/Footer";
 
 const MainSignup = () => {
   return (

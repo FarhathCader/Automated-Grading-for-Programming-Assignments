@@ -7,7 +7,7 @@ import Login from "./Components/Login";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FrontSignup from "./Components/FrontSignup";
-import MainSignup from "./Pages/MainSignup";
+import MainSignup from "./Pages/Auth/MainSignup";
 import ContactUs from "./Pages/ContactUs";
 import Sample from "./Pages/Sample";
 import Nav from "./Components/Nav";
@@ -15,26 +15,26 @@ import Register from "./Components/Register";
 
 
 
-import Reset from "./Pages/Reset";
-import Forgot from "./Pages/Forgot";
-import LecturerDashBoard from "./Pages/LecturerDashBoard";
-import StudentDashboard from "./Pages/StudentDashboard";
-import AdminDashBoard from "./Pages/AdminDashBoard";
-import AvailableContest from "./Pages/AvailableContest";
-import CompletedContest from "./Pages/CompletedContest";
+import Reset from "./Pages/Auth/Reset";
+import Forgot from "./Pages/Auth/Forgot";
+import LecturerDashBoard from "./Pages/Lecturer/LecturerDashBoard";
+import StudentDashboard from "./Pages/Student/StudentDashboard";
+import AdminDashBoard from "./Pages/Admin/AdminDashBoard";
+import AvailableContest from "./Pages/Student/AvailableContest";
+import CompletedContest from "./Pages/Student/CompletedContest";
 
-import StudentProfile from "./Pages/StudentProfile";
-import Practice from "./Pages/Practice";
+import StudentProfile from "./Pages/Student/StudentProfile";
+import Practice from "./Pages/Student/Practice";
 import SidebarLecturer from "./Sections/SidebarLecturer";
-import LecturerProfile from "./Pages/LecturerProfile";
-import QuestionBank from "./Pages/QuestionBank";
+import LecturerProfile from "./Pages/Lecturer/LecturerProfile";
+import QuestionBank from "./Pages/Lecturer/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import RequireAuth from "./Components/RequireAuth";
 import { useEffect } from "react";
 import { authActions } from "./store";
-import EditStudentProfile from "./Pages/EditStudentProfile";
-import ManageLecturers from "./Pages/ManageLecturers";
+import EditStudentProfile from "./Pages/Student/EditStudentProfile";
+import ManageLecturers from "./Pages/Admin/ManageLecturers";
 
 
 
@@ -44,15 +44,7 @@ function App() {
 
   const isLoggedin = useSelector(state => state.isLoggedin)
   const dispatch = useDispatch();
-  // console.log(isLoggedin)
 
-  // useEffect(() => {
-  //   // Dispatch action to update auth state when component mounts
-  //   const storedAuth = localStorage.getItem('isLoggedin');
-  //   if (storedAuth !== null) {
-  //     dispatch(authActions[storedAuth === 'true' ? 'login' : 'logout']());
-  //   }
-  // }, [dispatch]);
 
   useEffect(() => {
     // Dispatch action to update auth state when component mounts
@@ -66,7 +58,6 @@ function App() {
       }
     }
   }, [dispatch]);
-  // console.log(isLoggedin)
   return (
       <Routes>
         <Route element = {<RequireAuth/>}>      
