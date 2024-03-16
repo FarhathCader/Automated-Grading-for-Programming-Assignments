@@ -53,7 +53,7 @@ const EditStudentProfile = (props) => {
 
   const student = props.student;
   return (
-    <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
+    <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-blue-900 w-full mb-6 shadow-lg rounded-xl">
       <div className="px-6">
         <div className="flex grow flex-wrap justify-center">
           <div className="w-full flex justify-center">
@@ -72,7 +72,7 @@ const EditStudentProfile = (props) => {
                     {" "}
                     {/* Increased width to 2/3 */}
                     <div className="bg-slate-100 p-8 rounded-lg mb-20 shadow-gray-700">
-                      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                      <h2 className="text-2xl font-bold text-blue-800 mb-6">
                         Your Profile
                       </h2>
                       <div className="flex items-center mb-4">
