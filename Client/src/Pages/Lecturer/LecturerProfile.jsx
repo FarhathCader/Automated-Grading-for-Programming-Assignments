@@ -46,26 +46,27 @@ const LecturerProfile = () => {
   return (
     <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
       <LecturerSidebar />
-      <div className="w-4/5 grow flex flex-col">
-        <Header />
-        <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
+      <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+        <Header bgFuchsia={true} />
+        <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
           <div className="px-6">
-            <div className="flex grow flex-wrap justify-center">
-              <div className="w-full flex justify-center">
-                <div className="relative">
+            <div className="flex-grow flex flex-col items-center justify-start">
+              <div className="w-full flex justify-center mt-4">
+                <div className="relative rounded-full overflow-hidden">
                   <img
                     src={Logo}
-                    className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
+                    className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32"
+                    alt="Lecturer Profile"
                   />
                 </div>
               </div>
-              <div className="w-full text-center mt-20">
+              <div className="w-full text-center mt-10">
                 <div className="flex justify-center lg:pt-4  pb-0">
                   <div className="w-full text-center mt-2">
                     <div className="flex justify-center lg:pt-4 pb-0">
                       <div className="w-full lg:w-1/2">
                         <div className="bg-slate-100 p-8 rounded-lg mb-20 shadow-gray-700">
-                          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                          <h2 className="text-2xl font-bold text-fuchsia-800 mb-6">
                             Your Profile
                           </h2>
                           <div className="flex items-center mb-4">
@@ -91,7 +92,7 @@ const LecturerProfile = () => {
                             </p>} 
                           </div>
                           <div className="text-center">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded">
                               Edit Profile
                             </button>
                           </div>
