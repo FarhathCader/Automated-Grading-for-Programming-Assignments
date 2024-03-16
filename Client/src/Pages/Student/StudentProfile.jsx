@@ -1,19 +1,12 @@
 import React, { useEffect, useRef } from "react";
-<<<<<<< HEAD:Client/src/Pages/StudentProfile.jsx
-import Sidebar from "../Sections/Sidebar";
-import Header from "../Sections/Header";
-import client from "../assets/Images/client.jpg";
-import EditStudentProfile from "../Pages/EditStudentProfile";
-=======
 import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
-import Logo from '../../assets/Images/client.jpg'
 import EditStudentProfile from "../Student/EditStudentProfile";
->>>>>>> 368fed640e5821be53d1cc05fe7ffbd7bc07e793:Client/src/Pages/Student/StudentProfile.jsx
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
+import client from "../../assets/Images/client.jpg";
 
 import { ToastContainer,toast } from 'react-toastify';
 axios.defaults.withCredentials = true;
