@@ -12,27 +12,10 @@ axios.defaults.withCredentials = true;
 const Header = () => {
   const shouldLog = useRef(true);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // State for loading indicator
   const [user, setUser] = useState(null);
   const dispatch = useDispatch() // Start with null to indicate loading
 
 
-  const sendRequest = async () => {
-    try {
-      const res = await axios.get("http://localhost:4000/api/user/user", {
-        withCredentials: true,
-      });
-      return res.data; // Return user data from response
-    } catch (err) {
-      // toast.error(err.response.data.error);
-      console.log("error", err);
-      setTimeout(() => {
-        navigate("/");
-      }, 1000); // Throw error message and redirect to homepage
-    } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
-    }
-  };
 
 
   useEffect(() => {
@@ -56,18 +39,18 @@ const Header = () => {
         // setUser(data.user);
       };
       fetchData();
-      setTimeout(() => setLoading(false), 1000);
+
+      const reloadPageAfterFiveMinutes = () => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000*60*60); // 5 minutes in milliseconds
+      };
+  
+      reloadPageAfterFiveMinutes();
     }
   }, []);
 
-  // Display loading indicator if loading
-  // if (loading) {
-  //   return (
-  //     <div className="w-full bg-blue-300 h-20 flex justify-center items-center">
-  //       <p>Loading...</p>
-  //     </div>
-  //   );
-  // }
+
 
   return (
     <section className="w-full bg-blue-300 lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4">
@@ -79,7 +62,7 @@ const Header = () => {
         />
       </div>
       <div className="flex-grow flex justify-end items-center gap-4">
-        <h1 className="text-lg font-semibold text-blue-900">{user ? user.username : "Rifab Ahamed"}</h1>
+        <h1 className="text-lg font-semibold text-blue-900">{user ? user.username : ""}</h1>
         <div className="w-12 h-12 rounded-full overflow-hidden">
           <img
             src={client}
