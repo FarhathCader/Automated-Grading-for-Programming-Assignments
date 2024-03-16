@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sections/Sidebar";
 import Header from "../Sections/Header";
-import Logo from "../assets/Images/client.jpg";
+import client from "../assets/Images/client.jpg";
 import EditStudentProfile from "../Pages/EditStudentProfile";
 import { useState } from "react";
 import axios from "axios";
@@ -53,21 +53,22 @@ const StudentProfile = () => {
   };
 
   return (
-    <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
+    <main className="w-full  h-screen flex justify-between items-start">
+      
       <Sidebar />
-      <div className="w-4/5 grow flex flex-col">
+      <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header />
         {editProfile ? (
           <EditStudentProfile cancel = {cancel} />
         ) : (
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
             <div className="px-6">
-              <div className="flex grow flex-wrap justify-center">
-                <div className="w-full flex justify-center">
-                  <div className="relative">
+              <div className="flex-grow flex flex-col items-center justify-start">
+                <div className="w-full flex justify-center mt-4">
+                  <div className="relative rounded-full overflow-hidden">
                     <img
-                      src={Logo}
-                      className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
+                      src={client}
+                      className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32"
                       alt="Student Profile"
                     />
                   </div>
