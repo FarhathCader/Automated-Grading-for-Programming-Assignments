@@ -105,13 +105,16 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 
 const Header = () => {
   const shouldLog = useRef(true);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // State for loading indicator
-  const [user, setUser] = useState(null); // Start with null to indicate loading
+  const [user, setUser] = useState(null);
+  const dispatch = useDispatch() // Start with null to indicate loading
 
   const sendRequest = async () => {
     try {
@@ -138,7 +141,9 @@ const Header = () => {
           .get("http://localhost:4000/api/user/user", { withCredentials: true })
           .catch((err) => {
             toast.error(err.response.data.error);
-            console.log("error", err);
+            console.log("error is here", err);
+            dispatch(authActions.logout())
+
             setTimeout(() => {
               navigate("/login");
             }, 1000);

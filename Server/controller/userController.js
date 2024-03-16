@@ -221,7 +221,7 @@ const login = async (req, res) => {
             { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
-                expiresIn: '1d'
+                expiresIn: '5m'
             }
         );
 
@@ -232,7 +232,7 @@ const login = async (req, res) => {
         res.cookie(String(user._id), token, {
             path: '/',
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            expires: new Date(Date.now() + 1000 * 60*5),
             sameSite: 'lax'
         });
 
