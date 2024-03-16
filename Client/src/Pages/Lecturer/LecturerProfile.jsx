@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import LecturerSidebar from "../Sections/SidebarLecturer";
-import Header from "../Sections/Header";
-import Logo from "../assets/Images/client.jpg";
+import LecturerSidebar from "../../Sections/SidebarLecturer";
+import Header from "../../Sections/Header";
+import Logo from "../../assets/Images/client.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 axios.defaults.withCredentials = true;
