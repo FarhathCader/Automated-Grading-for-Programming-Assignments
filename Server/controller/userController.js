@@ -114,20 +114,12 @@ console.log(`OTP ${OTP} otp ${otp}`)
 
         
         if(usertype === 'lecturer'){
-            // const availableUser =  await Lecturer.findOne({email});
-            // if(availableUser){
-            // console.log("lectr exist")
-            //    return  res.status(400).json({error:'Lecturer already exists'});
-            // } 
+ 
             const user = await User.create({username,email : email.toLowerCase(),password : hashedPassword,usertype});
             const lectr = await Lecturer.create({username,email : email.toLowerCase(),password : hashedPassword,userId : user._id});
 
             }else{
-                // const availableUser =  await student.findOne({email});
-                // if(availableUser){
-                // console.log("stdnt exist")
-                //    return  res.status(400).json({error:'Student already exists'});
-                // }
+               
             const user = await User.create({username,email: email.toLowerCase(),password : hashedPassword,usertype});
             const stdnt = await student.create({username,email: email.toLowerCase(),password : hashedPassword,userId : user._id});
         
@@ -221,7 +213,7 @@ const login = async (req, res) => {
             { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
-                expiresIn: '5m'
+                expiresIn: '1h'
             }
         );
 
@@ -232,7 +224,7 @@ const login = async (req, res) => {
         res.cookie(String(user._id), token, {
             path: '/',
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60*5),
+            expires: new Date(Date.now() + 1000 * 60*60),
             sameSite: 'lax'
         });
 
