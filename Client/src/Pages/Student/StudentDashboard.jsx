@@ -11,13 +11,7 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   console.log(isLoggedin, userType)
 
-  useEffect(() => {
-    if (userType !== 'student') {
-      if (userType === 'lecturer')navigate('/dashboard_lec');
-      else navigate('/admin');
-      
-    }
-  }, [navigate, userType]);
+
 
   return (
    

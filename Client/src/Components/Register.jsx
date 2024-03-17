@@ -61,6 +61,7 @@ const handleSubmit = async (e) => {
     } catch (error) {
       const err = error.response.data;
       toast.error(err.error);
+      console.log(err.error)
     }
   }
   setTimeout(() => {

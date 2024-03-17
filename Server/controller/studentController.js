@@ -9,8 +9,8 @@ const updateStudent = async (req, res) => {
 
         const std = await Student.findById(id);
         const { email } = req.body;
-        const existingStd = await Student.findOne({ email });
-        if (existingStd && existingStd._id.toString() !== id.toString()) {
+        const existingUser = await User.findOne({ email : email.toLowerCase() });
+        if (existingUser && existingUser._id.toString() !== std.userId.toString()) {
            // If email exists and belongs to a different user, return an error
             return res.status(400).json({ error: 'Email already exists' });
         }

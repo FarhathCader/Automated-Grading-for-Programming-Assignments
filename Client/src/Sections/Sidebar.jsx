@@ -43,7 +43,6 @@ const navItems = [
   {
     name: "Profile",
     icon: MdPerson,
-
     link: "/profile_std",
 
   },

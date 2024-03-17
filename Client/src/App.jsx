@@ -38,6 +38,7 @@ import axios from "axios";
 import useFetchUser from "./hooks/fetchUser";
 axios.defaults.withCredentials = true;
 import Contest from "./Pages/Lecturer/Contest";
+import EditLectureProfile from "./Pages/Lecturer/EditLecturerProfile";
 
 
 function App() {
@@ -81,24 +82,34 @@ function App() {
 
   return (
     <Routes>
-      <Route element={<RequireAuth />}>
-        <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
-        <Route path="/admin" element={<AdminDashBoard />} />
+        <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/dashboard_lec" />}>
         <Route path="/dashboard_std" element={<StudentDashboard />} />
         <Route path="/available" element={<AvailableContest />} />
         <Route path="/completed" element={<CompletedContest />} />
         <Route path="/practice" element={<Practice />} />
-        <Route path="/qbank" element={<QuestionBank />} />
-
         <Route path="/profile_std" element={<StudentProfile />} />
         <Route path="/profile_std/edit" element={<EditStudentProfile />} />
+
+
+      </Route>
+
+      <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/dashboard_std" />}>
+        <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
+        <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/managelecturer" element={<ManageLecturers />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
         <Route path="/contest" element={<Contest/>}/>
+
+      </Route>
+
+      <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
+      <Route path="/admin" element={<AdminDashBoard />} />
+      
+
       </Route>
 
       <Route>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<EditLectureProfile />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/register" element={<Register />} />
