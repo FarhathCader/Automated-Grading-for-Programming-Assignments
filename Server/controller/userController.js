@@ -213,7 +213,7 @@ const login = async (req, res) => {
             { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
-                expiresIn: '1h'
+                expiresIn: '10s'
             }
         );
 
@@ -224,7 +224,7 @@ const login = async (req, res) => {
         res.cookie(String(user._id), token, {
             path: '/',
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60*60),
+            expires: new Date(Date.now() + 1000 * 10),
             sameSite: 'lax'
         });
 
@@ -240,7 +240,7 @@ const login = async (req, res) => {
             userType = 'admin';
         }
 
-        return res.status(200).json({ msg: userType });
+        return res.status(200).json({ msg: userType, user });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -256,7 +256,7 @@ const login = async (req, res) => {
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
-    const tokens = cookie.split(' ');
+    console.log("cookie is ",cookie)
     // console.log("tokens",tokens);
 
     if(!cookie){
@@ -274,7 +274,8 @@ const verifyToken = (req,res,next)=>{
 
     jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,user)=>{
         if(err){
-             return res.status(403).json({error: 'Forbidden'});
+              res.status(403).json({error: 'Invalid Token'});
+              return
             //  console.log("error",err.message)
             // return;
         }
@@ -308,7 +309,7 @@ const getUser = async (req, res) => {
         return res.status(200).json({ user });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error checks' });
     }
 }
 

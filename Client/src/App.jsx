@@ -31,10 +31,14 @@ import QuestionBank from "./Pages/Lecturer/QuestionBank";
 import Sidebar from "./Sections/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import RequireAuth from "./Components/RequireAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { authActions } from "./store";
 import EditStudentProfile from "./Pages/Student/EditStudentProfile";
 import ManageLecturers from "./Pages/Admin/ManageLecturers";
+import Mycomponent from "./Components/Mycomponent";
+import axios from "axios";
+import useFetchUser from "./hooks/fetchUser";
+axios.defaults.withCredentials = true;
 
 
 
@@ -44,20 +48,40 @@ function App() {
 
   const isLoggedin = useSelector(state => state.isLoggedin)
   const dispatch = useDispatch();
+  const [user, setUser] = useState(null);
 
 
-  useEffect(() => {
-    // Dispatch action to update auth state when component mounts
-    const storedAuth = localStorage.getItem('isLoggedin');
-    const storedUserType = localStorage.getItem('userType');
-    if (storedAuth !== null) {
-      if (storedUserType !== null) {
-        dispatch(authActions.login({ userType: storedUserType }));
-      } else {
-        dispatch(authActions[storedAuth === 'true' ? 'login' : 'logout']());
-      }
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   // Dispatch action to update auth state when component mounts
+  //   // const storedAuth = localStorage.getItem('isLoggedin');
+  //   // const storedUserType = localStorage.getItem('userType');
+  //   // const storedUser = localStorage.getItem('user');
+
+  //   const fetchUser = async () => {
+  //     console.log("fetching user  ")
+  //     try{
+  //       const res =  await axios.get('http://localhost:4000/api/user/user',null,{withCredentials: true});
+  //       const data =  await res.data;
+  //       console.log("user is ",data.user)
+  //       if(data.user){
+  //         console.log("logging in")
+  //         dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user}));
+  //       }
+  //       }
+  //       catch(err){
+  //         // console.log("error is",err.response.data.error)
+  //         console.log("logged out")
+  //         dispatch(authActions.logout());
+  //       }
+  
+  //   }
+
+  //   fetchUser();
+ 
+    
+  // }, [dispatch]);
+
+  useFetchUser();
   return (
       <Routes>
         <Route element = {<RequireAuth/>}>      
@@ -88,8 +112,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/reset/:token" element={<Reset />} />
         <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path="/user" element={<Mycomponent />} />
 
         </Route>
+        
 
    
         

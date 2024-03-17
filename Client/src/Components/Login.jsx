@@ -35,119 +35,6 @@ const Login = () => {
     }
   }, [isLoggedin, userType, navigate]);
 
-  // const sendRequest = async () =>{
-  
-  //   try{
-  //     const res = await axios.post('http://localhost:4000/api/user/login', { email, password })
-  //     console.log("res",res)
-  //     const data = await res.data;
-  //     console.log(data.msg)
-  //     return data.msg
-
-  //   }catch (err){
-  //     console.log("error",err)
-  //     return err.response.data.error;
-  //   }
-
-  // }
-
-// const handleLogin =  (e) => {
-//   e.preventDefault();
-//   if (isRegistering) return; // Prevent multiple submissions
-//   setIsRegistering(true);
-//   if (email === '' || password === '') {
-//     toast.error('All fields are required');
-//   } else {
-
-//     sendRequest().then((data)=> (
-//     setType(data.msg)     
-//     )).then((data) => {
-//       console.log(data);
-//       toast.success("Login success");
-//         if (type === 'student') {
-//           setTimeout(() => {
-//             navigate('/dashboard_std');
-//           }, 1000);
-//         } else if (type === 'lecturer') {
-//           setTimeout(() => {
-//             navigate('/dashboard_lec');
-//           }, 1000);
-//         } else {
-//           setTimeout(() => {
-//             navigate('/admin');
-//           }, 1000);
-//         }
-//     }).catch(err => {
-//       toast.error(err.response.data.error);
-//     });
-
-        
-//       }
- 
-//       setTimeout(() => {
-//         setIsRegistering(false);    
-//       }, 1800);
-
-//     }
-  
-
-    // const handleLogin = async (e) => {
-    //   e.preventDefault();
-    //   if (isRegistering) return; // Prevent multiple submissions
-    //   setIsRegistering(true);
-    //   if (email === '' || password === '') {
-    //     toast.error('All fields are required');
-    //   } else {
-    //     sendRequest().then((data) => {
-    //       console.log(data);
-    //     }).catch(err => {
-    //       console.log("err",err)
-    //     })
-    //       // .then((data) => {
-    //       //   // console.log(data.msg);
-    //       //   // setType(data.msg); // Set the type here
-    //       //   toast.success("Login success");
-    //       //   if (data.msg === 'student') {
-    //       //     setTimeout(() => {
-    //       //       navigate('/dashboard_std');
-    //       //     }, 1000);
-    //       //   } else if (data.msg === 'lecturer') {
-    //       //     setTimeout(() => {
-    //       //       navigate('/dashboard_lec');
-    //       //     }, 1000);
-    //       //   } else {
-    //       //     setTimeout(() => {
-    //       //       navigate('/admin');
-    //       //     }, 1000);
-    //       //   }
-    //       // })
-    //       // .catch(err => {
-    //       //   console.log(err)
-    //       //   // toast.error(err.response.data.error);
-    //       // })
-          
-    //   }
-    //   setTimeout(() => {
-    //     setIsRegistering(false);
-    //   }, 1600);
-    // };
-
-    // useEffect(() => {
-    //   // If user is already logged in, redirect to appropriate dashboard
-    //   if (isLoggedin) {
-    //     // Assuming you have stored user type in Redux store as well
-    //     const userType = useSelector(state => state.auth.userType);
-    //     if (userType === 'student') {
-    //       navigate('/dashboard_std');
-    //     } else if (userType === 'lecturer') {
-    //       navigate('/dashboard_lec');
-    //     } else {
-    //       navigate('/admin');
-    //     }
-    //   }
-    // }, [isLoggedin, navigate]);
-    
-
     const handleLogin = async (e) =>{
       e.preventDefault();
       if(isRegistering) return;
@@ -161,7 +48,7 @@ const Login = () => {
           const data = await res.data;
           console.log(data.msg)
           toast.success(data.msg);
-          dispatch(authActions.login({ userType: `${data.msg}`}));
+          dispatch(authActions.login({ userType: `${data.msg}`,user : data.user}));
           if(data.msg === 'student'){
             setTimeout(() => {
               navigate('/dashboard_std');

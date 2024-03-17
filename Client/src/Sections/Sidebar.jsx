@@ -70,26 +70,26 @@ const Sidebar = () => {
   }, []);
 
   const handleLogout = async () => {
-    // Handle logout
-    const response = await axios.post(
-      "http://localhost:4000/api/user/logout",
-      null,
-      { withCredentials: true }
-    );
-    const data = await response.data;
 
-    if(response.status === 200){
-      toast.success(data.msg)
-      // setTimeout( ()=>
-      //   navigate('/login')
-      // ,1000)
-
-      dispatch(authActions.logout())
-
-
-    } else {
-      toast.error(data.response.data.error);
+    try{
+      const response = await axios.post(
+        "http://localhost:4000/api/user/logout",
+        null,
+        { withCredentials: true }
+      );
+      const data = await response.data;
+  
+      if(response.status === 200){
+        toast.success(data.msg)
+        dispatch(authActions.logout())
+      } 
     }
+    catch(err){
+      console.log('error',err.message)
+      dispatch(authActions.logout())
+    }
+    // Handle logout
+  
   };
 
   return (

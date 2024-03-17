@@ -5,50 +5,52 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 
 const Header = () => {
   const shouldLog = useRef(true);
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const user  = useSelector(state => state.user);
   const dispatch = useDispatch() // Start with null to indicate loading
 
 
 
 
-  useEffect(() => {
-    if (shouldLog.current) {
-      shouldLog.current = false;
-      const fetchData = async () => {
-        const res = await axios
-          .get("http://localhost:4000/api/user/user", { withCredentials: true })
-          .catch((err) => {
-            toast.error(err.response.data.error);
-            console.log("error is here", err);
-            dispatch(authActions.logout())
+  // useEffect(() => {
+  //   if (shouldLog.current) {
+  //     shouldLog.current = false;
+  //     const fetchData = async () => {
+  //       const res = await axios
+  //         .get("http://localhost:4000/api/user/user", { withCredentials: true })
+  //         .catch((err) => {
+  //           toast.error(err.response.data.error);
+  //           console.log("error is here", err);
+  //           // dispatch(authActions.logout())
 
-            setTimeout(() => {
-              navigate("/login");
-            }, 1000);
-          });
-        const data = res && (await res.data);
-        if (data) setUser(data.user);
+  //           setTimeout(() => {
+  //             navigate("/login");
+  //           }, 1000);
+  //         });
+  //       const data = res && (await res.data);
+  //       console.log(data)
+  //       if (data) setUser(data.user);
 
-        // setUser(data.user);
-      };
-      fetchData();
+  //       // setUser(data.user);
+  //     };
+  //     fetchData();
 
-      const reloadPageAfterFiveMinutes = () => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000*60*60); // 5 minutes in milliseconds
-      };
+  //     const reloadPageAfterFiveMinutes = () => {
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 1000*60*60); // 5 minutes in milliseconds
+  //     };
   
-      reloadPageAfterFiveMinutes();
-    }
-  }, []);
+  //     reloadPageAfterFiveMinutes();
+  //   }
+  // }, []);
 
 
 
