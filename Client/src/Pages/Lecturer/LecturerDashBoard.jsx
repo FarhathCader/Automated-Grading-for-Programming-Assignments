@@ -16,44 +16,9 @@ export default function LecturerDashBoard() {
   const userType = useSelector((state) => state.userType);
   console.log(isLoggedin, userType);
 
-  const [user, setUser] = useState();
 
-  // const sednRequest = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:4000/api/user/user", {
-  //       withCredentials: true,
-  //     })
-  //     .catch((err) => console.log(err));
-  //   const data = await res.data;
-  //   return data;
-  // };
+ 
 
-  useEffect(() => {
-    if (userType === "lecturer") {
-      if (shouldLog.current) {
-        shouldLog.current = false;
-        const fetchData = async () => {
-          const res = await axios
-            .get("http://localhost:4000/api/user/user", {
-              withCredentials: true,
-            })
-            .catch((err) => {
-              toast.error(err.response.data.error);
-              setTimeout(() => {
-                navigate("/login");
-              }, 1000);
-            });
-          const data = res && (await res.data);
-          if (data) setUser(data.user);
-          // setUser(data.user);
-        };
-        fetchData();
-      }
-    } else {
-      if (userType === "student") navigate("/dashboard_std");
-      else navigate("/admin");
-    }
-  }, []);
 
   return (
     <main className="w-full h-screen flex justify-between items-start">

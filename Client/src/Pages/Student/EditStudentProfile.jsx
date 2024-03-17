@@ -8,6 +8,7 @@ import { ToastContainer,toast } from 'react-toastify';
 
 
 import axios from "axios";
+import useFetchUser from "../../hooks/fetchUser";
 
 
 const EditStudentProfile = (props) => {
@@ -34,20 +35,23 @@ const EditStudentProfile = (props) => {
           }
           , 1000);
           toast.success('Profile Updated Successfully');
-        
+          window.location.reload();
+         
+
       }
 
 
     }
     catch(err){
-      toast.error(err.response.data.error);
-      setTimeout(() => {
-        props.cancel();
-        }
-        , 1000);
+      const error = await err.response.data.error;
+      toast.error(error);
     }
 
+
+
   }
+
+  
 
 
   const student = props.student;

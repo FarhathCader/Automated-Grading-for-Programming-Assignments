@@ -16,6 +16,7 @@ const useFetchUser = () => {
         const data = res.data;
         if (data.user) {
           dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
+          console.log("auth actions login")
         }
       } catch (err) {
         dispatch(authActions.logout());

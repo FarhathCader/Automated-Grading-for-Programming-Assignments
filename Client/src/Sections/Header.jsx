@@ -55,6 +55,7 @@ const Header = ({ bgFuchsia }) => {
 
 
 
+
   return (
     <section
     className={classNames("w-full lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4", {

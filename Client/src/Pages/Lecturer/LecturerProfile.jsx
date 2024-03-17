@@ -3,37 +3,34 @@ import LecturerSidebar from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import Logo from "../../assets/Images/client.jpg";
 import { useNavigate } from "react-router-dom";
+import EditLectureProfile from "./EditLecturerProfile";
 import axios from "axios";
+import { useSelector } from "react-redux";
 axios.defaults.withCredentials = true;
 
 const LecturerProfile = () => {
 
-  const shouldLog = useRef(true);
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const [user, setUser] = useState(null); 
-  useEffect(() => {
-    if (shouldLog.current) {
-      shouldLog.current = false;
-      const fetchData = async () => {
-        const res = await axios
-          .get("http://localhost:4000/api/user/user", { withCredentials: true })
-          .catch((err) => {
-            toast.error(err.response.data.error);
-            console.log("error", err);
-            setTimeout(() => {
-              navigate("/login");
-            }, 1000);
-          });
-        const data = res && (await res.data);
-        if (data) setUser(data.user);
 
-        // setUser(data.user);
-      };
-      fetchData();
-      setTimeout(() => setLoading(false), 1000);
-    }
-  }, []);
+  const user  = useSelector(state => state.user);
+  const [editProfile, setEditProfile] = useState(false);
+  const [lecturer,setLecturer] = useState(null);
+
+
+  useEffect(() => {
+    const fetchLecturer = async () => {
+      try{
+        if(user._id === undefined) return;
+        const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
+        const data = res && (await res.data);
+        if (data) setLecturer(data);
+      }
+      catch(err){
+        console.log("error",err.message)
+      }
+  
+    };
+    fetchLecturer();
+  }, [user,editProfile]);
 
   const handleProfile = () => {
     setEditProfile(true);
@@ -48,7 +45,11 @@ const LecturerProfile = () => {
       <LecturerSidebar />
       <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgFuchsia={true} />
-        <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
+
+        {editProfile ? (
+          <EditLectureProfile cancel={cancel} lecturer={lecturer} />
+        ) : (
+          <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
           <div className="px-6">
             <div className="flex-grow flex flex-col items-center justify-start">
               <div className="w-full flex justify-center mt-4">
@@ -76,8 +77,8 @@ const LecturerProfile = () => {
                             >
                               Name:
                             </label>
-                            {user && 
-                            <p className="text-gray-800 text-lg">{user.username}</p>
+                            {lecturer && 
+                            <p className="text-gray-800 text-lg">{lecturer.username}</p>
                           }
                           </div>
                           <div className="flex items-center mb-6">
@@ -87,12 +88,12 @@ const LecturerProfile = () => {
                             >
                               Email:
                             </label>
-                           {user && <p className="text-gray-800 text-lg">
-                              {user.email}
+                           {lecturer && <p className="text-gray-800 text-lg">
+                              {lecturer.email}
                             </p>} 
                           </div>
                           <div className="text-center">
-                            <button className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded">
+                            <button onClick={handleProfile} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded">
                               Edit Profile
                             </button>
                           </div>
@@ -105,6 +106,8 @@ const LecturerProfile = () => {
             </div>
           </div>
         </div>
+        )}
+  
       </div>
     </main>
   );
