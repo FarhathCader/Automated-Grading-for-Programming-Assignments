@@ -7,9 +7,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
+import classNames from "classnames"; 
 axios.defaults.withCredentials = true;
 
-const Header = () => {
+const Header = ({ bgFuchsia }) => {
   const shouldLog = useRef(true);
   const navigate = useNavigate();
   // const [user, setUser] = useState(null);
@@ -55,7 +56,12 @@ const Header = () => {
 
 
   return (
-    <section className="w-full bg-blue-300 lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4">
+    <section
+    className={classNames("w-full lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4", {
+      "bg-fuchsia-300": bgFuchsia, // Apply bg-fuchsia class if bgFuchsia prop is true
+      "bg-blue-300": !bgFuchsia, // Apply bg-blue class if bgFuchsia prop is false
+    })}
+  >
       <div>
         <img
           className="w-12 h-12 flex items-center justify-center bg-cover bg-center bg-no-repeat"
