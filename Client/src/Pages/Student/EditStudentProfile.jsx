@@ -31,7 +31,6 @@ const EditStudentProfile = (props) => {
   
         setTimeout(() => {
           props.cancel();
-          props.load();
           }
           , 1000);
           toast.success('Profile Updated Successfully');

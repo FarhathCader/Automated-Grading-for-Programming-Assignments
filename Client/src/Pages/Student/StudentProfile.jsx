@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import client from "../../assets/Images/client.jpg";
 
 import { ToastContainer,toast } from 'react-toastify';
+import { useSelector } from "react-redux";
 axios.defaults.withCredentials = true;
 
 const StudentProfile = () => {
@@ -16,40 +17,16 @@ const StudentProfile = () => {
 
   const shouldLog = useRef(true);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const [user, setUser] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const user  = useSelector(state => state.user);
   const [student, setStudent] = useState(null); 
   const [editProfile, setEditProfile] = useState(false);
 
 
-  const load = () => {
-    useEffect(() => {
-      if (shouldLog.current) {
-        shouldLog.current = false;
-        const fetchData = async () => {
-          const res = await axios
-            .get("http://localhost:4000/api/user/user", { withCredentials: true })
-            .catch((err) => {
-              toast.error(err.response.data.error);
-              setTimeout(() => {
-                navigate("/login");
-              }, 1000);
-            });
-          const data = res && (await res.data);
-          if (data) setUser(data.user);
-  
-          // setUser(data.user);
-        };
-        fetchData();
-  
-  
-  
-        setTimeout(() => setLoading(false), 1000);
-      }
-    }, [editProfile]);
-  
+
     useEffect(() => {
       const fetchStudent = async () => {
+        if(user._id === undefined) return;
         const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
         const data = res && (await res.data);
         if (data) setStudent(data);
@@ -58,19 +35,15 @@ const StudentProfile = () => {
       };
       fetchStudent();
     }, [user,editProfile]);
-  }
 
- load()
 
 
   const handleProfile = () => {
     setEditProfile(true);
-    load();
   };
 
   const cancel = () => {
     setEditProfile(false);
-    // load();
   };
 
   
@@ -82,7 +55,7 @@ const StudentProfile = () => {
       <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header />
         {editProfile ? (
-          <EditStudentProfile cancel = {cancel} student = {student} load = {load} />
+          <EditStudentProfile cancel = {cancel} student = {student}  />
         ) : (
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-40 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
             <div className="px-6">
