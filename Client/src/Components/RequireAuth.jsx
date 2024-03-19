@@ -25,7 +25,7 @@ const RequireAuth = ({ allowedRoles, redirectTo }) => {
   const isAuthenticated = useSelector(state => state.isLoggedin);
   const userType = useSelector(state => state.userType);
   console.log(isAuthenticated, userType);
-  console.log(allowedRoles,redirectTo);
+  console.log("allowed roles",allowedRoles,"redirect to",redirectTo);
 
 
 

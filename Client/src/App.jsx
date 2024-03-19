@@ -104,12 +104,13 @@ function App() {
 
       <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
       <Route path="/admin" element={<AdminDashBoard />} />
+      <Route path="/managelecturer" element={<ManageLecturers />} />
       
 
       </Route>
 
       <Route>
-        <Route path="/" element={<EditLectureProfile />} />
+        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<MainSignup />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/register" element={<Register />} />
