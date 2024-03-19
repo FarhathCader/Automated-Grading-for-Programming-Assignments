@@ -213,18 +213,22 @@ const login = async (req, res) => {
             { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
-                expiresIn: '15m'
+                expiresIn: '7d'
             }
         );
 
-        // Clear all cookies
-        res.clearCookie();
+       
+        if(req.cookies[`${user._id}`]){
+                req.cookies[`${user._id}`] = '';
+        }
+
+
 
         // Set the new cookie
         res.cookie(String(user._id), token, {
             path: '/',
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60*15),
+            expires: new Date(Date.now() + 1000 * 60*60*24*7),
             sameSite: 'lax'
         });
 
@@ -242,7 +246,7 @@ const login = async (req, res) => {
 
         return res.status(200).json({ msg: userType, user });
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -256,11 +260,11 @@ const login = async (req, res) => {
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
-    console.log("cookie is ",cookie)
+    // console.log("cookie is ",cookie)
     // console.log("tokens",tokens);
 
     if(!cookie){
-         res.status(401).json({error: 'Session Expired Please login again'});
+         res.status(401).json({error: 'Cookie Expired Please login again'});
          return;
     }
     const token = cookie.split('=')[1];
@@ -268,8 +272,9 @@ const verifyToken = (req,res,next)=>{
          res.status(401).json({error: 'Unauthorized'});
             return;
     }
-    console.log("cookie",cookie);
-    console.log("token",token);
+    // console.log("cookie",cookie);
+    // console.log("token",token);
+
 
 
     jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,user)=>{
@@ -281,6 +286,7 @@ const verifyToken = (req,res,next)=>{
         }
         else{
             // res.status(200).json({msg: 'success'});
+            console.log("Req.id",req.id);
             req.id = user.id;
             // console.log("user id first",user.id)
             next();
@@ -311,6 +317,46 @@ const getUser = async (req, res) => {
         console.error(error);
         return res.status(500).json({ error: 'Internal Server Error checks' });
     }
+}
+
+const refreshToken = async (req,res,next)=>{
+    const cookie = req.headers.cookie;
+    console.log("cookie is ",cookie," on time",new Date().toLocaleTimeString());
+    if(!cookie){
+        return res.status(401).json({error: 'Cookie expired please login again'});
+    }
+    const token = cookie.split('=')[1];
+    if(token == null){
+        return res.status(401).json({error: 'Token not found'});
+    }
+    jwt.verify(token,process.env.ACCESS_TOKEN,(err,user)=>{
+        if(err){
+            return res.status(403).json({error: 'Authentication Failed'});
+        }
+
+        res.clearCookie(`${user.id}`)
+        req.cookies[`${user.id}`] = '';
+
+
+        const token = jwt.sign({id:user.id},process.env.ACCESS_TOKEN,{
+            expiresIn: '7d'
+        })
+
+        console.log("re generated token",token);
+
+        res.cookie(String(user.id),token,{
+            path : '/',
+            httpOnly:true,
+            expires : new Date(Date.now() + 1000*20),
+            sameSite : 'lax'
+        })
+
+
+        req.id = user.id;
+        next();
+    })
+
+
 }
 
 
@@ -457,5 +503,6 @@ module.exports = {
     verifyToken,
     getUser,
     sendOtp,
-    logout
+    logout,
+    refreshToken
 }
