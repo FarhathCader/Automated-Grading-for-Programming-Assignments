@@ -51,8 +51,8 @@ const StudentProfile = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
   <Sidebar />
-  <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-    <Header />
+  <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+    <Header bgColor="blue" />
     {editProfile ? (
           <EditStudentProfile cancel = {cancel} student = {student}  />
         ) : (
@@ -73,34 +73,34 @@ const StudentProfile = () => {
               <div className="w-full text-center mt-2">
                 <div className="flex justify-center lg:pt-4 pb-0">
                   <div className="w-full lg:w-1/2">
-                    <div className="bg-slate-100 p-1 rounded-lg mb-20 shadow-gray-700">
+                    <div className="bg-blue-100 p-1 rounded-lg mb-20 shadow-blue-700">
                       <h2 className="text-2xl font-bold text-blue-800 mb-6">
                         Your Profile
                       </h2>
                       {/* Profile details */}
                       <div className="flex items-center mb-4">
                         <label
-                          className="block text-gray-700 text-sm font-bold mr-2"
+                          className="block text-blue-700 text-sm font-bold mr-2"
                           htmlFor="name"
                         >
                           Name:
                         </label>
                         {student && (
-                          <p className="text-gray-800 text-lg">
+                          <p className="text-blue-800 text-lg">
                             {student.username}
                           </p>
                         )}
                       </div>
                       {/* Email */}
-                      <div className="flex items-center mb-6">
+                      <div className="flex items-center mb-4">
                         <label
-                          className="block text-gray-700 text-sm font-bold mr-2"
+                          className="block text-blue-700 text-sm font-bold mr-2"
                           htmlFor="email"
                         >
                           Email:
                         </label>
                         {student && (
-                          <p className="text-gray-800 text-lg">
+                          <p className="text-blue-800 text-lg">
                             {student.email}
                           </p>
                         )}
@@ -108,13 +108,13 @@ const StudentProfile = () => {
                       {/* Registration Number */}
                       <div className="flex items-center mb-4">
                         <label
-                          className="block text-gray-700 text-sm font-bold mr-2"
+                          className="block text-blue-700 text-sm font-bold mr-2"
                           htmlFor="regNumber"
                         >
                           Registration Number:
                         </label>
                         {student && (
-                          <p className="text-gray-800 text-lg">
+                          <p className="text-blue-800 text-lg">
                             {student.regNo}
                           </p>
                         )}

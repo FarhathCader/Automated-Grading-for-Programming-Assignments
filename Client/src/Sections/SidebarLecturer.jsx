@@ -410,8 +410,8 @@ const SidebarLecturer = () => {
           </div>
         ) : (
           <div className="flex justify-center items-center">
-            <h1 className="text-blue-400 font-bold text-3xl">Z</h1>
-            <span className="italic text-blue-200 text-3xl">C</span>
+            <h1 className="text-fuchsia-400 font-bold text-3xl">Z</h1>
+            <span className="italic text-fuchsia-200 text-3xl">C</span>
           </div>
         )}
         <div

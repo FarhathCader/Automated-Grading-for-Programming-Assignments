@@ -41,10 +41,10 @@ const LecturerProfile = () => {
   };
 
   return (
-    <main className="w-full bg-blue-200 h-screen flex justify-between items-start">
+    <main className="w-full h-screen flex justify-between items-start">
       <LecturerSidebar />
       <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-        <Header bgFuchsia={true} />
+        <Header bgColor="fuchsia" />
 
         {editProfile ? (
           <EditLectureProfile cancel={cancel} lecturer={lecturer} />
@@ -66,29 +66,29 @@ const LecturerProfile = () => {
                   <div className="w-full text-center mt-2">
                     <div className="flex justify-center lg:pt-4 pb-0">
                       <div className="w-full lg:w-1/2">
-                        <div className="bg-slate-100 p-8 rounded-lg mb-20 shadow-gray-700">
+                        <div className="bg-fuchsia-100 p-8 rounded-lg mb-20 shadow-fuchsia-700">
                           <h2 className="text-2xl font-bold text-fuchsia-800 mb-6">
                             Your Profile
                           </h2>
                           <div className="flex items-center mb-4">
                             <label
-                              className="block text-gray-700 text-sm font-bold mr-2"
+                              className="block text-fuchsia-700 text-sm font-bold mr-2"
                               htmlFor="name"
                             >
                               Name:
                             </label>
                             {lecturer && 
-                            <p className="text-gray-800 text-lg">{lecturer.username}</p>
+                            <p className="text-fuchsia-800 text-lg">{lecturer.username}</p>
                           }
                           </div>
                           <div className="flex items-center mb-6">
                             <label
-                              className="block text-gray-700 text-sm font-bold mr-2"
+                              className="block text-fuchsia-700 text-sm font-bold mr-2"
                               htmlFor="email"
                             >
                               Email:
                             </label>
-                           {lecturer && <p className="text-gray-800 text-lg">
+                           {lecturer && <p className="text-fuchsia-800 text-lg">
                               {lecturer.email}
                             </p>} 
                           </div>
