@@ -82,7 +82,7 @@ function App() {
 
   return (
     <Routes>
-        <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/dashboard_lec" />}>
+        <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
         <Route path="/dashboard_std" element={<StudentDashboard />} />
         <Route path="/available" element={<AvailableContest />} />
         <Route path="/completed" element={<CompletedContest />} />
@@ -93,10 +93,9 @@ function App() {
 
       </Route>
 
-      <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/dashboard_std" />}>
+      <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/" />}>
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
         <Route path="/qbank" element={<QuestionBank />} />
-        <Route path="/managelecturer" element={<ManageLecturers />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
         <Route path="/contest" element={<Contest/>}/>
 
