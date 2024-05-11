@@ -39,6 +39,8 @@ import useFetchUser from "./hooks/fetchUser";
 axios.defaults.withCredentials = true;
 import Contest from "./Pages/Lecturer/Contest";
 import EditLectureProfile from "./Pages/Lecturer/EditLecturerProfile";
+import ManageStudents from "./Pages/Admin/ManageStudents";
+import AdminProfile from "./Pages/Admin/AdminProfile";
 
 
 function App() {
@@ -104,6 +106,8 @@ function App() {
       <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
       <Route path="/admin" element={<AdminDashBoard />} />
       <Route path="/managelecturer" element={<ManageLecturers />} />
+      <Route path="/managestudent" element={<ManageStudents />} />
+      <Route path="/adminprofile" element={<AdminProfile />} />
       
 
       </Route>
