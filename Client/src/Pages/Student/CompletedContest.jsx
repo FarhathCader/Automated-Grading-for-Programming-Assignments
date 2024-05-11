@@ -1,14 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
 
 const CompletedContest = () => {
-    const contests = [
-        { name: "Contest 1", date: "2024-01-20", time: "9:00 AM" , grade:"65" },
-        { name: "Contest 2", date: "2024-02-23", time: "2:30 PM", grade:"85" },
-        { name: "Contest 3", date: "2024-02-28", time: "8:00 AM", grade:"100" },
-        { name: "Contest 4", date: "2024-03-05", time: "4:00 PM", grade:"70" },
-      ];
+  const [contests, setContests] = useState([]);
+  useEffect(() => {
+    fetchAvailableContests();
+  }, []);  
+  const fetchAvailableContests = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/contest");
+      if (!response.ok) {
+        throw new Error("Failed to fetch contests");
+      }
+      const data = await response.json();
+      const availableContests = data.contests.filter(contest => {
+        const currentDate = new Date();
+        const endDate = new Date(contest.endDate);
+        return currentDate > endDate;
+      });
+      setContests(availableContests);
+    } catch (error) {
+      console.error("Error fetching contests:", error);
+    }
+
+  };
+
+  const formatDuration = (minutes) => {
+    const days = Math.floor(minutes / (24 * 60));
+    const hours = Math.floor((minutes % (24 * 60)) / 60);
+    const mins = minutes % 60;
+
+    let durationString = '';
+
+    if (days > 0) {
+      durationString += `${days}d `;
+    }
+
+    if (hours > 0 || days > 0) {
+      durationString += `${hours}h `;
+    }
+
+    if (mins > 0 || (hours === 0 && days === 0)) {
+      durationString += `${mins}m`;
+    }
+
+    return durationString.trim();
+  };
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <Sidebar />
@@ -19,31 +58,37 @@ const CompletedContest = () => {
             Completed Contests
           </h2>
           <div className="w-full overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-blue-200">
-                  <th className="px-4 py-3 text-left text-blue-800">Name</th>
-                  <th className="px-4 py-3 text-left text-blue-800">Date</th>
-                  <th className="px-4 py-3 text-left text-blue-800">Time</th>
-                  <th className="px-4 py-3 text-left text-blue-800">Grade</th>
+          <table className="w-full">
+            <thead>
+              <tr className="bg-blue-200">
+                <th className="px-6 py-3 text-left text-blue-800">Name</th>
+                <th className="px-6 py-3 text-left text-blue-800">End Date</th>
+                <th className="px-6 py-3 text-left text-blue-800">Duration</th>
+                <th className="px-6 py-3 text-left text-blue-800">Problems</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contests.map((contest, index) => (
+                <tr
+                  key={index}
+                  className={
+                    index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"
+                  }
+                  onClick={()=>handleContestDetailsClick(contest._id)}
+                >
+                  <td className="px-6 py-4 text-blue-200">{contest.name}</td>
+                  <td className="px-6 py-4 text-blue-200">
+                  {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+
+                  </td>
+                  <td className="px-6 py-4 text-blue-200">
+                    {formatDuration(contest.duration)}
+                  </td>
+                  <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {contests.map((contest, index) => (
-                  <tr
-                    key={index}
-                    className={
-                      index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
-                    }
-                  >
-                    <td className="px-4 py-2 text-blue-200">{contest.name}</td>
-                    <td className="px-4 py-2 text-blue-200">{contest.date}</td>
-                    <td className="px-4 py-2 text-blue-200">{contest.time}</td>
-                    <td className="px-4 py-2 text-blue-200">{contest.grade}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
           </div>
         </div>
       </section>

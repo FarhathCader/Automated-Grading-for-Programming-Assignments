@@ -77,7 +77,8 @@ const AddContest = ({ onAdd }) => {
       return;
     }
     // Convert duration to minutes
-    const totalDurationMinutes = (durationDays * 24 * 60) + (durationHours * 60) + durationMinutes;
+    console.log(durationDays,durationHours,durationMinutes)
+    const totalDurationMinutes = (parseInt(durationDays) * 24 * 60) + (parseInt(durationHours) * 60) + parseInt(durationMinutes);
     // Create new contest object
     const newContest = {
       name,

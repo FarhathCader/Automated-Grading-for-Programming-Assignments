@@ -170,6 +170,11 @@ const AddProblem = () => {
       toast.error('Grade is required');
       return;
     }
+    const invalidTestCase = formData.testCases.find(testCase => testCase.weight <= 0);
+    if (invalidTestCase) {
+      toast.error('Test case weight must be greater than zero');
+      return;
+    }
 
     const url = id ? `http://localhost:4000/api/problems/${id}` : 'http://localhost:4000/api/problems';
     const method = id ? 'PUT' : 'POST';

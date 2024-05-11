@@ -17,7 +17,8 @@ const Practice = () => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/problems");
-        setProblems(response.data.problems);
+        const practiceProblems = response.data.problems.filter(problem => problem.category.toLowerCase() === 'practice');
+        setProblems(practiceProblems);
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
@@ -37,18 +38,21 @@ const Practice = () => {
                   { problems && <table className="w-3/5">
                         <thead>
                             <tr className="bg-blue-200">
-                                <th className="px-6 py-3 text-left text-blue-800">Question Name</th>
-                                <th className="px-6 py-3 text-left text-blue-800">Status</th>
+                                <th className="px-6 py-3 text-left text-blue-800">Problem Name</th>
+                                <th className="px-6 py-3 text-left text-blue-800">Difficulty</th>
+                                <th className="px-6 py-3 text-left text-blue-800">Grade</th>
                             </tr>
                         </thead>
                         <tbody>
                             {problems.map((problem, index) => (
                                 <tr
                                     key={index}
-                                    className={index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"}
+                                    className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-105" : "bg-blue-700 cursor-pointer hover:scale-105"}
+                                    onClick={() => navigate(`/problems/${problem._id}`)}
                                 >
                                     <td className="px-6 py-4 text-blue-200">{problem.name}</td>
                                     <td className="px-6 py-4 text-blue-200">{problem.difficulty}</td>
+                                    <td className="px-6 py-4 text-blue-200">{problem.grade}</td>
                               
                                 </tr>
                             ))}
