@@ -1,3 +1,4 @@
+const contest = require('../models/contest');
 const Contest = require('../models/contest')
 
 
@@ -24,7 +25,7 @@ async function addContest(req, res) {
     }
 }
 
-module.exports = { addContest };
+
 
 
 const getContests = async (req,res)=>{
@@ -55,73 +56,38 @@ async function deleteContest(req, res) {
     }
 }
 
-// const getProblem = async (req,res)=>{
-//     try{
-//         const problem = await Problem.findById(req.params.id.toString())
-//     console.log("getting problem",problem.name)
+const getContest = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const contest = await Contest.findById(id);
+      if (!contest) {
+        return res.status(404).json({ error: 'Contest not found' });
+      }
+      res.status(200).json({ contest });
+    } catch (error) {
+      console.error('Error fetching contest:', error);
+      res.status(500).json({ error: 'Failed to fetch contest' });
+    }
+  };
 
-//         return res.status(200).json({problem})
-//     }
-//     catch(err){
-//         return res.status(400).json({msg : err.message})
-//     }
-// }
 
-// const updateInitialCode = async (req, res) => {
-    
-//     try {
-//         // Find the problem by ID
-//         const problem = await Problem.findById(req.params.id);
-
-//         console.log("updateing",problem.name," problem")
-
-//         if (!problem) {
-//             return res.status(404).json({ msg: 'Problem not found' });
-//         }
-
-//         // Update initialCode and programmingLanguage if provided in the request body
-//         if (req.body.initialCode) {
-//             problem.initialCode = req.body.initialCode;
-//         }
-//         if (req.body.programmingLanguage) {
-//             problem.programmingLanguage = req.body.programmingLanguage;
-//         }
-
-//         // Save the updated problem
-//         await problem.save();
-
-//         // Return the updated problem in the response
-//         return res.status(200).json({ problem });
-//     } catch (err) {
-//         // Handle errors
-//         return res.status(400).json({ msg: err.message });
-//     }
-// };
-
-// const updateProblem = async (req, res) => {
-//     try {
-//       const { name, category, description, difficulty, testCases, grade, initialCode,examples} = req.body;
-//       console.log(req.body)
-//       const updatedProblem = await Problem.findByIdAndUpdate(
-//         req.params.id,
-//         {
-//           name,
-//           category,
-//           description,
-//           difficulty,
-//           testCases,
-//           grade,
-//           initialCode,
-//           examples,
-//         },
-//         { new: true, runValidators: true }
-//       );
-//       if (!updatedProblem) return res.status(404).json({ msg: "Problem not found" });
-//       return res.status(200).json({ problem: updatedProblem });
-//     } catch (err) {
-//       return res.status(400).json({ msg: err.message });
-//     }
-//   };
+const updateContest = async (req, res) => {
+    try {
+      const { name, startDate, endDate, duration, problems } = req.body;
+      console.log(req.body)
+      const updatedContest = await Contest.findByIdAndUpdate(
+        req.params.id,
+        {
+            name, startDate, endDate, duration, problems
+        },
+        { new: true, runValidators: true }
+      );
+      if (!updatedContest) return res.status(404).json({ msg: "Contest not found" });
+      return res.status(200).json({ contest: updatedContest });
+    } catch (err) {
+      return res.status(400).json({ msg: err.message });
+    }
+  };
   
 
-module.exports = {getContests,addContest,deleteContest}
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest}
