@@ -1,27 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Practice = () => {
-    const contests = [
-        { name: "Hello World", status: "Completed" },
-        { name: "Print Stars", status: "Not Completed" },
-        { name: "Fibonacci", status: "Try Again" },
-        { name: "Counting Bits", status: "Completed" },
-    ];
-        
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Completed":
-                return "bg-green-500 hover:bg-green-600";
-            case "Not Completed":
-                return "bg-red-500 hover:bg-red-600";
-            case "Try Again":
-                return "bg-yellow-500 hover:bg-yellow-600";
-            default:
-                return "";
-        }
+ 
+    
+    const [problems, setProblems] = useState([]);
+    const navigate = useNavigate();
+    useEffect(() => {
+      // Fetch questions from API
+      fetchQuestions();
+      console.log(problems)
+    }, []);
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/problems");
+        setProblems(response.data.problems);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
     };
+
+
 
     return (
         <main className="w-full h-screen flex justify-between items-start">
@@ -32,7 +34,7 @@ const Practice = () => {
                     <h2 className="text-xl italic font-semibold mb-4 text-blue-950 bg-blue-200 p-4 rounded">
                         Practice Makes Perfect
                     </h2>
-                    <table className="w-3/5">
+                  { problems && <table className="w-3/5">
                         <thead>
                             <tr className="bg-blue-200">
                                 <th className="px-6 py-3 text-left text-blue-800">Question Name</th>
@@ -40,25 +42,18 @@ const Practice = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {contests.map((contest, index) => (
+                            {problems.map((problem, index) => (
                                 <tr
                                     key={index}
                                     className={index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"}
                                 >
-                                    <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                                    <td className="px-6 py-4">
-                                        <button
-                                            className={`text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                                                getStatusColor(contest.status)
-                                            }`}
-                                        >
-                                            {contest.status}
-                                        </button>
-                                    </td>
+                                    <td className="px-6 py-4 text-blue-200">{problem.name}</td>
+                                    <td className="px-6 py-4 text-blue-200">{problem.difficulty}</td>
+                              
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </table>}
                 </div>
             </section>
         </main>
