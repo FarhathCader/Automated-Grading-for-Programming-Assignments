@@ -18,7 +18,8 @@ app.use("/api/sample", require("./routes/sample"));
 app.use("/api/user", require("./routes/userRoutes"));
 app.use("/api/student", require("./routes/studentRoutes"));
 app.use("/api/lecturer", require("./routes/lecturerRoutes"));
-
+app.use('/api/problems',require('./routes/problemRoutes'))
+app.use('/api/contest',require('./routes/contestRoutes'))
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

@@ -1,0 +1,75 @@
+const mongoose = require('mongoose')
+const problemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    difficulty: {
+        type: String,
+        required: true
+    },
+    category : {
+        type : String,
+        required: true
+    },
+    description: {
+        type: String,
+    },
+    initialCode : {
+        type : [
+            {
+                code : {
+                    type : String
+                },
+                language : {
+                    type: String
+                }
+            }
+        ]
+    },
+    //testcases has input and expected output
+    testCases: {
+        type: [
+            {
+                input : {
+                    type : String
+                },
+                expectedOutput:{
+                    type : String
+                },
+                isSample:{
+                    type:Boolean
+                },
+                weight : {
+                    type : Number
+                }
+            }
+        ],
+        default: []
+    },
+    //grade
+    grade : {
+        type : Number
+    },
+
+    examples:{
+        type:[
+            {
+                input:{
+                    type : String,
+                },
+                output:{
+                    type:String,
+                }
+                ,explanation :{
+                    type:String
+                }
+            }
+        ]
+    }
+
+    
+
+    })
+
+module.exports = mongoose.model('Problem',problemSchema)
