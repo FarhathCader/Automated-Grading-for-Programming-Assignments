@@ -2,7 +2,8 @@ import axios from 'axios'
 import { CODE_SNIPPETS, LANGUAGE_VERSIONS } from './constant';
 
 const API = axios.create({ 
-    baseURL: 'https://emkc.org/api/v2/piston' 
+    baseURL: 'https://emkc.org/api/v2/piston' ,
+    withCredentials: false,
 });
 
 
@@ -21,3 +22,18 @@ const response = await API.post('/execute', {
   
   return response.data;
 }
+
+export const runCode = async (language,sourceCode) => {
+  
+    const response = await API.post('/execute', {
+        language,
+        version : LANGUAGE_VERSIONS[language],
+        source: sourceCode,
+        files :[ {
+            "content" : sourceCode
+        }],
+        
+      })
+      
+      return response.data;
+    }

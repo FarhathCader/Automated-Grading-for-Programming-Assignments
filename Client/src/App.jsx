@@ -47,6 +47,8 @@ import ContestDetails from "./Pages/Lecturer/ContestDetails";
 import AddProblem from "./Pages/Lecturer/AddProblem";
 import CodingEditor from "./Components/CodingEditor";
 import CodeEditor from "./Components/CodeEditor";
+import Sample from "./Components/Sample";
+import ContestView from "./Pages/Student/ContestView";
 
 
 
@@ -98,6 +100,9 @@ function App() {
         <Route path="/practice" element={<Practice />} />
         <Route path="/profile_std" element={<StudentProfile />} />
         <Route path="/profile_std/edit" element={<EditStudentProfile />} />
+        <Route path='/problems/:id' element = {<CodeEditor/>}/>
+        <Route path="/contestview/:id" element={<ContestView/>} />
+
 
 
       </Route>

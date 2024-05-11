@@ -1,15 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
+import { useNavigate } from "react-router-dom";
 
 const AvailableContest = () => {
   // Dummy contest data
-  const contests = [
-    { name: "Contest 1", date: "2024-04-15", time: "10:00 AM" },
-    { name: "Contest 2", date: "2024-04-20", time: "2:00 PM" },
-    { name: "Contest 3", date: "2024-04-25", time: "3:30 PM" },
-    { name: "Contest 4", date: "2024-04-27", time: "4:30 PM" },
-  ];
+
+  const [contests, setContests] = useState([]);
+
+  const handleContestDetailsClick = (contestId) => {
+    navigate(`/contestview/${contestId}`);
+  };
+  const navigate = useNavigate();
+  useEffect(() => {
+    fetchAvailableContests();
+  }, []);  
+  
+  const fetchAvailableContests = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/contest");
+      if (!response.ok) {
+        throw new Error("Failed to fetch contests");
+      }
+      const data = await response.json();
+      const availableContests = data.contests.filter(contest => {
+        const currentDate = new Date();
+        const startDate = new Date(contest.startDate);
+        const endDate = new Date(contest.endDate);
+        return currentDate >= startDate && currentDate <= endDate;
+      });
+      setContests(availableContests);
+    } catch (error) {
+      console.error("Error fetching contests:", error);
+    }
+  };
+
+  const formatDuration = (minutes) => {
+    const days = Math.floor(minutes / (24 * 60));
+    const hours = Math.floor((minutes % (24 * 60)) / 60);
+    const mins = minutes % 60;
+
+    let durationString = '';
+
+    if (days > 0) {
+      durationString += `${days}d `;
+    }
+
+    if (hours > 0 || days > 0) {
+      durationString += `${hours}h `;
+    }
+
+    if (mins > 0 || (hours === 0 && days === 0)) {
+      durationString += `${mins}m`;
+    }
+
+    return durationString.trim();
+  };
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
@@ -24,8 +70,9 @@ const AvailableContest = () => {
             <thead>
               <tr className="bg-blue-200">
                 <th className="px-6 py-3 text-left text-blue-800">Name</th>
-                <th className="px-6 py-3 text-left text-blue-800">Date</th>
-                <th className="px-6 py-3 text-left text-blue-800">Time</th>
+                <th className="px-6 py-3 text-left text-blue-800">End Date</th>
+                <th className="px-6 py-3 text-left text-blue-800">Duration</th>
+                <th className="px-6 py-3 text-left text-blue-800">Problems</th>
               </tr>
             </thead>
             <tbody>
@@ -33,12 +80,19 @@ const AvailableContest = () => {
                 <tr
                   key={index}
                   className={
-                    index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
+                    index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"
                   }
+                  onClick={()=>handleContestDetailsClick(contest._id)}
                 >
                   <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                  <td className="px-6 py-4 text-blue-200">{contest.date}</td>
-                  <td className="px-6 py-4 text-blue-200">{contest.time}</td>
+                  <td className="px-6 py-4 text-blue-200">
+                  {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+
+                  </td>
+                  <td className="px-6 py-4 text-blue-200">
+                    {formatDuration(contest.duration)}
+                  </td>
+                  <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
                 </tr>
               ))}
             </tbody>

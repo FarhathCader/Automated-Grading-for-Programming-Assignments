@@ -75,26 +75,27 @@ export default function CodingEditor(props) {
  
   
   return (
-    <div className="flex flex-col md:flex-row justify-center items-start space-y-4 md:space-x-4">
-      <div className="w-full md:w-1/2 bg-gray-900 rounded-md p-4">
-        <div className="flex items-center justify-between mb-4">
-          <LanguageSelector language={language} onSelect={onSelect} />
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" onClick={handleReset}>Reset</button>
-        </div>
-        <Editor
-          height={'20vh'}
-          theme='vs-dark'
-          value={value}
-          onChange={handleCodeChange}
-          language={language}
-        />
+    <div className="flex flex-col -row justify-center items-start space-y-4 ">
+    <div className="w-full bg-gray-900 rounded-md p-4">
+      <div className="flex items-center justify-between mb-4">
+        <LanguageSelector language={language} onSelect={onSelect} />
+        <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" onClick={handleReset}>Reset</button>
       </div>
-      {showOutput && (
-        <div className="w-full md:w-1/2 bg-gray-900 rounded-md p-4">
-          <Output language={language} value={value} problem={problem} />
-        </div>
-      )}
+      <Editor
+        height={'20vh'}
+        theme='vs-dark'
+        value={value}
+        onChange={handleCodeChange}
+        language={language}
+      />
     </div>
+    {showOutput && (
+      <div className="w-full md:w-1/2 bg-transparent rounded-md p-4">
+        <Output language={language} value={value} problem={problem} />
+      </div>
+    )}
+  </div>
+  
   );
 
 }
