@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
+import { useNavigate } from "react-router-dom";
 
 const Contest = () => {
   const [contests, setContests] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchContests();
   }, []);
@@ -81,6 +82,18 @@ const Contest = () => {
     setContestToDelete(null);
     setShowConfirmation(false);
   };
+  const handleAddContestClick = () => {
+
+    navigate("/addcontest");
+  };
+
+  const handleEditContestClick = (contestId) => {
+    navigate(`/editcontest/${contestId}`);
+  };
+
+  const handleContestDetailsClick = (contestId) => {
+    navigate(`/contest/${contestId}`);
+  };
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
@@ -98,7 +111,8 @@ const Contest = () => {
               <FaSearch className="absolute top-3 left-3 text-gray-400" />
             </div>
             <div>
-              <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center">
+              <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+              onClick={handleAddContestClick}>
                 <FaPlus className="mr-2" /> Add Contest
               </button>
             </div>
@@ -121,12 +135,14 @@ const Contest = () => {
             <tbody>
               {contests.map((contest, index) => (
                 <tr
+                  
                   key={index}
                   className={
                     index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
                   }
                 >
-                  <td className="px-6 py-4 text-fuchsia-200">
+                  <td className="px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
+                  onClick={() => handleContestDetailsClick(contest._id)}>
                     {contest.name}
                   </td>
                   <td className="px-6 py-4 text-fuchsia-200">
@@ -136,7 +152,9 @@ const Contest = () => {
                     {formatDuration(contest.duration)}
                   </td>
                   <td className="px-6 py-4 flex">
-                    <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer" />
+                    <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
+                    onClick={() => handleEditContestClick(contest._id)}
+                    />
                     <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" 
                     onClick={() => handleDeleteConfirmation(contest._id)}
                     />
@@ -158,6 +176,7 @@ const Contest = () => {
           )}
         </div>
       </section>
+      
     </main>
   );
 };

@@ -39,6 +39,11 @@ import useFetchUser from "./hooks/fetchUser";
 axios.defaults.withCredentials = true;
 import Contest from "./Pages/Lecturer/Contest";
 import EditLectureProfile from "./Pages/Lecturer/EditLecturerProfile";
+import AddContest from "./Pages/Lecturer/AddContest";
+import ContestDetails from "./Pages/Lecturer/ContestDetails";
+import AddProblem from "./Pages/Lecturer/AddProblem";
+import CodingEditor from "./Components/CodingEditor";
+import CodeEditor from "./Components/CodeEditor";
 
 
 function App() {
@@ -98,6 +103,12 @@ function App() {
         <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
         <Route path="/contest" element={<Contest/>}/>
+        <Route path="/addcontest" element={<AddContest/>}/>
+        <Route path="/editcontest/:id" element={<AddContest />} />
+        <Route path="/contest/:id" element={<ContestDetails/>} />
+        <Route path="/problem" element={<QuestionBank/>}/>
+        <Route path="/addproblem" element={<AddProblem/>}/>
+        <Route path="/editproblem/:id" element={<AddProblem />} />
 
       </Route>
 
@@ -126,7 +137,7 @@ function App() {
         
       </Routes>
 
- 
+
 
   );
 }
