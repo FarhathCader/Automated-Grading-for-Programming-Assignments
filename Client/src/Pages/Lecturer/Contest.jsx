@@ -1,14 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 
 const Contest = () => {
-  const contests = [
-    { name: "Contest 1", date: "12/02/2024 | 09.30 AM - 10.30 AM", duration: "1hr" },
-    { name: "Contest 2", date: "21/02/2024 | 08.30 AM - 10.30 AM", duration: "2hr" },
-    { name: "Contest 3", date: "26/02/2024 | 11.00 AM - 11.30 AM", duration: "30mins" },
-  ];
+  const [contests, setContests] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [contestToDelete, setContestToDelete] = useState(null);
+
+  useEffect(() => {
+    fetchContests();
+  }, []);
+
+  const fetchContests = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/contest");
+      if (!response.ok) {
+        throw new Error("Failed to fetch contests");
+      }
+      const data = await response.json();
+      setContests(data.contests);
+    } catch (error) {
+      console.error("Error fetching contests:", error);
+    }
+  };
+
+  const formatDuration = (minutes) => {
+    const days = Math.floor(minutes / (24 * 60));
+    const hours = Math.floor((minutes % (24 * 60)) / 60);
+    const mins = minutes % 60;
+
+    let durationString = '';
+
+    if (days > 0) {
+      durationString += `${days}d `;
+    }
+
+    if (hours > 0 || days > 0) {
+      durationString += `${hours}h `;
+    }
+
+    if (mins > 0 || (hours === 0 && days === 0)) {
+      durationString += `${mins}m`;
+    }
+
+    return durationString.trim();
+  };
+
+  const deleteContest = async (contestId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/contest/${contestId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete contest");
+      }
+      // Remove the deleted contest from the state
+      setContests((prevContests) =>
+        prevContests.filter((contest) => contest._id !== contestId)
+      );
+    } catch (error) {
+      console.error("Error deleting contest:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (contestId) => {
+    setContestToDelete(contestId);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (contestToDelete) {
+      deleteContest(contestToDelete);
+      setContestToDelete(null);
+      setShowConfirmation(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setContestToDelete(null);
+    setShowConfirmation(false);
+  };
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarLecturer />
@@ -35,7 +108,7 @@ const Contest = () => {
               <tr className="bg-fuchsia-200">
                 <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
                 <th className="px-6 py-3 text-left text-fuchsia-800">
-                  Date & Time
+                  Deadline
                 </th>
                 <th className="px-6 py-3 text-left text-fuchsia-800">
                   Duration
@@ -57,19 +130,32 @@ const Contest = () => {
                     {contest.name}
                   </td>
                   <td className="px-6 py-4 text-fuchsia-200">
-                    {contest.date}
+                    {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                   </td>
                   <td className="px-6 py-4 text-fuchsia-200">
-                    {contest.duration}
+                    {formatDuration(contest.duration)}
                   </td>
                   <td className="px-6 py-4 flex">
                     <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer" />
-                    <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" />
+                    <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" 
+                    onClick={() => handleDeleteConfirmation(contest._id)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {showConfirmation && (
+            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-4 rounded shadow">
+                <p className="mb-4">Are you sure you want to delete this contest?</p>
+                <div className="flex justify-end">
+                  <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
+                  <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </main>
