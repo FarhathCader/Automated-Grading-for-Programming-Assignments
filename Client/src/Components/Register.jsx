@@ -30,7 +30,7 @@ const Signup = () => {
     setShowOtpInput(false);
   }, []);
 
-  
+ 
 
 
 
@@ -42,6 +42,7 @@ const handleSubmit = async (e) => {
   if (username === '' || email === '' || password === '' || cpassword === '') {
     toast.error('All fields are required');
   } else if (cpassword !== password) {
+
     toast.error('Passwords do not match');
   } else {
     console.log("usertype is ", state.usertype);
