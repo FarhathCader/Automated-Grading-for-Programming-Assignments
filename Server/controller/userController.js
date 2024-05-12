@@ -99,7 +99,7 @@ const signup = async (req,res)=>{
     try{
     const {username,email,password,usertype,OTP} = req.body;
     console.log(req.body);
-console.log(`OTP ${OTP} otp ${otp}`)
+    console.log(`OTP ${OTP} otp ${otp}`)
     hashedPassword = await bcrypt.hash(password,10);
 
     if(!OTP){
@@ -134,71 +134,6 @@ console.log(`OTP ${OTP} otp ${otp}`)
     
 }
 
-
-// const login = async (req,res)=>{
-
-//     const {email,password} = req.body;
-
-//         const user = await User.findOne({email : email.toLowerCase()});
-//         if(user && (await bcrypt.compare(password,user.password))){
-//             const token = jwt.sign(
-//                 {id : user._id }, 
-//             process.env.ACCESS_TOKEN,
-//             {
-//                 expiresIn: '1d'
-//             })
-
-            
-//             const cookie = req.headers.cookie;
-//             const Token = cookie && cookie.split('=')[1];
-
-//             if(cookie && Token){
-//                 console.log("cookie",cookie);
-//                 console.log("Token",Token);
-//                 jwt.verify(String(token),process.env.ACCESS_TOKEN,(err,decoded)=>{
-//                     if(!err){
-//                         console.log("decoded",decoded.id);
-//                         req.id = decoded.id;
-//                         res.clearCookie(String(req.id));
-//                         req.cookies[`${req.id}`] = '';
-                        
-                        
-//                     }
-         
-                  
-                   
-//                 })
-//             }
-
-//             res.cookie(String(user._id),token,{
-//                 path : '/',
-//                 httpOnly:true,
-//                 expires : new Date(Date.now() + 1000*60*60*24),
-//                 sameSite : 'lax'
-//             })
-
-           
-//             if(user.usertype === 'lecturer'){
-//                 return res.status(200).json({msg : "lecturer"}); // ?return added
-//             }
-//             else if(user.usertype === 'student'){
-//                 return res.status(200).json({msg : "student"});
-//             }
-//             else{
-//                 return res.status(200).json({msg : "admin"});
-//             }
-
-//         }
-    
-        
-//         else{
-       
-//            return res.status(400).json({error: "invalid email or password"});
-//         }
-        
-
-        
-// }
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -358,26 +293,6 @@ const refreshToken = async (req,res,next)=>{
 
 
 }
-
-
-// const getUser = async (req,res)=>{
-//     const userId = req.id;
-//     let user;
-//     try{
-//         user = await User.findById(userId,'-password');
-//     }catch(err){
-//         return res.status(400).json({error: err.message});
-//     }
-//     if(!user){
-//         return res.status(404).json({error: 'User not found'});
-//     }
-
-//     return res.status(200).json({user});
-// }
-
-
-
-
 
 
 const forgotPassword = 
