@@ -70,74 +70,6 @@ const handleSubmit = async (e) => {
   }, 1800); // Reset isRegistering to allow further submissions
 };
 
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (isRegistering) return; // Prevent multiple submissions
-  //   setIsRegistering(true); // Set isRegistering to true to prevent multiple submissions
-
-  //   if (username === '' || email === '' || password === '' || cpassword === '') {
-  //     toast.error('All fields are required');
-  //   } else if (cpassword !== password) {
-  //     toast.error('Passwords do not match');
-  //   } else {
-  //     console.log("usertype is ",state.usertype)
-     
-  //     const response = await fetch('http://localhost:4000/api/user/send', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ username, email, password,usertype:state.usertype})
-  //     });
-  //     const json = await response.json();
-  //     // console.log(json)
-  //     if (!response.ok) {
-  //       toast.error(json.error);
-  //     } else {
-  //       // toast("Registered Successfully", { type: "success" });
-  //       toast(json.msg)
-  //       // console.log(json)
-  //       // setOTP(json.otp);
-  //       setShowOtpInput(true);
-  //     }
-  //   }
-  //   setTimeout(() => {
-  //     setIsRegistering(false);
-  //     },1800) // Reset isRegistering to allow further submissions
-  // };
-
-  // const handleOTPSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if(isRegistering) return;
-  //   setIsRegistering(true);
-  //   const response = await fetch('http://localhost:4000/api/user/signup',
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({username,email,password, OTP,usertype : state.usertype })
-  //   })
-
-  //   const json = await response.json();
-  //   console.log(json)
-  //   if (!response.ok) {
-  //     toast.error(json.error);
-  //   }
-
-  //   else{
-  //     toast.success('OTP Verified');
-  //     setTimeout(() => {
-  //       navigate('/login'); // Navigate to the dashboard upon successful OTP verification
-  //     }, 1000);
-  //   }
-
-  //   setTimeout(() => {
-  //     setIsRegistering(false);
-  //     },1800)
-  // };
-
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
     if (isRegistering) return;
@@ -227,6 +159,7 @@ const handleSubmit = async (e) => {
               </div>
               <input
                 value={password}
+                data-testid = 'password'
                 onChange={(e) => { setPassword(e.target.value) }}
                 type="password"
                 placeholder="Password"
@@ -240,6 +173,7 @@ const handleSubmit = async (e) => {
               </div>
               <input
                 value={cpassword}
+                data-testid = 'confirm'
                 onChange={(e) => { setCpassword(e.target.value) }}
                 type="password"
                 placeholder="Confirm Password"
@@ -266,6 +200,7 @@ const handleSubmit = async (e) => {
             </form>
           )}
           <ToastContainer
+          data-testid = 'toast'
             position="top-right"
             autoClose={1000}
             hideProgressBar={false}
