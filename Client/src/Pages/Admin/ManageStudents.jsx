@@ -3,18 +3,28 @@ import Header from "../../Sections/Header";
 import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const ManageStudents = () => {
  
   const [students, setStudents] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {    
     fetchStudents();
   }, []);
 
   const fetchStudents = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:4000/api/student");
       if (response.ok) {
@@ -26,6 +36,9 @@ const ManageStudents = () => {
     }
     catch (error) {
       console.error(error);
+    }
+    finally {
+      setLoading(false);
     }
   }
   const deleteStudent = async (id) => {
@@ -64,9 +77,22 @@ const ManageStudents = () => {
   };
 
   return (
-    <main className="w-full h-screen flex justify-between items-start">
+    <main className="w-full h-screen flex justify-between items-start bg-green-100">
       <SidebarAdmin />
-      <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+   {
+      loading ?     (
+      
+        <div className="w-full flex justify-center items-center h-screen">
+              <ClipLoader
+                color="green"
+                loading={true}
+                size={150}
+                css={override}
+              />
+            </div>
+      
+      ):
+   <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgColor="green" />
         <div className="w-full max-w-screen-lg mx-auto flex items-center mt-6">
           <div className="relative flex-grow">
@@ -115,7 +141,7 @@ const ManageStudents = () => {
             </table>
           </div>
         </div>
-      </section>
+      </section>}
       {showConfirmation && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-4 rounded shadow">

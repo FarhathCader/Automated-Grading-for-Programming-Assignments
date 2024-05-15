@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import Header from "../../Sections/Header";
 import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { FaSearch, FaEdit, FaTrash, FaAdjust, FaToggleOff, FaToggleOn } from "react-icons/fa"; 
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const ManageLecturers = () => {
   
@@ -90,9 +98,24 @@ const ManageLecturers = () => {
 
 
   return (
-    <main className="w-full h-screen flex justify-between items-start">
+    <main className="w-full h-screen flex justify-between items-start bg-green-100">
       <SidebarAdmin />
-      <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+ {  
+      loading ?   (
+      
+        <div className="w-full flex justify-center items-center h-screen">
+              <ClipLoader
+                color="green"
+                loading={true}
+                size={150}
+                css={override}
+              />
+            </div>
+      
+      )
+      :
+
+    <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgColor="green" />
         <div className="w-full max-w-screen-lg mx-auto flex items-center mt-6">
           <div className="relative flex-grow">
@@ -120,10 +143,8 @@ const ManageLecturers = () => {
                     <td className="px-6 py-4 text-green-200">{lecturer.username}</td>
                     <td className="px-6 py-4 text-green-200">{lecturer.isApproved ? "Active" : "Inactive"}</td>
                     <td className="px-6 py-4 flex">
-                     {
-                        loading ?
-                        <FaAdjust className="mr-4 text-green-500 cursor-not-allowed" title="Loading..."/> :
-                         ( lecturer.isApproved ? 
+                   :
+                         {lecturer.isApproved ? 
                           <FaToggleOn
                             className="mr-4 text-green-500 hover:text-green-600 cursor-pointer"
                             onClick={() => toggleApprovalStatus(lecturer._id, lecturer.isApproved, lecturer.email)}
@@ -136,8 +157,8 @@ const ManageLecturers = () => {
                             disabled={loading}
                             title="Click to activate"
 
-                          />)
-                     }
+                          />}
+                     
                       
                       <FaTrash
                         className="text-red-500 hover:text-red-600 cursor-pointer"
@@ -150,7 +171,7 @@ const ManageLecturers = () => {
             </table>
           </div>
         </div>
-      </section>
+      </section>}
       {showConfirmation && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-4 rounded shadow">
