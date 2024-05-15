@@ -62,13 +62,13 @@ export default function CodeEditor() {
       <div className="mt-4">
         <p className="text-gray-800 font-semibold">Examples:</p>
         <ul className="list-disc list-inside">
-          {problem.examples.map((example, index) => (
-            <li key={index} className="mb-2 text-gray-700">
-              <strong>Input:</strong> {example.input}<br />
-              <strong>Output:</strong> {example.output}<br />
-              <strong>Explanation:</strong> {example.explanation}
-            </li>
-          ))}
+        {problem.examples.map((example, index) => (
+  <li key={index} className="mb-2 text-gray-700">
+    <strong>Input:</strong><pre className="whitespace-pre-wrap">{example.input}</pre>
+    <strong>Output:</strong><pre className="whitespace-pre-wrap">{example.output}</pre>
+    <strong>Explanation:</strong><pre className="whitespace-pre-wrap">{example.explanation}</pre>
+  </li>
+))}
         </ul>
       </div>
     )}
@@ -77,10 +77,11 @@ export default function CodeEditor() {
         <p className="text-gray-800 font-semibold">Sample Test Cases:</p>
         <ul className="list-disc list-inside">
           {sampleTestCases.map((testCase, index) => (
-            <li key={index} className="mb-2 text-gray-700">
-              <strong>Input:</strong> {testCase.input}<br />
-              <strong>Output:</strong> {testCase.expectedOutput}
-            </li>
+           <li key={index} className="mb-2 text-gray-700">
+           <strong>Input:</strong><pre className="whitespace-pre-wrap">{testCase.input}</pre>
+           <strong>Output:</strong><pre className="whitespace-pre-wrap">{testCase.expectedOutput}</pre>
+         </li>
+         
           ))}
         </ul>
       </div>

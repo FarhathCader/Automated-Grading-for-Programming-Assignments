@@ -225,7 +225,7 @@ const AddProblem = () => {
           <label className="block mb-1 text-sm font-medium text-gray-700">Test Case {index + 1}:</label>
           <div className="space-y-2">
             <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
-            <input
+            <textarea
               type="text"
               name="input"
               value={testCase.input}
@@ -235,7 +235,7 @@ const AddProblem = () => {
           </div>
           <div className="space-y-2">
             <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
-            <input
+            <textarea
               type="text"
               name={`expectedoutput`}
               value={testCase.expectedOutput}
@@ -281,7 +281,7 @@ const AddProblem = () => {
               <label className="block mb-1 text-sm font-medium text-gray-700">Example {index + 1}:</label>
               <div className="space-y-2">
                 <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
-                <input
+                <textarea
                   type="text"
                   name={`input`}
                   value={example.input}
@@ -291,7 +291,7 @@ const AddProblem = () => {
               </div>
               <div className="space-y-2">
                 <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
-                <input
+                <textarea
                   type="text"
                   name={`output`}
                   value={example.output}
@@ -301,7 +301,7 @@ const AddProblem = () => {
               </div>
               <div className="space-y-2">
                 <label className="block mb-1 text-sm font-medium text-gray-700">Explanation:</label>
-                <input
+                <textarea
                   type="text"
                   name={`explanation`}
                   value={example.explanation}
