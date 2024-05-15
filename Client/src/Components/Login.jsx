@@ -10,6 +10,15 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 axios.defaults.withCredentials = true;
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -135,7 +144,12 @@ const Login = () => {
               />
             </div>
             <button className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2">
-              Sign In
+              {isRegistering ?   <ClipLoader
+                color="cyan"
+                loading={true}
+                size={20}
+                css={override}
+              /> : "Sign In"}
             </button>
           </form>
           <ToastContainer

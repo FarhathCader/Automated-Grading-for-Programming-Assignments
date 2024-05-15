@@ -23,6 +23,7 @@ export default function Output(props) {
   };
 
   const runCodeWithInterval = async (input, expectedOutput, weight, index) => {
+    console.log("input,",input)
     setTimeout(async () => {
       const sourceCode = value;
       if (!sourceCode) return;
@@ -30,6 +31,7 @@ export default function Output(props) {
         setIsLoading(true);
         const response = await executeCode(sourceCode, language, input);
         let output = response.run.output;
+        console.log(output)
         console.log(response)
         if (output.endsWith('\n')) {
             output = output.slice(0, -1);
@@ -180,9 +182,10 @@ const handleSubmit = async () => {
       <div className='bg-gray-100 rounded-md p-4'>
         {results.map((result, index) => (
           <div key={index} className='mb-4'>
-            <p className='text-gray-700'><span className='font-semibold'>Input:</span> {result.input}</p>
-            <p className='text-gray-700'><span className='font-semibold'>Expected Output:</span> {result.expectedOutput}</p>
-            <p className='text-gray-700'><span className='font-semibold'>Output:</span> {result.output}</p>
+        <p className='text-gray-700'><span className='font-semibold'>Input:</span><pre className="whitespace-pre-wrap">{result.input}</pre></p>
+<p className='text-gray-700'><span className='font-semibold'>Expected Output:</span><pre className="whitespace-pre-wrap">{result.expectedOutput}</pre></p>
+<p className='text-gray-700'><span className='font-semibold'>Output:</span><pre className="whitespace-pre-wrap">{result.output}</pre></p>
+
             {result.error && <p className='text-red-600'><span className='font-semibold'>Error:</span> {result.output}</p>}
             {result.result && <p className='text-green-600'><span className='font-semibold'>Result:</span> {result.result}</p>}
             <hr className='my-2 border-gray-400' />

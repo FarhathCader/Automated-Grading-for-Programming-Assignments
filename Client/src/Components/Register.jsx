@@ -9,6 +9,14 @@ import { useNavigate,useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
+};
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,6 +28,7 @@ const Signup = () => {
   // const [otp, setOtp] = useState('');
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [OTP,setOTP] = useState('');
   const {state} = useLocation();
 
@@ -72,8 +81,8 @@ const handleSubmit = async (e) => {
 
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
-    if (isRegistering) return;
-    setIsRegistering(true);
+    if (isVerifying) return;
+    setIsVerifying(true);
   
     try {
       const response = await axios.post('http://localhost:4000/api/user/signup', {
@@ -97,7 +106,7 @@ const handleSubmit = async (e) => {
       toast.error(err.error);
     } finally {
       setTimeout(() => {
-        setIsRegistering(false);
+        setIsVerifying(false);
       }, 1800);
     }
   };
@@ -126,7 +135,8 @@ const handleSubmit = async (e) => {
           <p className="text-white text-opacity-70">
             Create your account. It's free and only takes a minute.
           </p>
-          <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
+
+         <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
             <div className="relative">
               <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
                 <FaUser />
@@ -182,9 +192,16 @@ const handleSubmit = async (e) => {
               />
             </div>
             <button className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2" disabled={showOtpInput}>
-              Register Now
+            {isRegistering ?   <ClipLoader
+                color="cyan"
+                loading={true}
+                size={20}
+                css={override}
+              /> : "Register Now"}
             </button>
           </form>
+      
+      
           {showOtpInput && (
             <form className="space-y-6 text-white" onSubmit={handleOTPSubmit}>
               <input
@@ -195,7 +212,12 @@ const handleSubmit = async (e) => {
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
               />
               <button type="submit" className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2">
-                Verify OTP
+              {isVerifying ?   <ClipLoader
+                color="cyan"
+                loading={true}
+                size={20}
+                css={override}
+              /> : "Verify OTP"}
               </button>
             </form>
           )}
