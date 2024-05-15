@@ -49,7 +49,7 @@ const LecturerDashBoard = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <SidebarLecturer />
+     {isApproved ?  <SidebarLecturer  /> : null}
      { 
      !loading ? 
     ( <section className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
@@ -62,7 +62,7 @@ const LecturerDashBoard = () => {
           </h1>
          
          {
-          !loading ? 
+          isApproved ? 
         ( <div className="mb-6 flex flex-col items-center justify-center">
             <p className="text-gray-600 text-lg mb-4">
               Explore the available contests or start practicing to sharpen your skills.

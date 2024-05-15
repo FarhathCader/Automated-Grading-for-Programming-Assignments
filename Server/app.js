@@ -19,6 +19,7 @@ app.use("/api/lecturer", require("./routes/lecturerRoutes"));
 app.use('/api/problems',require('./routes/problemRoutes'))
 app.use('/api/contest',require('./routes/contestRoutes'))
 app.use('/api/submission',require('./routes/submissionRoutes'))
+app.use('/api/admin',require('./routes/adminRoutes'))
 
 
 

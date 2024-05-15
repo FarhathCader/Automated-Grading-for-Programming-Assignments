@@ -2,13 +2,69 @@ import React from 'react';
 import Header from "../../Sections/Header";
 import Logo from "../../assets/Images/client.jpg";
 import SidebarAdmin from '../../Sections/SidebarAdmin';
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+
 
 
 const AdminProfile = () => {
+
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
+  
+  const user  = useSelector(state => state.user);
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    fetchAdmin();
+  }, [user]);
+  
+  const fetchAdmin = async () => {
+    setLoading(true);
+    try{
+      if(user._id === undefined) return;
+      const res = user && await axios.get(`http://localhost:4000/api/admin/${user._id}`);
+      const data = res && (await res.data);
+      if (data) {
+        setAdmin(data);
+      }
+
+
+    }
+    catch(err){
+      console.log("error",err.message)
+    }
+    finally{
+      setLoading(false);
+    }
+  
+  };
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarAdmin />
-      <div className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+    { 
+    loading  ?
+    (
+      
+      <div className="w-full flex justify-center items-center h-screen">
+            <ClipLoader
+              color="green"
+              loading={true}
+              size={150}
+              css={override}
+            />
+          </div>
+    
+    ):
+    ( <div className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgColor="green" />
         <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-green-900 w-full mb-6 shadow-lg rounded-xl">
           <div className="px-6">
@@ -38,7 +94,7 @@ const AdminProfile = () => {
                             >
                               Name:
                             </label>
-                            <p className="text-green-800 text-lg">Mohammed Musharraf</p>
+                           <p className="text-green-800 text-lg">{admin && admin.username}</p>
                           </div>
                           <div className="flex items-center mb-4">
                             <label
@@ -48,7 +104,7 @@ const AdminProfile = () => {
                               Email:
                             </label>
                             <p className="text-green-800 text-lg">
-                              mhdmusharraf.edu@gmail.com
+                              {admin && admin.email}
                             </p>
                           </div>
                         </div>
@@ -60,7 +116,7 @@ const AdminProfile = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
     </main>
   );
 }

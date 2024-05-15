@@ -8,6 +8,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 import classNames from "classnames";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 axios.defaults.withCredentials = true;
 
@@ -18,38 +26,6 @@ const Header = ({ bgColor }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch(); // Start with null to indicate loading
 
-  // useEffect(() => {
-  //   if (shouldLog.current) {
-  //     shouldLog.current = false;
-  //     const fetchData = async () => {
-  //       const res = await axios
-  //         .get("http://localhost:4000/api/user/user", { withCredentials: true })
-  //         .catch((err) => {
-  //           toast.error(err.response.data.error);
-  //           console.log("error is here", err);
-  //           // dispatch(authActions.logout())
-
-  //           setTimeout(() => {
-  //             navigate("/login");
-  //           }, 1000);
-  //         });
-  //       const data = res && (await res.data);
-  //       console.log(data)
-  //       if (data) setUser(data.user);
-
-  //       // setUser(data.user);
-  //     };
-  //     fetchData();
-
-  //     const reloadPageAfterFiveMinutes = () => {
-  //       setTimeout(() => {
-  //         window.location.reload();
-  //       }, 1000*60*60); // 5 minutes in milliseconds
-  //     };
-
-  //     reloadPageAfterFiveMinutes();
-  //   }
-  // }, []);
 
   return (
     <section
@@ -71,7 +47,7 @@ const Header = ({ bgColor }) => {
       </div>
       <div className="flex-grow flex justify-end items-center gap-4">
         <h1 className="text-lg font-semibold text-blue-900">
-          {user ? user.username : ""}
+          {user ? user.username : <ClipLoader color="blue" loading={true} size={150} css={override} />}
         </h1>
         <div className="w-12 h-12 rounded-full overflow-hidden">
           <img

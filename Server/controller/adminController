@@ -1,0 +1,22 @@
+const Admin = require('../models/admin');
+
+const getAdmin = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the student with the provided userId
+        const admin = await Admin.findOne({ userId });
+        console.log(userId);
+        if (!admin) {
+            console.log("no admin found")
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
+        // Return the student
+        res.status(200).json(admin);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports = { getAdmin};
