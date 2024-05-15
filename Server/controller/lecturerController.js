@@ -3,12 +3,12 @@ const User = require('../models/user');
 
 const updateLecturer = async (req, res) => {
     const { id } = req.params;
-
+    console.log(req.body)
     try {
         // Check if the provided email already exists in the database
 
         const lec = await Lecturer.findById(id);
-        const { email } = req.body;
+        const { email,isApproved } = req.body;
         const existingUser = await User.findOne({ email: email.toLowerCase() });
 
 
@@ -55,7 +55,50 @@ const getLecturer = async (req, res) => {
     }
 }
 
+const getLecturers = async (req, res) => {
+
+    try {
+        
+        const lecturers = await Lecturer.find();
+
+
+        if (!lecturers) {
+            console.log("no Lecturer found")
+            return res.status(404).json({ error: 'Lecturer not found' });
+        }
+
+        // Return the student
+        res.status(200).json(lecturers);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const deleteLecturer = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Find and delete the lecturer by ID
+        const deletedLecturer = await Lecturer.findByIdAndDelete(id);
+        if (!deletedLecturer) {
+            return res.status(404).json({ error: 'Lecturer not found' });
+        }
+
+        // Find and delete the user associated with the lecturer's email
+        const deletedUser = await User.findOneAndDelete({ email: deletedLecturer.email });
+        if (!deletedUser) {
+            console.log("User not found"); // Handle if the associated user is not found
+        }
+
+        res.status(200).json({ lecturer: deletedLecturer, user: deletedUser });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 module.exports = {
     updateLecturer,
-    getLecturer
+    getLecturer,
+    getLecturers,
+    deleteLecturer
 };

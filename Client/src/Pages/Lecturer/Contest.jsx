@@ -3,17 +3,27 @@ import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const Contest = () => {
   const [contests, setContests] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     fetchContests();
   }, []);
 
   const fetchContests = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:4000/api/contest");
       if (!response.ok) {
@@ -23,6 +33,9 @@ const Contest = () => {
       setContests(data.contests);
     } catch (error) {
       console.error("Error fetching contests:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -98,6 +111,19 @@ const Contest = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarLecturer />
+     {
+      loading ?  (
+      
+        <div className="w-full flex justify-center items-center h-screen">
+              <ClipLoader
+                color="red"
+                loading={true}
+                size={150}
+                css={override}
+              />
+            </div>
+      
+      ) : (
       <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
         <Header bgColor="fuchsia" />
         <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
@@ -176,7 +202,7 @@ const Contest = () => {
           )}
         </div>
       </section>
-      
+      )}
     </main>
   );
 };

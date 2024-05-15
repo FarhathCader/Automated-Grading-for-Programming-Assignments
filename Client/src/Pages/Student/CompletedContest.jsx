@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     fetchAvailableContests();
   }, []);  
   const fetchAvailableContests = async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:4000/api/contest");
       if (!response.ok) {
@@ -22,6 +32,9 @@ const CompletedContest = () => {
       setContests(availableContests);
     } catch (error) {
       console.error("Error fetching contests:", error);
+    }
+    finally{
+      setLoading(false);
     }
 
   };
@@ -51,7 +64,22 @@ const CompletedContest = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <Sidebar />
-      <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+      {
+        loading ? 
+        (
+      
+          <div className="w-full flex justify-center items-center h-screen">
+                <ClipLoader
+                  color="blue"
+                  loading={true}
+                  size={150}
+                  css={override}
+                />
+              </div>
+        
+        )
+        :
+        (<section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgColor="blue" />
         <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 overflow-x-auto">
           <h2 className="text-xl font-semibold mb-4 text-blue-950">
@@ -91,7 +119,7 @@ const CompletedContest = () => {
           </table>
           </div>
         </div>
-      </section>
+      </section>)}
     </main>
   );
 }

@@ -3,11 +3,20 @@ import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const Practice = () => {
  
     
     const [problems, setProblems] = useState([]);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
       // Fetch questions from API
@@ -15,6 +24,7 @@ const Practice = () => {
       console.log(problems)
     }, []);
     const fetchQuestions = async () => {
+        setLoading(true);
       try {
         const response = await axios.get("http://localhost:4000/api/problems");
         const practiceProblems = response.data.problems.filter(problem => problem.category.toLowerCase() === 'practice');
@@ -22,6 +32,9 @@ const Practice = () => {
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
+        finally{
+            setLoading(false);
+        }
     };
 
 
@@ -29,7 +42,21 @@ const Practice = () => {
     return (
         <main className="w-full h-screen flex justify-between items-start">
             <Sidebar />
-            <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+          {
+            loading ?
+            (
+      
+                <div className="w-full flex justify-center items-center h-screen">
+                      <ClipLoader
+                        color="blue"
+                        loading={true}
+                        size={150}
+                        css={override}
+                      />
+                    </div>
+              
+              ): 
+          ( <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
                 <Header bgColor="blue" />
                 <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
                     <h2 className="text-xl italic font-semibold mb-4 text-blue-950 bg-blue-200 p-4 rounded">
@@ -59,7 +86,7 @@ const Practice = () => {
                         </tbody>
                     </table>}
                 </div>
-            </section>
+            </section>)}
         </main>
     );
 };

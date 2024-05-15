@@ -1,36 +1,68 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../Sections/Header";
 import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { useState } from "react";
 
 const ManageStudents = () => {
-  const students = [
-    {
-      name: "M.M. Musharraf",
-      registration_no: "EG/2020/4080",
-      department: "Computer Engineering",
-    },
-    {
-      name: "M.F.R. Ahamed",
-      registration_no: "EG/2020/3807",
-      department: "Computer Engineering",
-    },
-    {
-      name: "M. Mushrif Rila",
-      registration_no: "EG/2020/4081",
-      department: "Electrical & Information Engineering",
-    },
-    {
-      name: "A.C.M. Farhad",
-      registration_no: "EG/2020/3923",
-      department: "Computer Engineering",
-    },
-    {
-      name: "M.A.M.S. Akram",
-      registration_no: "EG/2020/3810",
-      department: "Civil Engineering",
-    },
-  ];
+ 
+  const [students, setStudents] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState(null);
+
+  useEffect(() => {    
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/student");
+      if (response.ok) {
+        const data = await response.json();
+        setStudents(data);
+      } else {
+        throw new Error("Failed to fetch students");
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+  const deleteStudent = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/student/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete student");
+      }
+      // Remove the deleted lecturer from the state
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (id) => {
+    setStudentToDelete(id);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (studentToDelete) {
+      deleteStudent(studentToDelete);
+      setStudentToDelete(null);
+      setShowConfirmation(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setStudentToDelete(null);
+    setShowConfirmation(false);
+  };
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarAdmin />
@@ -55,30 +87,27 @@ const ManageStudents = () => {
                   <th className="px-6 py-3 text-left text-green-800">
                    Registration Number
                   </th>
-                  <th className="px-6 py-3 text-left text-green-800">
-                  Department
-                  </th>
+           
                   <th className="px-6 py-3 text-left text-green-800">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {students.map((student, index) => (
+                {students && students.map((student, index) => (
                   <tr
                     key={index}
                     className={index % 2 === 0 ? "bg-green-800" : "bg-green-700"}
                   >
-                    <td className="px-6 py-4 text-green-200">{student.name}</td>
+                    <td className="px-6 py-4 text-green-200">{student.username}</td>
                     <td className="px-6 py-4 text-green-200">
-                      {student.registration_no}
+                      {student.regNo}
                     </td>
-                    <td className="px-6 py-4 text-green-200">
-                      {student.department}
-                    </td>
+                  
                     
-                    <td className="px-6 py-4 flex">
-                      <FaEdit className="mr-4 text-blue-500 hover:text-blue-600 cursor-pointer" />{" "}
-                      {/* Adjusted margin-right to add more space */}
-                      <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" />
+                    <td className="px-10 py-4 flex ">
+                    <FaTrash
+                        className="text-red-500 hover:text-red-600 cursor-pointer"
+                        onClick={() => handleDeleteConfirmation(student._id)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -87,6 +116,17 @@ const ManageStudents = () => {
           </div>
         </div>
       </section>
+      {showConfirmation && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded shadow">
+            <p className="mb-4">Are you sure you want to delete this lecturer?</p>
+            <div className="flex justify-end">
+              <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
+              <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

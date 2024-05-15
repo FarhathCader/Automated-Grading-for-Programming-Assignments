@@ -57,7 +57,53 @@ const getStudent = async (req, res) => {
     }
 }
 
+const getStudents = async (req, res) => {
+   
+
+    try {
+        
+        // Find all students
+        const students = await Student.find({});
+
+
+        if (!students) {
+            console.log("no student found")
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Return the student
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const deleteStudent = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Find and delete the lecturer by ID
+        const deletedStudent = await Student.findByIdAndDelete(id);
+        if (!deletedStudent) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Find and delete the user associated with the lecturer's email
+        const deletedUser = await User.findOneAndDelete({ email: deletedStudent.email });
+        if (!deletedUser) {
+            console.log("User not found"); // Handle if the associated user is not found
+        }
+
+        res.status(200).json({ lecturer: deletedStudent, user: deletedUser });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 module.exports = {
     updateStudent,
-    getStudent
+    getStudent,
+    getStudents,
+    deleteStudent
 };

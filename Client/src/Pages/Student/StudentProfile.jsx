@@ -10,6 +10,14 @@ import client from "../../assets/Images/client.jpg";
 
 import { ToastContainer,toast } from 'react-toastify';
 import { useSelector } from "react-redux";
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 axios.defaults.withCredentials = true;
 
 const StudentProfile = () => {
@@ -25,16 +33,27 @@ const StudentProfile = () => {
 
 
     useEffect(() => {
-      const fetchStudent = async () => {
+      fetchStudent();
+    }, [user,editProfile]);
+
+    const fetchStudent = async () => {
+      setLoading(true);
+      try{
         if(user._id === undefined) return;
         const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
         const data = res && (await res.data);
         if (data) setStudent(data);
-        setTimeout(() => setLoading(false), 1000);
-  
-      };
-      fetchStudent();
-    }, [user,editProfile]);
+      }
+      catch(err){
+        console.log("error",err.message)
+      }
+      finally{
+        setLoading(false);
+      }
+
+    };
+
+   
 
 
 
@@ -51,7 +70,21 @@ const StudentProfile = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
   <Sidebar />
-  <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+  {
+    loading ?
+    (
+      
+      <div className="w-full flex justify-center items-center h-screen">
+            <ClipLoader
+              color="blue"
+              loading={true}
+              size={150}
+              css={override}
+            />
+          </div>
+    
+    ):
+    <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
     <Header bgColor="blue" />
     {editProfile ? (
           <EditStudentProfile cancel = {cancel} student = {student}  />
@@ -138,7 +171,7 @@ const StudentProfile = () => {
       </div>
     </div>
         )}
-  </div>
+  </div>}
   <ToastContainer />
 </main>
 
