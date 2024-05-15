@@ -1,15 +1,93 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../Sections/Header";
 import SidebarAdmin from "../../Sections/SidebarAdmin";
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa"; 
+import { FaSearch, FaEdit, FaTrash, FaAdjust, FaToggleOff, FaToggleOn } from "react-icons/fa"; 
 
 const ManageLecturers = () => {
-  // Dummy data for the table
-  const lecturers = [
-    { name: "Dr. Keerthi Gunawickrama", department: "Electrical & Information Engineering", position: "Senior Lecturer", status: "Active" },
-    { name: "Dr. Rajitha Udawalpola", department: "Electrical & Information Engineering", position: "Head, Senior Lecturer", status: "Inactive" },
-    { name: "Dr. Kushan Sudheera", department: "Electrical & Information Engineering", position: "Senior Lecturer", status: "Active" },
-  ];
+  
+  const [lecturers, setLecturers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [lecturerToDelete, setLecturerToDelete] = useState(null);
+
+  useEffect(() => {
+    fetchLecturers();
+  }, []);
+
+  const fetchLecturers = async () => {
+    setLoading(true); // Set loading to true when fetching data
+    try {
+      const response = await fetch("http://localhost:4000/api/lecturer");
+      if (response.ok) {
+        const data = await response.json();
+        setLecturers(data);
+      } else {
+        throw new Error('Failed to fetch lecturers');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false when data fetching is done
+    }
+  };
+
+  const toggleApprovalStatus = async (id, isApproved, email) => {
+    setLoading(true); // Set loading to true when updating data
+    try {
+      const response = await fetch(`http://localhost:4000/api/lecturer/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, isApproved: !isApproved }),
+      });
+      if (response.ok) {
+        // If successful, update the local state
+        fetchLecturers();
+      } else {
+        throw new Error('Failed to update approval status');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false when data updating is done
+    }
+  };
+  const deleteLecturer = async (lecturerId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/lecturer/${lecturerId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete lecturer");
+      }
+      // Remove the deleted lecturer from the state
+      setLecturers((prevLecturers) =>
+        prevLecturers.filter((lecturer) => lecturer._id !== lecturerId)
+      );
+    } catch (error) {
+      console.error("Error deleting lecturer:", error);
+    }
+  };
+
+  const handleDeleteConfirmation = (lecturerId) => {
+    setLecturerToDelete(lecturerId);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (lecturerToDelete) {
+      deleteLecturer(lecturerToDelete);
+      setLecturerToDelete(null);
+      setShowConfirmation(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setLecturerToDelete(null);
+    setShowConfirmation(false);
+  };
+
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
@@ -32,25 +110,39 @@ const ManageLecturers = () => {
               <thead>
                 <tr className="bg-green-200">
                   <th className="px-6 py-3 text-left text-green-800">Name</th>
-                  <th className="px-6 py-3 text-left text-green-800">Department</th>
-                  <th className="px-6 py-3 text-left text-green-800">Position</th>
                   <th className="px-6 py-3 text-left text-green-800">Status</th>
                   <th className="px-6 py-3 text-left text-green-800">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {lecturers.map((lecturer, index) => (
-                  <tr
-                    key={index}
-                    className={index % 2 === 0 ? "bg-green-800" : "bg-green-700"}
-                  >
-                    <td className="px-6 py-4 text-green-200">{lecturer.name}</td>
-                    <td className="px-6 py-4 text-green-200">{lecturer.department}</td>
-                    <td className="px-6 py-4 text-green-200">{lecturer.position}</td>
-                    <td className="px-6 py-4 text-green-200">{lecturer.status}</td>
+                  <tr key={index} className={index % 2 === 0 ? "bg-green-800" : "bg-green-700"}>
+                    <td className="px-6 py-4 text-green-200">{lecturer.username}</td>
+                    <td className="px-6 py-4 text-green-200">{lecturer.isApproved ? "Active" : "Inactive"}</td>
                     <td className="px-6 py-4 flex">
-                      <FaEdit className="mr-4 text-blue-500 hover:text-blue-600 cursor-pointer" /> {/* Adjusted margin-right to add more space */}
-                      <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" />
+                     {
+                        loading ?
+                        <FaAdjust className="mr-4 text-green-500 cursor-not-allowed" title="Loading..."/> :
+                         ( lecturer.isApproved ? 
+                          <FaToggleOn
+                            className="mr-4 text-green-500 hover:text-green-600 cursor-pointer"
+                            onClick={() => toggleApprovalStatus(lecturer._id, lecturer.isApproved, lecturer.email)}
+                            disabled={loading}
+                            title="Click to deactivate"
+                          /> : 
+                          <FaToggleOff
+                            className="mr-4 text-green-500 hover:text-green-600 cursor-pointer"
+                            onClick={() => toggleApprovalStatus(lecturer._id, lecturer.isApproved, lecturer.email)}
+                            disabled={loading}
+                            title="Click to activate"
+
+                          />)
+                     }
+                      
+                      <FaTrash
+                        className="text-red-500 hover:text-red-600 cursor-pointer"
+                        onClick={() => handleDeleteConfirmation(lecturer._id)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -59,6 +151,17 @@ const ManageLecturers = () => {
           </div>
         </div>
       </section>
+      {showConfirmation && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded shadow">
+            <p className="mb-4">Are you sure you want to delete this lecturer?</p>
+            <div className="flex justify-end">
+              <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
+              <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

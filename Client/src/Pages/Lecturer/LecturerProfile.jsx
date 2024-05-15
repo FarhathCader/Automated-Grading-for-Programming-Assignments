@@ -7,6 +7,14 @@ import EditLectureProfile from "./EditLecturerProfile";
 import axios from "axios";
 import { useSelector } from "react-redux";
 axios.defaults.withCredentials = true;
+import ClipLoader from "react-spinners/ClipLoader";
+import {  CSSProperties } from "react";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const LecturerProfile = () => {
 
@@ -14,10 +22,12 @@ const LecturerProfile = () => {
   const user  = useSelector(state => state.user);
   const [editProfile, setEditProfile] = useState(false);
   const [lecturer,setLecturer] = useState(null);
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
     const fetchLecturer = async () => {
+      setLoading(true);
       try{
         if(user._id === undefined) return;
         const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
@@ -26,6 +36,9 @@ const LecturerProfile = () => {
       }
       catch(err){
         console.log("error",err.message)
+      }
+      finally{
+        setLoading(false);
       }
   
     };
@@ -46,7 +59,23 @@ const LecturerProfile = () => {
       <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         <Header bgColor="fuchsia" />
 
-        {editProfile ? (
+        {
+          loading ? 
+            (
+      
+              <div className="w-full flex justify-center items-center h-screen">
+                    <ClipLoader
+                      color="red"
+                      loading={true}
+                      size={150}
+                      css={override}
+                    />
+                  </div>
+            
+            )
+            :
+        
+        (editProfile ? (
           <EditLectureProfile cancel={cancel} lecturer={lecturer} />
         ) : (
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
@@ -106,7 +135,7 @@ const LecturerProfile = () => {
             </div>
           </div>
         </div>
-        )}
+        ))}
   
       </div>
     </main>
