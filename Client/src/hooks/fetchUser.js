@@ -15,8 +15,6 @@ const useFetchUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
 
-      console.log("fetching user")
-      console.log("first render",firstRender)
 
    
         try {

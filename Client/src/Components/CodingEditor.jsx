@@ -18,12 +18,10 @@ export default function CodingEditor(props) {
 
   useEffect(() => {
    
-    console.log("initial code changed",language,initialCode)
     if(initialCode && initialCode.length > 0) { // If codes array is not present in localStorage
     // if(localStorage.getItem('codes') === null)localStorage.setItem('codes', JSON.stringify(initialCode));
     localStorage.setItem('codes', JSON.stringify(initialCode));
     const index = initialCode.findIndex(item => item.language === language);
-    console.log("code and index",initialCode,index)
     setValue(initialCode[index].code);
     setLanguage(initialCode[index].language);
 
@@ -47,7 +45,6 @@ export default function CodingEditor(props) {
   }, [language]);
   
   const handleCodeChange = (newValue) => {
-    console.log("code changed")
     setValue(newValue);
     const storedCodes = JSON.parse(localStorage.getItem('codes')) || [];
     const updatedCodes = storedCodes.map((code) => {
