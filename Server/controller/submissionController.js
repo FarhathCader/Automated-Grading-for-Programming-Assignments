@@ -17,4 +17,19 @@ const postSubmission = async (req, res) => {
     }
 }
 
-module.exports = {postSubmission}
+const getSubmission = async (req, res) => {
+    try{
+        //get a problem with given userid and problem id
+        const {userId, problemId} = req.body;
+        const submission = await Submission.find({userId, problemId});
+        console.log(submission);
+        return res.status(200).json({submission});
+    }
+    catch(err){
+        return res.status(400).json({error : err.message})
+    }
+}
+
+        
+
+module.exports = {postSubmission,getSubmission}

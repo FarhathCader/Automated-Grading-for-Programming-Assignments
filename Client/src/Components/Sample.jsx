@@ -1,35 +1,59 @@
-import React, { useState } from 'react'
-import { runCode } from '../api'
+import React, { useEffect, useState } from 'react'
 
 export default function Sample() {
 
-    const [code,setCode] = useState("hello")
+    const [count, setCount] = useState(0);
+    const [percentage, setPercentage] = useState(0);
+    const [totalWeight, setTotalWeight] = useState(0);
+    const [passedWeight, setPassedWeight] = useState(0);
+    const [problemGrade, setProblemGrade] = useState(0);
+    const [passedPercentage, setPassedPercentage] = useState(0);
+    const [finalProblemGrade, setFinalProblemGrade] = useState(0);
 
-    const handleChange = (e) => {
-        setCode(e.target.value)
+    const handleClcik = () => {
+        setCount(prevCount => prevCount + 1)
+        console.log(count)
+    }
+    const finalGrade = (passedPercentage, problemGrade) => {
+        return (passedPercentage / 100) * problemGrade;
+      };
+
+    const submit = () => {
+        setTotalWeight(prevWeight => prevWeight + 5);
+        setPassedWeight(prev => prev + 5);
+        setProblemGrade(prev => prev + 5);
     }
 
-    const handleSubmit = () => {
-        console.log("Submitted")
-    }
+    const grading = () => {
+        const passedPercentage_ = totalWeight ? (passedWeight / totalWeight) * 100 : 0;
+        const finalProblemGrade_ = finalGrade(passedPercentage_, problemGrade);
+        setPassedPercentage(passedPercentage_);
+        setFinalProblemGrade(finalProblemGrade_);
+    
+      }
+
+      useEffect(() => {
+        console.log("total weight and passed weight changed", totalWeight, passedWeight)
+        grading();
+      }, [totalWeight, passedWeight]);
+
+    useEffect(() => {
+        console.log("useEffect called",count)
+        setPercentage(count * 10)
+        
+    }, [count])
+
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <h4 className="text-lg font-semibold mb-4">Code Editor</h4>
-      <textarea
-        className="w-full h-40 resize-none border border-gray-300 rounded-md p-2"
-        value={code}
-        onChange={handleChange}
-        placeholder="Write your code here..."
-      ></textarea>
-      <div className="flex justify-end mt-4">
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded-md"
-          onClick={handleSubmit}
-        >
-          Submit Code
-        </button>
-      </div>
+    <div>
+
+        {/* <h1>{count}</h1>
+        <button onClick={handleClcik}>Increment</button>
+        <h1>{percentage}</h1> */}
+        <h1>passedPercentage {passedPercentage}</h1>
+        <h1>finalProblemGrade {finalProblemGrade}</h1>
+        <button onClick={submit}>Submit</button>
+      
     </div>
   )
 }

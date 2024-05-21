@@ -47,8 +47,8 @@ import ContestDetails from "./Pages/Lecturer/ContestDetails";
 import AddProblem from "./Pages/Lecturer/AddProblem";
 import CodingEditor from "./Components/CodingEditor";
 import CodeEditor from "./Components/CodeEditor";
-import Sample from "./Components/Sample";
 import ContestView from "./Pages/Student/ContestView";
+import Sample from "./Components/Sample";
 
 
 
@@ -147,7 +147,6 @@ function App() {
    
         
       </Routes>
-
 
 
   );
