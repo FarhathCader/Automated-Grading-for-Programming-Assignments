@@ -1,24 +1,31 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useState ,useEffect} from 'react';
 import axios from 'axios';
 import CodingEditor from './CodingEditor';
 import TestCaseContext from '../Contexts/TestCaseContext';
+import NavbarSubmission from './NavbarSubmission';
+import { useSelector } from 'react-redux';
+import SubmissionResult from './SubmissionResult';
 
 export default function CodeEditor() {
 
-    const {id} = useParams();
+  const { contestId, problemId } = useParams();
     const [problem,setProblem] = useState({});
     const [sampleTestCases,setSampleTestCases] = useState([]);
     const [allTestCases,setAllTestCases] = useState([]);
-   
+    const [viewSubmission, setViewSubmission] = useState(false);
+    const user = useSelector(state => state.user);
+    const navigate = useNavigate();
+
     
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`http://localhost:4000/api/problems/${id}`);
+          const response = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
           const data = response.data;
           setProblem(data.problem);
+          
           // Filter sample test cases and store them in sampleTestCases state
           if (data.problem.testCases) {
             const sampleCases = data.problem.testCases.filter(testCase => testCase.isSample);
@@ -30,16 +37,36 @@ export default function CodeEditor() {
         }
       };
       fetchData();
-    }, [id]);
+    }, [problemId]);
+
+    useEffect(() => {
+      console.log("user problem contest",user._id,problemId,contestId)
+    },[user._id,problemId,contestId]);
 
     const updateInitialCode = (newInitialCode) => {
       setProblem({ ...problem, initialCode: newInitialCode });
     };
 
+    const handleNavigation = (p) => {
+      if(p === 'submission') {
+        setViewSubmission(true);
+      }
+      else {
+        setViewSubmission(false);
+      }
+    };
+
 
     return (
         <div className='mx-auto px-4 py-8 flex flex-col justify-center items-start space-x-4'>
-         <div className="w-full bg-gray-50 rounded-lg shadow-md p-6">
+            <div className="w-full"> {/* Added w-full class to make the Navbar take full width */}
+    <NavbarSubmission handleNavigation = {handleNavigation} viewSubmission=  {viewSubmission}/>
+  </div>
+       {viewSubmission ? (
+      <div className="w-full"> {/* Ensure full width when viewing submission */}
+      <SubmissionResult userId={user._id} problemId={problemId} contestId={contestId}/>
+    </div>
+       ):  <div className="w-full bg-gray-50 rounded-lg shadow-md p-6 my-6">
   <h3 className="text-lg font-semibold mb-4 text-center">{problem.name}</h3>
   <div className="flex justify-between">
     <div>
@@ -88,8 +115,8 @@ export default function CodeEditor() {
     )}
   </div>
 </div>
-
-          <div className='w-full'>
+}
+        {!viewSubmission && <div className='w-full'>
             {problem && (
               <TestCaseContext.Provider value={{ sampleTestCases, allTestCases }}>
                 <CodingEditor
@@ -97,10 +124,11 @@ export default function CodeEditor() {
                   onUpdateInitialCode={updateInitialCode}
                   showOutput={true}
                   problem={problem}
+                  contestId={contestId}
                 />
               </TestCaseContext.Provider>
             )}
-          </div>
+          </div>}
         </div>
       );
 }

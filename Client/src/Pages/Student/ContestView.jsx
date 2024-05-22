@@ -76,7 +76,7 @@ const ContestView = () => {
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {problems.map((problem, index) => (
         <div key={index} className="bg-white rounded-lg shadow-md p-4 hover:bg-blue-100 transition duration-300 cursor-pointer"
-        onClick={() => navigate(`/problems/${problem._id}`)}
+        onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
         >
           <header className="mb-4">
             <h4 className="text-lg font-semibold">{problem.name}</h4>
@@ -90,7 +90,7 @@ const ContestView = () => {
           </div>
           <div className="flex justify-end">
             <button className="bg-blue-500 text-white py-2 px-4 rounded-md"
-            onClick={() => navigate(`/problems/${problem._id}`)}
+            onClick={() =>  navigate(`/contests/${id}/problems/${problem._id}`)}
             >Solve Problem</button>
           </div>
         </div>
