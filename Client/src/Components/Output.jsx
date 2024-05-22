@@ -4,9 +4,8 @@ import TestCaseContext from '../Contexts/TestCaseContext';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ClipLoader from "react-spinners/ClipLoader";
 import SyncLoader from 'react-spinners/SyncLoader';
-import { CSSProperties } from "react";
+import axios from 'axios';
 
 const override = {
   display: "block",
@@ -16,7 +15,7 @@ const override = {
 
 export default function Output(props) {
   const { sampleTestCases, allTestCases } = useContext(TestCaseContext);
-  const { value, language, problem } = props;
+  const { value, language, problem,contestId } = props;
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [display, setDisplay] = useState(false);
@@ -27,7 +26,7 @@ export default function Output(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passedPercentage, setPassedPercentage] = useState(0);
   const [finalProblemGrade, setFinalProblemGrade] = useState(0);
-  const [shouldSubmit, setShouldSubmit] = useState(false)
+  const [shouldSubmit, setShouldSubmit] = useState(false);
 
   const user = useSelector(state => state.user);
 
@@ -35,61 +34,10 @@ export default function Output(props) {
     return (pass / 100) * grade;
   };
 
-  // const runCodeWithInterval = async (input, expectedOutput, weight, index) => {
-  //   console.log("input,", input)
-  //   setTimeout(async () => {
-  //     const sourceCode = value;
-  //     if (!sourceCode) return;
-  //     try {
-  //       setIsLoading(true);
-  //       const response = await executeCode(sourceCode, language, input);
-  //       let output = response.run.output;
-  //       console.log(output)
-  //       console.log(response)
-  //       if (output.endsWith('\n')) {
-  //         output = output.slice(0, -1);
-  //       }
-
-  //       const result = expectedOutput === output ? '✅' : '❌';
-  //       setResults(prevResults => [
-  //         ...prevResults,
-  //         { input, expectedOutput, output, result, weight }
-  //       ]);
-  //       setDisplay(true);
-  //       if (result === '✅') {
-  //         setPassedWeight(prevPassedWeight => prevPassedWeight + weight);
-  //       }
-  //     } catch (error) {
-  //       setResults(prevResults => [
-  //         ...prevResults,
-  //         { input, expectedOutput, output: error.message, error: true, weight }
-  //       ]);
-  //       setDisplay(true);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }, index * 1000);
-  // };
-
-  // const runAllCodeWithInterval = () => {
-  //   setIsRunning(true);
-  //   setResults([]);
-  //   let totalWeight = 0;
-  //   sampleTestCases.forEach((testCase, index) => {
-  //     totalWeight += testCase.weight;
-  //     runCodeWithInterval(testCase.input, testCase.expectedOutput, testCase.weight, index);
-  //   });
-  //   setTotalWeight(totalWeight);
-  //   setPassedWeight(0); // Reset passed weight
-  //   setTimeout(() => {
-  //     setIsRunning(false);
-  //   }, sampleTestCases.length * 1000);
-  // };
-
   useEffect(() => {
     setResults([]);
     setDisplay(false);
-    setProblemGrade(problem.grade); // Update problem grade
+    setProblemGrade(problem.grade); 
   }, [value, language, problem.grade]);
 
   useEffect(() => {
@@ -99,12 +47,16 @@ export default function Output(props) {
   useEffect(() => {
     if (shouldSubmit) {
       console.log("sending submission");
-      sendSubmission(grading());
+      const testCases = allTestCases.map(testCase => ({
+        input: testCase.input,
+        expectedOutput: testCase.expectedOutput,
+        weight: testCase.weight
+      }));
+      const status = grading() === problem.grade;
+      sendSubmission(grading(), testCases, results,status);
       setShouldSubmit(false);
-
     }
-  }, [shouldSubmit,finalProblemGrade]);
-
+  }, [shouldSubmit, finalProblemGrade, results]);
 
   const grading = () => {
     const passedPercentage_ = totalWeight ? (passedWeight / totalWeight) * 100 : 0;
@@ -143,13 +95,12 @@ export default function Output(props) {
       ]);
       setDisplay(true);
     } finally {
-    
       setIsLoading(false);
-
-
     }
   };
+
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   const runAllCodeWithInterval = async () => {
     console.log("All code running started");
     setIsRunning(true);
@@ -191,29 +142,35 @@ export default function Output(props) {
       console.log("All code submission finished");
     }
   };
-  
-  const sendSubmission = async (grade) => {
-    console.log("sending submission with",passedWeight,totalWeight,grade);
+  const sendSubmission = async (grade, testCases, results,status) => {
+    console.log("sending submission with", passedWeight, totalWeight, grade,status);
     try {
-      const response = await fetch('http://localhost:4000/api/submission/', {
-        method: 'POST',
+
+      const response = await axios.post('http://localhost:4000/api/submission/', {
+        problemId: problem._id, // Assuming problem object contains _id
+        code: value,
+        language: language,
+        grade: grade,
+        userId: user._id, // Assuming user object contains _id
+        status,
+        submittedAt: new Date(),
+        testCases: testCases,
+        results: results,
+        contestId:contestId,
+      }, {
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          problemId: problem._id, // Assuming problem object contains _id
-          code: value,
-          language: language,
-          grade,
-          userId: user._id, // Assuming user object contains _id
-        }),
+        }
       });
-      const data = await response.json();
+
+      const data = response.data;
+      console.log('Submission saved successfully:', data);
+      toast.success('Submission saved successfully!');
     } catch (error) {
       toast.error('Error saving submission:');
+      console.log('Error saving submission:', error)
     } finally {
       setIsSubmitting(false);
-      toast.success('Submission saved successfully!');
     }
   };
 
@@ -229,38 +186,67 @@ export default function Output(props) {
 
   return (
     <div className='flex flex-col space-y-4'>
-      <div className='flex justify-between items-center'>
-        <button className='bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600' type='button' onClick={runAllCodeWithInterval} disabled={isRunning}>
+      <div className='flex justify-between items-center space-x-4'>
+        <button
+          className='bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600'
+          type='button'
+          onClick={runAllCodeWithInterval}
+          disabled={isRunning}>
           {isRunning ? 'Running...' : 'RUN'}
         </button>
-        <button className='bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600' type='button' onClick={handleSubmit} disabled={isSubmitting}>
+        <button
+          className='bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600'
+          type='button'
+          onClick={handleSubmit}
+          disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'SUBMIT'}
         </button>
-        <h1>{totalWeight}</h1>
-        <h1>{passedWeight}</h1>
       </div>
       {isLoading && <p className='text-gray-700'>Running...</p>}
       {display && (
-        <div className='bg-gray-100 rounded-md p-4'>
+        <div className='bg-gray-100 rounded-md p-4 max-h-80 overflow-y-auto'>
           {results.map((result, index) => (
             <div key={index} className='mb-4'>
-              <pre className='text-gray-700'><span className='font-semibold'>Input:</span><pre className="whitespace-pre-wrap">{result.input}</pre></pre>
-              <pre className='text-gray-700'><span className='font-semibold'>Expected Output:</span><pre className="whitespace-pre-wrap">{result.expectedOutput}</pre></pre>
-              <pre className='text-gray-700'><span className='font-semibold'>Output:</span><pre className="whitespace-pre-wrap">{result.output}</pre></pre>
+              <div className='mb-2'>
+                <span className='font-semibold text-gray-700'>Input:</span>
+                <pre className="whitespace-pre-wrap">{result.input}</pre>
+              </div>
+              <div className='mb-2'>
+                <span className='font-semibold text-gray-700'>Expected Output:</span>
+                <pre className="whitespace-pre-wrap">{result.expectedOutput}</pre>
+              </div>
+              <div className='mb-2'>
+                <span className='font-semibold text-gray-700'>Output:</span>
+                <pre className="whitespace-pre-wrap">{result.output}</pre>
+              </div>
 
-              {result.error && <p className='text-red-600'><span className='font-semibold'>Error:</span> {result.output}</p>}
-              {result.result && <p className='text-green-600'><span className='font-semibold'>Result:</span> {result.result}</p>}
+              {result.error && (
+                <p className='text-red-600'>
+                  <span className='font-semibold'>Error:</span> {result.output}
+                </p>
+              )}
+              {result.result && (
+                <p className='text-green-600'>
+                  <span className='font-semibold'>Result:</span> {result.result}
+                </p>
+              )}
               <hr className='my-2 border-gray-400' />
             </div>
           ))}
-          {!isRunning && display && <p className='text-gray-700'>Passed Percentage: {passedPercentage}%</p>}
-          {!isRunning && display && <p className='text-gray-700'>Final Grade: {finalProblemGrade}</p>}
+          {!isRunning && display && (
+            <>
+              <p className='text-gray-700'>Passed Percentage: {passedPercentage}%</p>
+              <p className='text-gray-700'>Final Grade: {finalProblemGrade}</p>
+            </>
+          )}
         </div>
       )}
       <ToastContainer position="top-right" autoClose={200} />
-      {isSubmitting && <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
-        <SyncLoader color="green" loading={true} size={20} cssOverride={override} />
-      </div>}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
+          <SyncLoader color="green" loading={true} size={20} cssOverride={override} />
+        </div>
+      )}
     </div>
   );
 }

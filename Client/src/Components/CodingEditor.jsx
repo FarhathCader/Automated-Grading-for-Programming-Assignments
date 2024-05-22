@@ -5,7 +5,7 @@ import LanguageSelector from './LanguageSelector'
 import { CODE_SNIPPETS } from '../constant';
 import Output from './Output';
 export default function CodingEditor(props) {
-  const {initialCode,onUpdateInitialCode,showOutput,problem} = props  
+  const {initialCode,onUpdateInitialCode,showOutput,problem,contestId} = props  
   const [language,setLanguage] = useState(`javascript`);
   const [value,setValue] = useState(``); 
   const onSelect = (language)=> {
@@ -88,7 +88,7 @@ export default function CodingEditor(props) {
     </div>
     {showOutput && (
       <div className="w-full md:w-1/2 bg-transparent rounded-md p-4">
-        <Output language={language} value={value} problem={problem} />
+        <Output language={language} value={value} problem={problem}  contestId={contestId}/>
       </div>
     )}
   </div>

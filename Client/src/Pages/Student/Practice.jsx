@@ -21,7 +21,6 @@ const Practice = () => {
     useEffect(() => {
       // Fetch questions from API
       fetchQuestions();
-      console.log(problems)
     }, []);
     const fetchQuestions = async () => {
         setLoading(true);

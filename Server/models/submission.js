@@ -5,10 +5,10 @@ const submissionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    // userId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true
-    // },
+    contestId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Contest'
+    },
     code: {
         type: String,
         required: true
@@ -17,38 +17,35 @@ const submissionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
-    userId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
-        required : true
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    // status: {
-    //     type: String,
-    //     required: true
-    // },
-    // testCases: {
-    //     type: [
-    //         {
-    //             input: {
-    //                 type: String
-    //             },
-    //             expectedOutput: {
-    //                 type: String
-    //             },
-    //             output: {
-    //                 type: String
-    //             },
-    //             status: {
-    //                 type: String
-    //             }
-    //         }
-    //     ],
-    //     default: []
-    // },
+    status: {
+        type: Boolean,
+        required: true
+    },
     grade: {
         type: Number
-    }
+    },
+    submittedAt: {
+        type: Date,
+        default: Date.now
+    },
+    testCases: [{
+        input: String,
+        expectedOutput: String,
+        weight: Number
+    }],
+    results: [{
+        input: String,
+        expectedOutput: String,
+        output: String,
+        result: String,
+        weight: Number,
+        error: Boolean
+    }]
 });
 
 module.exports = mongoose.model('Submission', submissionSchema);

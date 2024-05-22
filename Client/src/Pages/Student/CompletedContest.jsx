@@ -3,6 +3,7 @@ import Sidebar from "../../Sections/Sidebar";
 import Header from "../../Sections/Header";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const override = {
   display: "block",
@@ -13,6 +14,7 @@ const override = {
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     fetchAvailableContests();
   }, []);  
@@ -60,7 +62,9 @@ const CompletedContest = () => {
 
     return durationString.trim();
   };
-
+  const handleContestDetailsClick = (contestId) => {
+    navigate(`/contestview/${contestId}`);
+  };
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <Sidebar />

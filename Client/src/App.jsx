@@ -49,6 +49,8 @@ import CodingEditor from "./Components/CodingEditor";
 import CodeEditor from "./Components/CodeEditor";
 import ContestView from "./Pages/Student/ContestView";
 import Sample from "./Components/Sample";
+import SubmissionResult from "./Components/SubmissionResult";
+// import NavbarSubmission from "./Components/NavbarSubmission";
 
 
 
@@ -57,51 +59,20 @@ function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
 
-
-
-  // useEffect(() => {
-  //   // Dispatch action to update auth state when component mounts
-  //   // const storedAuth = localStorage.getItem('isLoggedin');
-  //   // const storedUserType = localStorage.getItem('userType');
-  //   // const storedUser = localStorage.getItem('user');
-
-  //   const fetchUser = async () => {
-  //     console.log("fetching user  ")
-  //     try{
-  //       const res =  await axios.get('http://localhost:4000/api/user/user',null,{withCredentials: true});
-  //       const data =  await res.data;
-  //       console.log("user is ",data.user)
-  //       if(data.user){
-  //         console.log("logging in")
-  //         dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user}));
-  //       }
-  //       }
-  //       catch(err){
-  //         // console.log("error is",err.response.data.error)
-  //         console.log("logged out")
-  //         dispatch(authActions.logout());
-  //       }
-  
-  //   }
-
-  //   fetchUser();
- 
-    
-  // }, [dispatch]);
-
   useFetchUser();
 
   return (
     <Routes>
-        <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
+      <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
         <Route path="/dashboard_std" element={<StudentDashboard />} />
         <Route path="/available" element={<AvailableContest />} />
         <Route path="/completed" element={<CompletedContest />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/profile_std" element={<StudentProfile />} />
         <Route path="/profile_std/edit" element={<EditStudentProfile />} />
-        <Route path='/problems/:id' element = {<CodeEditor/>}/>
-        <Route path="/contestview/:id" element={<ContestView/>} />
+        <Route path='/problems/:problemId' element={<CodeEditor />} />
+        <Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
+        <Route path="/contestview/:id" element={<ContestView />} />
 
 
 
@@ -111,22 +82,22 @@ function App() {
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
         <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
-        <Route path="/contest" element={<Contest/>}/>
-        <Route path="/addcontest" element={<AddContest/>}/>
+        <Route path="/contest" element={<Contest />} />
+        <Route path="/addcontest" element={<AddContest />} />
         <Route path="/editcontest/:id" element={<AddContest />} />
-        <Route path="/contest/:id" element={<ContestDetails/>} />
-        <Route path="/problem" element={<QuestionBank/>}/>
-        <Route path="/addproblem" element={<AddProblem/>}/>
+        <Route path="/contest/:id" element={<ContestDetails />} />
+        <Route path="/problem" element={<QuestionBank />} />
+        <Route path="/addproblem" element={<AddProblem />} />
         <Route path="/editproblem/:id" element={<AddProblem />} />
 
       </Route>
 
       <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
-      <Route path="/admin" element={<AdminDashBoard />} />
-      <Route path="/managelecturer" element={<ManageLecturers />} />
-      <Route path="/managestudent" element={<ManageStudents />} />
-      <Route path="/adminprofile" element={<AdminProfile />} />
-      
+        <Route path="/admin" element={<AdminDashBoard />} />
+        <Route path="/managelecturer" element={<ManageLecturers />} />
+        <Route path="/managestudent" element={<ManageStudents />} />
+        <Route path="/adminprofile" element={<AdminProfile />} />
+
 
       </Route>
 
@@ -141,12 +112,8 @@ function App() {
 
         <Route path="/user" element={<Mycomponent />} />
 
-        </Route>
-        
-
-   
-        
-      </Routes>
+      </Route>
+    </Routes>
 
 
   );
