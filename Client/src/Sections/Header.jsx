@@ -10,6 +10,7 @@ import { authActions } from "../store";
 import classNames from "classnames";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import logo from "../assets/Images/profile.jpg";
 
 const override = {
   display: "block",
@@ -24,9 +25,40 @@ const Header = ({ bgColor }) => {
   const navigate = useNavigate();
   // const [user, setUser] = useState(null);
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch(); // Start with null to indicate loading
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [client_, setClient] = useState(logo);
 
+  useEffect(() => {
+    fecthImage();
+  }, [user]);
 
+  const handleNavigate = () => {
+    console.log("user",user)
+    if (user.usertype === "student") {
+      navigate("/profile_std");
+    } else if (user.usertype === "lecturer") {
+      navigate("/profile_lec");
+    } else if (userType === "admin") {
+      navigate("/adminprofile");
+    }
+  }
+
+  const fecthImage = async () => {
+    setLoading(true);
+    try {
+      if(user._id === undefined) return;
+      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const data = await res.data;
+      if (data) {
+        setClient(data.image.url);
+      }
+    } catch (error) {
+      console.log("error", error.message);
+    }finally{
+      setLoading(false);
+    }
+  };
   return (
     <section
       className={classNames(
@@ -50,11 +82,15 @@ const Header = ({ bgColor }) => {
           {user ? user.username : <ClipLoader color="blue" loading={true} size={150} css={override} />}
         </h1>
         <div className="w-12 h-12 rounded-full overflow-hidden">
-          <img
-            src={client}
+          {
+            loading ? <ClipLoader color="blue" loading={true} size={50} css={override} />:
+            <img
+          onClick={handleNavigate}
+
+            src={client_}
             alt="client-image"
-            className="w-full h-full object-cover"
-          />
+            className="w-full h-full object-cover cursor-pointer"
+          />}
         </div>
       </div>
       <ToastContainer />

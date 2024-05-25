@@ -244,7 +244,7 @@ export default function Output(props) {
       <ToastContainer position="top-right" autoClose={200} />
       {isSubmitting && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
-          <SyncLoader color="green" loading={true} size={20} cssOverride={override} />
+          <SyncLoader color="green" loading={true} size={20} css={override} />
         </div>
       )}
     </div>
