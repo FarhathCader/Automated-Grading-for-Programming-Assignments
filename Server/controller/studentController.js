@@ -40,6 +40,7 @@ const updateStudent = async (req, res) => {
 
 const getStudent = async (req, res) => {
     const { userId } = req.params;
+    console.log(userId)
 
     try {
         // Find the student with the provided userId

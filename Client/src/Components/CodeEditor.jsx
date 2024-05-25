@@ -7,6 +7,12 @@ import TestCaseContext from '../Contexts/TestCaseContext';
 import NavbarSubmission from './NavbarSubmission';
 import { useSelector } from 'react-redux';
 import SubmissionResult from './SubmissionResult';
+import MoonLoader from 'react-spinners/MoonLoader';
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 export default function CodeEditor() {
 
@@ -15,12 +21,15 @@ export default function CodeEditor() {
     const [sampleTestCases,setSampleTestCases] = useState([]);
     const [allTestCases,setAllTestCases] = useState([]);
     const [viewSubmission, setViewSubmission] = useState(false);
+    const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.user);
     const navigate = useNavigate();
 
     
     useEffect(() => {
+
       const fetchData = async () => {
+        setLoading(true);
         try {
           const response = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
           const data = response.data;
@@ -34,6 +43,9 @@ export default function CodeEditor() {
           }
         } catch (error) {
           console.error('Error fetching problem details:', error);
+        }
+        finally {
+          setLoading(false);
         }
       };
       fetchData();
@@ -128,7 +140,14 @@ export default function CodeEditor() {
                 />
               </TestCaseContext.Provider>
             )}
-          </div>}
+          </div>
+          
+          }
+             {loading && (
+        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
+          <MoonLoader color="blue" loading={true} size={220} css={override} />
+        </div>
+      )}
         </div>
       );
 }
