@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { ToastContainer,toast } from 'react-toastify';
+import { authActions } from "../../store";
 
 const override = {
   display: "block",
@@ -21,6 +23,25 @@ const LecturerDashBoard = () => {
   const [lecturer, setLecturer] = useState(null);
   const [loading, setLoading] = useState(true);
   const user  = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/api/user/logout', null, { withCredentials: true });
+      const data = response.data;
+      if (response.status === 200) {
+        toast.success(data.msg);
+        dispatch(authActions.logout());
+      } else {
+        toast.error(data.response.data.error);
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("An error occurred during logout.");
+      dispatch(authActions.logout())
+
+    }
+  };
 
   useEffect(() => {
     fetchLecturer();
@@ -81,9 +102,17 @@ const LecturerDashBoard = () => {
             </div>
           </div>):
            (
+            <div className="flex flex-col items-center">
             <div className="bg-yellow-200 text-yellow-800 p-4 mb-4 rounded-md">
               Your account is awaiting approval from the admin. Please wait until you are approved to access your dashboard.
             </div>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 focus:outline-none"
+            >
+              Logout
+            </button>
+          </div>
           )
           }
         </div>
@@ -104,6 +133,18 @@ const LecturerDashBoard = () => {
       
       )
     }
+     <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
     </main>
   );
 };

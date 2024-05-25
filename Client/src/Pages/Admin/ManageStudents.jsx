@@ -145,7 +145,7 @@ const ManageStudents = () => {
       {showConfirmation && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-4 rounded shadow">
-            <p className="mb-4">Are you sure you want to delete this lecturer?</p>
+            <p className="mb-4">Are you sure you want to delete this student?</p>
             <div className="flex justify-end">
               <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
               <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
