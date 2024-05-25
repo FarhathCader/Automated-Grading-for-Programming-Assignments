@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import LecturerSidebar from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
-import Logo from "../../assets/Images/client.jpg";
+import client_ from "../../assets/Images/profile.jpg";
 import { useNavigate } from "react-router-dom";
 import EditLectureProfile from "./EditLecturerProfile";
 import axios from "axios";
@@ -23,27 +23,48 @@ const LecturerProfile = () => {
   const [editProfile, setEditProfile] = useState(false);
   const [lecturer,setLecturer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState(client_);
 
 
   useEffect(() => {
-    const fetchLecturer = async () => {
-      setLoading(true);
-      try{
-        if(user._id === undefined) return;
-        const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
-        const data = res && (await res.data);
-        if (data) setLecturer(data);
-      }
-      catch(err){
-        console.log("error",err.message)
-      }
-      finally{
-        setLoading(false);
-      }
-  
-    };
     fetchLecturer();
+    fecthImage();
   }, [user,editProfile]);
+
+  const fetchLecturer = async () => {
+    setLoading(true);
+    try{
+      if(user._id === undefined) return;
+      const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
+      const data = res && (await res.data);
+      if (data) setLecturer(data);
+    }
+    catch(err){
+      console.log("error",err.message)
+    }
+    finally{
+      setLoading(false);
+    }
+
+  };
+
+  const fecthImage = async () => {
+    console.log("fecthingImage")
+    setLoading(true);
+    try {
+      if(user._id === undefined) return;
+      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const data = await res.data;
+      if (data) {
+        setClient(data.image.url);
+      }
+    } catch (error) {
+      console.log("error", error.message);
+    }finally{
+      setLoading(false);
+    }
+  };
+
 
   const handleProfile = () => {
     setEditProfile(true);
@@ -56,8 +77,6 @@ const LecturerProfile = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <LecturerSidebar />
-      <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-        <Header bgColor="fuchsia" />
 
         {
           loading ? 
@@ -76,15 +95,20 @@ const LecturerProfile = () => {
             :
         
         (editProfile ? (
-          <EditLectureProfile cancel={cancel} lecturer={lecturer} />
+          <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+          <EditLectureProfile cancel={cancel} lecturer={lecturer} logo={client}  />
+          </div>
         ) : (
+          <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+        <Header bgColor="fuchsia" />
+
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
           <div className="px-6">
             <div className="flex-grow flex flex-col items-center justify-start">
               <div className="w-full flex justify-center mt-4">
                 <div className="relative rounded-full overflow-hidden">
                   <img
-                    src={Logo}
+                    src={client}
                     className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32"
                     alt="Lecturer Profile"
                   />
@@ -135,9 +159,10 @@ const LecturerProfile = () => {
             </div>
           </div>
         </div>
+        </div>
         ))}
   
-      </div>
+    
     </main>
   );
 };

@@ -4,7 +4,15 @@ import Feed from "../../Sections/Feed";
 import Logo from "../../assets/Images/client.jpg";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from "react";
+import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import SyncLoader from "react-spinners/ClipLoader";
 
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 import { ToastContainer,toast } from 'react-toastify';
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -13,6 +21,13 @@ const EditLectureProfile = (props) => {
 
   const [username,setUsername] = useState(props.lecturer.username);
   const [email,setEmail] = useState(props.lecturer.email);
+  const lecturer = props.lecturer;
+  const userId = lecturer.userId;
+  const logo = props.logo;
+  const [uploading, setUploading] = useState(false);
+  const [upload, setUpload] = useState(false);
+  const [image, setImage] = useState(logo);
+  const url = "http://localhost:4000/api/image"
 
   const save = async () => {
 
@@ -52,19 +67,92 @@ const EditLectureProfile = (props) => {
 
   }
 
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    setFileToBase(file);
+    setUpload(true);
+  }
+
+  const setFileToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImage(reader.result);
+    }
+
+  }
+
+  const uploadImage = async (image) => {
+    setUploading(true);
+    try {
+      const res = await axios.post(url, { image, userId });
+      const data = await res.data;
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+    finally {
+      setUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!upload) return;
+    uploadImage(image);
+    setUpload(false);
+  }
+    , [image])
+
+
+
+  const handleUploadButtonClick = () => {
+    const fileInput = document.getElementById('formupload');
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
+  const handleDeleteButtonClick = async() => {
+    setUploading(true);
+    try {
+      const res = await axios.delete(`http://localhost:4000/api/image/${userId}`);
+      const data = await res.data;
+      if (res.status === 200) {
+        setImage(Logo);
+        toast.success('Image Deleted Successfully');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    finally {
+      setUploading(false);
+    }
+
+  };
+
+
   return (
     <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
     <div className="px-6">
       <div className="flex-grow flex flex-col items-center justify-start">
-        <div className="w-full flex justify-center mt-4">
-          <div className="relative rounded-full overflow-hidden">
-            <img
-              src={Logo}
-              className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32"
-              alt="Lecturer Edit Profile"
-            />
+      <div className="flex-column mt-4" >
+            <div className="relative overflow-hidden">
+              <input onChange={handleImage} type="file" id="formupload" name="image" style={{ display: 'none' }} />
+              <label htmlFor="formupload">
+                <img
+                  src={image}
+                  alt="hello"
+                  className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32 cursor-pointer"
+                />
+              </label>
+
+            </div>
+
+            <div className="flex mt-4 justify-between">
+              <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl" onClick={handleUploadButtonClick} />
+              <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl" onClick={handleDeleteButtonClick} />
+            </div>
           </div>
-        </div>
         <div className="w-full text-center mt-10">
           <div className="flex justify-center lg:pt-4  pb-0">
             <div className="w-full text-center mt-2">
@@ -121,6 +209,11 @@ const EditLectureProfile = (props) => {
           </div>
         </div>
       </div>
+      {uploading && (
+        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
+          <SyncLoader color="red" loading={true} size={120} css={override} />
+        </div>
+      )}
     </div>
     <ToastContainer
             position="top-right"
