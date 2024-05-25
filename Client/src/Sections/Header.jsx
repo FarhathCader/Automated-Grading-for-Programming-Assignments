@@ -34,12 +34,11 @@ const Header = ({ bgColor }) => {
   }, [user]);
 
   const handleNavigate = () => {
-    console.log("user",user)
     if (user.usertype === "student") {
       navigate("/profile_std");
     } else if (user.usertype === "lecturer") {
       navigate("/profile_lec");
-    } else if (userType === "admin") {
+    } else if (user.usertype === "admin") {
       navigate("/adminprofile");
     }
   }
