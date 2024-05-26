@@ -42,9 +42,18 @@ const ContestView = () => {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [enr, setEnr] = useState({});
-  const[solved, setSolved] = useState(false);
-  
+  const [totalGrade, setTotalGrade] = useState(0);
 
+  const fetchTotalGrade = async () => {
+    try {
+      if(user._id === undefined || id === undefined) return;
+      const response = await axios.get(`http://localhost:4000/api/submission/${user._id}/${id}/total-grade`);
+      const data = response.data.totalGrade;
+      setTotalGrade(data);
+    } catch (error) {
+      console.error("Error fetching total grade:", error);
+    }
+  };
 
   const fetchCreatedTime = async () => {
     setLoading(true);
@@ -132,6 +141,7 @@ const ContestView = () => {
   useEffect(() => {
     if (user && contest) {
       fetchCreatedTime();
+      fetchTotalGrade();
     }
   }, [user, contest]);
 
@@ -146,7 +156,7 @@ const ContestView = () => {
       {contest && enr && <CountDown contestDuration={contest.duration} enrollmentCreatedAt={enr} />}
       {loading ? (
         <div className="flex justify-center bg-white p-8 rounded-lg shadow-xl">
-          <ClipLoader color="blue" loading={true} size={150} css={override} />
+          <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
         </div>
       ) : (
         <div className="bg-white p-8 rounded-lg shadow-xl">
@@ -169,6 +179,10 @@ const ContestView = () => {
               <p className="text-gray-600">Duration:</p>
               <p className="text-gray-800">{formatDuration(contest.duration)}</p>
             </div>
+            <div>
+              <p className="text-gray-600">Total Grade:</p>
+              <p className="text-gray-800">{parseFloat(totalGrade).toFixed(2)}</p>
+            </div>
           </div>
 
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -189,18 +203,12 @@ const ContestView = () => {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  {/* <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                  <button
+                    className={`bg-${problem.solved ? 'green' : 'blue'}-500 text-white py-2 px-4 rounded-md`}
                     onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
                   >
-                    Solve Problem
-                  </button> */}
-                 <button
-  className={`bg-${problem.solved ? 'green' : 'blue'}-500 text-white py-2 px-4 rounded-md`}
-  onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
->
-  {problem.solved ? 'Solved' : 'Solve Problem'}
-</button>
+                    {problem.solved ? 'Solved' : 'Solve Problem'}
+                  </button>
                 </div>
               </div>
             ))}

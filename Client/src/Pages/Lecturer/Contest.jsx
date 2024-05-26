@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaPlus, FaEdit, FaTrash, FaFilePdf } from "react-icons/fa";
+import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
-import jsPDF from "jspdf";
 import GeneratePdf from "./GeneratePdf";
 
 const override = {
@@ -19,6 +18,7 @@ const Contest = () => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
+  const [contestToEnd, setContestToEnd] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -81,6 +81,32 @@ const Contest = () => {
     }
   };
 
+  const endContest = async (contestId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/contest/${contestId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ endDate: new Date().toISOString() }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to end contest");
+      }
+      // Update the contest's end date in the state
+      setContests((prevContests) =>
+        prevContests.map((contest) =>
+          contest._id === contestId ? { ...contest, endDate: new Date().toISOString() } : contest
+        )
+      );
+    } catch (error) {
+      console.error("Error ending contest:", error);
+    }
+    finally {
+      window.location.reload();
+    }
+  };
+
   const handleDeleteConfirmation = (contestId) => {
     setContestToDelete(contestId);
     setShowConfirmation(true);
@@ -94,8 +120,22 @@ const Contest = () => {
     }
   };
 
-  const handleCancelDelete = () => {
+  const handleEndConfirmation = (contestId) => {
+    setContestToEnd(contestId);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmEnd = () => {
+    if (contestToEnd) {
+      endContest(contestToEnd);
+      setContestToEnd(null);
+      setShowConfirmation(false);
+    }
+  };
+
+  const handleCancelAction = () => {
     setContestToDelete(null);
+    setContestToEnd(null);
     setShowConfirmation(false);
   };
 
@@ -114,16 +154,6 @@ const Contest = () => {
   const handleShowCompletedClick = () => {
     setShowCompleted((prevShowCompleted) => !prevShowCompleted);
   };
-
-  const handleGeneratePdfClick = (contest) => {
-    const doc = new jsPDF();
-    doc.text(`Contest Name: ${contest.name}`, 10, 10);
-    doc.text(`Start Date: ${new Date(contest.startDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 10, 20);
-    doc.text(`End Date: ${new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 10, 30);
-    doc.text(`Duration: ${formatDuration(contest.duration)}`, 10, 40);
-    doc.save(`${contest.name}.pdf`);
-  };
-  
 
   const currentTimestamp = new Date().getTime();
 
@@ -197,19 +227,25 @@ const Contest = () => {
                       <td className="px-6 py-4 text-fuchsia-200">
                         {formatDuration(contest.duration)}
                       </td>
-                      <td className="px-6 py-4 flex">
+                      <td className="px-6 py-4 flex items-center gap-4">
                         {showCompleted ? (
                           <GeneratePdf contest={contest} />
                         ) : (
                           <>
-                            <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
+                            <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl"
                               onClick={() => handleEditContestClick(contest._id)}
                             />
-                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer"
-                              onClick={() => handleDeleteConfirmation(contest._id)}
-                            />
+                            <button
+                              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                              onClick={() => handleEndConfirmation(contest._id)}
+                            >
+                              End Contest
+                            </button>
                           </>
                         )}
+                        <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
+                          onClick={() => handleDeleteConfirmation(contest._id)}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -224,10 +260,14 @@ const Contest = () => {
               {showConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="bg-white p-4 rounded shadow">
-                    <p className="mb-4">Are you sure you want to delete this contest?</p>
+                    <p className="mb-4">Are you sure you want to {contestToDelete ? 'delete' : 'end'} this contest? You cannot undo this action.</p>
                     <div className="flex justify-end">
-                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
-                      <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={contestToDelete ? handleConfirmDelete : handleConfirmEnd}>
+                        {contestToDelete ? 'Delete' : 'End'} 
+                      </button>
+                      <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelAction}>
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 </div>

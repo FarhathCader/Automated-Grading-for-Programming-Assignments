@@ -26,7 +26,24 @@ async function addContest(req, res) {
 }
 
 
+const endContest = async (req, res) => {
+  const { id } = req.params;
+  console.log("id",id)
+  try {
+    const updatedContest = await Contest.findByIdAndUpdate(
+      id,
+      { endDate: new Date() },
+      { new: true }
+    );
+    if (!updatedContest) {
+      return res.status(404).json({ message: 'Contest not found' });
+    }
 
+    res.status(200).json({ contest: updatedContest });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to end contest', error });
+  }
+};
 
 const getContests = async (req,res)=>{
     try{
@@ -90,4 +107,4 @@ const updateContest = async (req, res) => {
   };
   
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest}
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest,endContest}

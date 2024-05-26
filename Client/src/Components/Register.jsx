@@ -4,13 +4,12 @@ import teamworkImage from "../assets/Images/teamwork.svg";
 import { FaLock, FaTimes, FaUser } from "react-icons/fa";
 import { FaEnvelopeOpen } from "react-icons/fa6";
 import { IoLockClosedSharp } from "react-icons/io5";
-//import { FaUserGraduate } from "react-icons/fa6";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
-import {  CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 const override = {
   display: "block",
@@ -20,87 +19,72 @@ const override = {
 
 const Signup = () => {
   const navigate = useNavigate();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cpassword, setCpassword] = useState('');
-  // const [otp, setOtp] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [OTP,setOTP] = useState('');
-  const {state} = useLocation();
-
+  const [OTP, setOTP] = useState('');
+  const { state } = useLocation();
 
   useEffect(() => {
     if (!state) navigate('/signup');
-    // Reset showOtpInput state when the component mounts
     setShowOtpInput(false);
   }, []);
 
- 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isRegistering) return;
+    setIsRegistering(true);
 
-
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (isRegistering) return; // Prevent multiple submissions
-  setIsRegistering(true); // Set isRegistering to true to prevent multiple submissions
-
-  if (username === '' || email === '' || password === '' || cpassword === '') {
-    toast.error('All fields are required');
-  } else if (cpassword !== password) {
-
-    toast.error('Passwords do not match');
-  } else {
-    console.log("usertype is ", state.usertype);
-
-    try {
-      const response = await axios.post('http://localhost:4000/api/user/send', {
-        username,
-        email,
-        password,
-        usertype: state.usertype
-      });
-      const json = response.data;
-      console.log(json)
+    if (username === '' || email === '' || password === '' || cpassword === '' || (state.usertype === 'student' && registrationNumber === '')) {
+      toast.error('All fields are required');
+    } else if (cpassword !== password) {
+      toast.error('Passwords do not match');
+    } else {
+      try {
+        const response = await axios.post('http://localhost:4000/api/user/send', {
+          username,
+          email,
+          password,
+          usertype: state.usertype,
+          registrationNumber: state.usertype === 'student' ? registrationNumber : undefined,
+        });
+        const json = response.data;
         toast(json.msg);
         setShowOtpInput(true);
-      
-    } catch (error) {
-      const err = error.response.data;
-      toast.error(err.error);
-      console.log(err.error)
+      } catch (error) {
+        const err = error.response.data;
+        toast.error(err.error);
+      }
     }
-  }
-  setTimeout(() => {
-    setIsRegistering(false);
-  }, 1800); // Reset isRegistering to allow further submissions
-};
+    setTimeout(() => {
+      setIsRegistering(false);
+    }, 1800);
+  };
 
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
     if (isVerifying) return;
     setIsVerifying(true);
-  
+
     try {
       const response = await axios.post('http://localhost:4000/api/user/signup', {
         username,
         email,
         password,
         OTP,
-        usertype: state.usertype
+        usertype: state.usertype,
+        registrationNumber: state.usertype === 'student' ? registrationNumber : undefined,
       });
-  
       const json = response.data;
-      console.log(json);
-  
-        toast.success('OTP Verified');
-        setTimeout(() => {
-          navigate('/login'); // Navigate to the dashboard upon successful OTP verification
-        }, 1000);
-      
+      toast.success('OTP Verified');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } catch (error) {
       const err = error.response.data;
       toast.error(err.error);
@@ -110,7 +94,6 @@ const handleSubmit = async (e) => {
       }, 1800);
     }
   };
-  
 
   const handleBack = () => {
     navigate('/');
@@ -136,7 +119,7 @@ const handleSubmit = async (e) => {
             Create your account. It's free and only takes a minute.
           </p>
 
-         <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
+          <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
             <div className="relative">
               <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
                 <FaUser />
@@ -146,7 +129,7 @@ const handleSubmit = async (e) => {
                 value={username}
                 onChange={(e) => { setUsername(e.target.value) }}
                 placeholder="Username"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
+                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
                 disabled={showOtpInput}
               />
             </div>
@@ -159,7 +142,7 @@ const handleSubmit = async (e) => {
                 onChange={(e) => { setEmail(e.target.value) }}
                 type="email"
                 placeholder="Email Address"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
+                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
                 disabled={showOtpInput}
               />
             </div>
@@ -169,11 +152,11 @@ const handleSubmit = async (e) => {
               </div>
               <input
                 value={password}
-                data-testid = 'password'
+                data-testid='password'
                 onChange={(e) => { setPassword(e.target.value) }}
                 type="password"
                 placeholder="Password"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
+                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
                 disabled={showOtpInput}
               />
             </div>
@@ -183,25 +166,34 @@ const handleSubmit = async (e) => {
               </div>
               <input
                 value={cpassword}
-                data-testid = 'confirm'
+                data-testid='confirm'
                 onChange={(e) => { setCpassword(e.target.value) }}
                 type="password"
                 placeholder="Confirm Password"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
+                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
                 disabled={showOtpInput}
               />
             </div>
+            {state.usertype === 'student' && (
+              <div className="relative">
+                <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
+                  <FaUser />
+                </div>
+                <input
+                  type="text"
+                  value={registrationNumber}
+                  onChange={(e) => setRegistrationNumber(e.target.value)}
+                  placeholder="Registration Number"
+                  className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
+                  disabled={showOtpInput}
+                />
+              </div>
+            )}
             <button className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2" disabled={showOtpInput}>
-            {isRegistering ?   <ClipLoader
-                color="cyan"
-                loading={true}
-                size={20}
-                css={override}
-              /> : "Register Now"}
+              {isRegistering ? <ClipLoader color="cyan" loading={true} size={20} css={override} /> : "Register Now"}
             </button>
           </form>
-      
-      
+
           {showOtpInput && (
             <form className="space-y-6 text-white" onSubmit={handleOTPSubmit}>
               <input
@@ -209,20 +201,15 @@ const handleSubmit = async (e) => {
                 value={OTP}
                 onChange={(e) => setOTP(e.target.value)}
                 placeholder="Enter OTP"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500  focus:drop-shadow-lg"
+                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
               />
               <button type="submit" className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2">
-              {isVerifying ?   <ClipLoader
-                color="cyan"
-                loading={true}
-                size={20}
-                css={override}
-              /> : "Verify OTP"}
+                {isVerifying ? <ClipLoader color="cyan" loading={true} size={20} css={override} /> : "Verify OTP"}
               </button>
             </form>
           )}
           <ToastContainer
-          data-testid = 'toast'
+            data-testid='toast'
             position="top-right"
             autoClose={1000}
             hideProgressBar={false}
