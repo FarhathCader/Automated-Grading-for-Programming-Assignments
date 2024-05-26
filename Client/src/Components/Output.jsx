@@ -193,7 +193,7 @@ export default function Output(props) {
         problemId: problem._id, // Assuming problem object contains _id
         code: value,
         language: language,
-        grade: grade,
+        grade: parseFloat(grade).toFixed(2),
         userId: user._id, // Assuming user object contains _id
         status,
         submittedAt: new Date(),
@@ -285,8 +285,8 @@ export default function Output(props) {
           ))}
           {!isRunning && display && (
             <>
-              <p className='text-gray-700'>Passed Percentage: {passedPercentage}%</p>
-              <p className='text-gray-700'>Final Grade: {finalProblemGrade}</p>
+              <p className='text-gray-700'>Passed Percentage: {parseFloat(passedPercentage).toFixed(2)}%</p>
+              <p className='text-gray-700'>Final Grade: {parseFloat(finalProblemGrade).toFixed(2)}</p>
             </>
           )}
         </div>

@@ -27,7 +27,7 @@ let otp;
 const sendOtp = async(req,res)=>{
         console.log(req.body);
         try{
-        const {username,email,password,usertype} = req.body;
+        const {username,email,password,usertype,registrationNumber} = req.body;
         if(!username || !email || !password){
             return res.status(400).json({error: 'All fields are required'});
         }
@@ -43,7 +43,18 @@ const sendOtp = async(req,res)=>{
         const availableStudent =  await student.findOne({email :email.toLowerCase()});
         console.log(availableLecturer,availableStudent)
         if(availableStudent || availableLecturer){
-              return res.status(400).json({error:'User already exists'});
+              return res.status(400).json({error:'Email already exists'});
+        }
+
+        const availableLecturer_ =  await Lecturer.findOne({username : username.toLowerCase()}) ;
+        const availableStudent_ =  await student.findOne({username :username.toLowerCase()});
+        if(availableStudent_ || availableLecturer_){
+              return res.status(400).json({error:'Username already exists'});
+        }
+
+        const availableRegNo = await student.findOne({regNo : registrationNumber});
+        if(availableRegNo){
+            return res.status(400).json({error:'Registration Number already exists'});
         }
    
         otp = generateSecureOTP(6);
@@ -97,7 +108,7 @@ const sendOtp = async(req,res)=>{
 const signup = async (req,res)=>{
     
     try{
-    const {username,email,password,usertype,OTP} = req.body;
+    const {username,email,password,usertype,OTP,registrationNumber} = req.body;
     console.log(req.body);
     console.log(`OTP ${OTP} otp ${otp}`)
     hashedPassword = await bcrypt.hash(password,10);
@@ -121,7 +132,8 @@ const signup = async (req,res)=>{
             }else{
                
             const user = await User.create({username,email: email.toLowerCase(),password : hashedPassword,usertype});
-            const stdnt = await student.create({username,email: email.toLowerCase(),password : hashedPassword,userId : user._id});
+            const stdnt = await student.create({username,email: email.toLowerCase(),password : hashedPassword,userId : user._id,regNo : registrationNumber});
+            console.log(stdnt);
         
             }
     }
@@ -129,6 +141,7 @@ const signup = async (req,res)=>{
     return res.status(200).json({msg: 'User created successfully'});
     }
     catch(error){
+        console.log(error)
        return res.status(400).json({error: error.message});
     }
     
