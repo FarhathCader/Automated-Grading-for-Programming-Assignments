@@ -52,6 +52,7 @@ const getStudent = async (req, res) => {
         }
 
         // Return the student
+        
         res.status(200).json(student);
     } catch (error) {
         res.status(500).json({ message: error.message });

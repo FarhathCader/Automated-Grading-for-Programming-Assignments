@@ -27,8 +27,51 @@ export default function Output(props) {
   const [passedPercentage, setPassedPercentage] = useState(0);
   const [finalProblemGrade, setFinalProblemGrade] = useState(0);
   const [shouldSubmit, setShouldSubmit] = useState(false);
+  const [createdTime, setCreatedTime] = useState(0);
+  const [contestDuration, setContestDuration] = useState(0);
 
   const user = useSelector(state => state.user);
+
+
+  const fetchCreatedTime = async () => {
+    try {
+      if (user._id === undefined || contestId === undefined) return;
+      const res = await axios.get(`http://localhost:4000/api/enrollment/time/${user._id}/${contestId}`);
+      const data = res.data.createdAt;
+      console.log("created time", data);
+      if (data) setCreatedTime(data);
+    } catch (err) {
+      console.log("Error fetching enrollment:", err.message);
+    }
+  }
+
+  const fetchContestDuration = async () => {
+    try {
+      if (contestId === undefined) return;
+      const res = await axios.get(`http://localhost:4000/api/contest/${contestId}`);
+      const data = res.data.contest.duration;
+      console.log("contest duration", data);
+      if (data) setContestDuration(data);
+    } catch (err) {
+      console.log("Error fetching contest duration:", err.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchCreatedTime();
+    if(user && contestId){
+
+    }
+  }, [user, contestId]);
+
+  useEffect(() => {
+    if(contestId){
+      fetchContestDuration();
+    }
+  }, [contestId]);
+
+
+
 
   const finalGrade = (pass, grade) => {
     return (pass / 100) * grade;
@@ -175,6 +218,13 @@ export default function Output(props) {
   };
 
   const handleSubmit = async () => {
+    const currentTime = new Date().getTime();
+    const contestEndTime = new Date(createdTime).getTime() + contestDuration * 60 * 1000;
+
+    if (currentTime > contestEndTime) {
+      toast.error('Contest duration has ended. Cannot submit.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await submitAllCodeWithInterval();
@@ -241,7 +291,7 @@ export default function Output(props) {
           )}
         </div>
       )}
-      <ToastContainer position="top-right" autoClose={200} />
+      <ToastContainer position="top-right" autoClose={1000} />
       {isSubmitting && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />

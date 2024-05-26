@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaPlus, FaEdit, FaTrash, FaFilePdf } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
-import {  CSSProperties } from "react";
+import { CSSProperties } from "react";
+import jsPDF from "jspdf";
+import GeneratePdf from "./GeneratePdf";
 
 const override = {
   display: "block",
@@ -14,10 +16,12 @@ const override = {
 
 const Contest = () => {
   const [contests, setContests] = useState([]);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     fetchContests();
   }, []);
@@ -33,8 +37,7 @@ const Contest = () => {
       setContests(data.contests);
     } catch (error) {
       console.error("Error fetching contests:", error);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -95,8 +98,8 @@ const Contest = () => {
     setContestToDelete(null);
     setShowConfirmation(false);
   };
-  const handleAddContestClick = () => {
 
+  const handleAddContestClick = () => {
     navigate("/addcontest");
   };
 
@@ -108,101 +111,131 @@ const Contest = () => {
     navigate(`/contest/${contestId}`);
   };
 
+  const handleShowCompletedClick = () => {
+    setShowCompleted((prevShowCompleted) => !prevShowCompleted);
+  };
+
+  const handleGeneratePdfClick = (contest) => {
+    const doc = new jsPDF();
+    doc.text(`Contest Name: ${contest.name}`, 10, 10);
+    doc.text(`Start Date: ${new Date(contest.startDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 10, 20);
+    doc.text(`End Date: ${new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 10, 30);
+    doc.text(`Duration: ${formatDuration(contest.duration)}`, 10, 40);
+    doc.save(`${contest.name}.pdf`);
+  };
+  
+
+  const currentTimestamp = new Date().getTime();
+
+  const filteredContests = showCompleted
+    ? contests.filter((contest) => new Date(contest.endDate).getTime() < currentTimestamp)
+    : contests.filter((contest) => new Date(contest.endDate).getTime() >= currentTimestamp);
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       <SidebarLecturer />
-     {
-      loading ?  (
-      
-        <div className="w-full flex justify-center items-center h-screen">
-              <ClipLoader
-                color="red"
-                loading={true}
-                size={150}
-                css={override}
-              />
-            </div>
-      
-      ) : (
-      <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
-        <Header bgColor="fuchsia" />
-        <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
-          <div className="flex items-center justify-between w-full mb-4">
-            <div className="relative flex-grow mr-4">
-              <input
-                type="text"
-                placeholder="Search Contest.."
-                className="pl-10 pr-4 py-2 w-full border rounded-md"
-              />
-              <FaSearch className="absolute top-3 left-3 text-gray-400" />
-            </div>
-            <div>
-              <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-              onClick={handleAddContestClick}>
-                <FaPlus className="mr-2" /> Add Contest
-              </button>
-            </div>
+      {
+        loading ? (
+          <div className="w-full flex justify-center items-center h-screen">
+            <ClipLoader
+              color="red"
+              loading={true}
+              size={150}
+              css={override}
+            />
           </div>
-          <table className="w-full">
-            <thead>
-              <tr className="bg-fuchsia-200">
-                <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
-                <th className="px-6 py-3 text-left text-fuchsia-800">
-                  Deadline
-                </th>
-                <th className="px-6 py-3 text-left text-fuchsia-800">
-                  Duration
-                </th>
-                <th className="px-6 py-3 text-left text-fuchsia-800">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {contests.map((contest, index) => (
-                <tr
-                  
-                  key={index}
-                  className={
-                    index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
-                  }
-                >
-                  <td className="px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
-                  onClick={() => handleContestDetailsClick(contest._id)}>
-                    {contest.name}
-                  </td>
-                  <td className="px-6 py-4 text-fuchsia-200">
-                    {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
-                  </td>
-                  <td className="px-6 py-4 text-fuchsia-200">
-                    {formatDuration(contest.duration)}
-                  </td>
-                  <td className="px-6 py-4 flex">
-                    <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
-                    onClick={() => handleEditContestClick(contest._id)}
-                    />
-                    <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer" 
-                    onClick={() => handleDeleteConfirmation(contest._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {showConfirmation && (
-            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-4 rounded shadow">
-                <p className="mb-4">Are you sure you want to delete this contest?</p>
-                <div className="flex justify-end">
-                  <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
-                  <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+        ) : (
+          <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
+            <Header bgColor="fuchsia" />
+            <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
+              <div className="flex items-center justify-between w-full mb-4">
+                <div className="relative flex-grow mr-4">
+                  <input
+                    type="text"
+                    placeholder="Search Contest.."
+                    className="pl-10 pr-4 py-2 w-full border rounded-md"
+                  />
+                  <FaSearch className="absolute top-3 left-3 text-gray-400" />
+                </div>
+                <div>
+                  <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                    onClick={handleAddContestClick}>
+                    <FaPlus className="mr-2" /> Add Contest
+                  </button>
                 </div>
               </div>
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-fuchsia-200">
+                    <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
+                    <th className="px-6 py-3 text-left text-fuchsia-800">
+                      Deadline
+                    </th>
+                    <th className="px-6 py-3 text-left text-fuchsia-800">
+                      Duration
+                    </th>
+                    <th className="px-6 py-3 text-left text-fuchsia-800">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredContests.map((contest, index) => (
+                    <tr
+                      key={index}
+                      className={
+                        index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
+                      }
+                    >
+                      <td className="px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
+                        onClick={() => handleContestDetailsClick(contest._id)}>
+                        {contest.name}
+                      </td>
+                      <td className="px-6 py-4 text-fuchsia-200">
+                        {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                      </td>
+                      <td className="px-6 py-4 text-fuchsia-200">
+                        {formatDuration(contest.duration)}
+                      </td>
+                      <td className="px-6 py-4 flex">
+                        {showCompleted ? (
+                          <GeneratePdf contest={contest} />
+                        ) : (
+                          <>
+                            <FaEdit className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
+                              onClick={() => handleEditContestClick(contest._id)}
+                            />
+                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer"
+                              onClick={() => handleDeleteConfirmation(contest._id)}
+                            />
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
+                onClick={handleShowCompletedClick}
+              >
+                {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
+              </button>
+              {showConfirmation && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                  <div className="bg-white p-4 rounded shadow">
+                    <p className="mb-4">Are you sure you want to delete this contest?</p>
+                    <div className="flex justify-end">
+                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>Delete</button>
+                      <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelDelete}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </section>
-      )}
+          </section>
+        )
+      }
     </main>
   );
 };

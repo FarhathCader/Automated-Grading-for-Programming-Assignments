@@ -1,21 +1,6 @@
+const { get } = require("mongoose");
 const Submission = require("../models/submission");
-
-// const postSubmission = async (req, res) => {
-//     try{
-//         const {problemId,  code, language,  grade,userId} = req.body;
-//         const submission = await Submission.create({
-//             problemId,
-//             code,
-//             language,
-//             grade,
-//             userId,
-//         });
-//         return res.status(201).json({submission});
-//     }
-//     catch(err){
-//         return res.status(400).json({error : err.message})
-//     }
-// }
+const Problem = require("../models/problems");
 
 const postSubmission = async (req, res) => {
     try {
@@ -57,6 +42,42 @@ const getSubmission = async (req, res) => {
     }
 }
 
+const getTotalGradeForContest = async (req, res) => {
+    try {
+      const { userId, contestId } = req.params;
+  
+      // Query submissions for the student and contest
+      const submissions = await Submission.find({ userId, contestId });
+  
+      // Group submissions by problem ID
+      const submissionGroups = {};
+      submissions.forEach(submission => {
+        if (!submissionGroups[submission.problemId]) {
+          submissionGroups[submission.problemId] = [];
+        }
+        submissionGroups[submission.problemId].push(submission);
+      });
+  
+      // Calculate highest grade for each problem
+      const highestGrades = {};
+      for (const [problemId, submissions] of Object.entries(submissionGroups)) {
+        const highestGrade = Math.max(...submissions.map(submission => submission.grade));
+        highestGrades[problemId] = highestGrade;
+      }
+  
+      // Sum highest grades for each problem
+      let totalGrade = 0;
+      for (const grade of Object.values(highestGrades)) {
+        totalGrade += grade;
+      }
+  
+      res.status(200).json({ totalGrade });
+    } catch (error) {
+      console.error('Error fetching total grade for contest:', error);
+      res.status(500).json({ error: 'Failed to fetch total grade for contest' });
+    }
+  };
+
 
 const getSingleSubmission = async (req, res) => {
     try {
@@ -71,7 +92,44 @@ const getSingleSubmission = async (req, res) => {
     }
 }
 
+const isProblemSolved = async (req, res) => {
+  try {
+    const { userId, problemId, contestId } = req.params;
+
+    if (!userId || !problemId) {
+      return res.status(400).json({ error: 'User ID and problem ID are required' });
+    }  
+
+    // Find all submissions for the user, problem, and contest
+    const submissions = await Submission.find({ userId, problemId, contestId });
+
+    if (submissions.length === 0) {
+      // If no submissions found, the problem is not solved
+      return res.status(200).json({ isSolved: false });
+    }
+
+    // Find the submission with the highest grade
+    const highestGradeSubmission = submissions.reduce((prev, current) => {
+      return prev.grade > current.grade ? prev : current;
+    });
+
+    // Retrieve the problem's details
+    const problem = await Problem.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ error: 'Problem not found' });
+    }
+
+    // Compare the highest grade submission with the problem's grade
+    const isSolved = highestGradeSubmission.grade === problem.grade;
+    return res.status(200).json({ isSolved });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+}
 
 
 
-module.exports = { postSubmission, getSubmission, getSingleSubmission }
+
+
+
+module.exports = { postSubmission, getSubmission, getSingleSubmission, getTotalGradeForContest , isProblemSolved }

@@ -24,6 +24,7 @@ app.use('/api/contest',require('./routes/contestRoutes'))
 app.use('/api/submission',require('./routes/submissionRoutes'))
 app.use('/api/admin',require('./routes/adminRoutes'))
 app.use('/api/image',require('./routes/imageRoutes'))
+app.use('/api/enrollment',require('./routes/enrollmentRoutes'))
 
 
 
