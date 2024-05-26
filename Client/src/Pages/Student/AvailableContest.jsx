@@ -4,6 +4,8 @@ import Header from "../../Sections/Header";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const override = {
   display: "block",
@@ -12,13 +14,79 @@ const override = {
 };
 
 const AvailableContest = () => {
+  
   // Dummy contest data
 
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [enterContest, setEnterContest] = useState(false);
+  const [activeContest, setActiveContest] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState("");
+  const [student, setStudent] = useState(null);
 
-  const handleContestDetailsClick = (contestId) => {
+  const user = useSelector(state => state.user);
+
+  useEffect(() => {
+    fetchStudent();
+  }, [user]);
+
+  const fetchStudent = async () => {
+    setLoading(true);
+    try {
+      if (user._id === undefined) return;
+      const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
+      const data = res && (await res.data);
+      if (data) setStudent(data);
+    } catch (err) {
+      console.log("error", err.message)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+  if(activeContest)  // Calculate the time remaining until the contest starts
+  {  const calculateTimeRemaining = () => {
+      const contestStartDate = new Date(activeContest.endDate);
+      const currentTime = new Date();
+      const timeDiff = contestStartDate - currentTime;
+
+      // Convert time difference to days, hours, minutes, and seconds
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      let hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      hours += days * 24;
+
+
+      // Construct the time remaining string
+      const timeRemainingStr = `${hours}h ${minutes}m ${seconds}s`;
+
+      // Update state with the time remaining string
+      setTimeRemaining(timeRemainingStr);
+    };
+
+    // Call the calculateTimeRemaining function initially and every second
+    calculateTimeRemaining();
+    const interval = setInterval(calculateTimeRemaining, 1000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(interval);}
+  }, [activeContest]);
+
+  const handleContestDetailsClick = async (contestId) => {
+   try{
+    const response  = await axios.post(`http://localhost:4000/api/enrollment/`, {studentId: student._id, contestId});
+    console.log("response", response.data);
+   }
+   catch(error){
+     toast.error("Error creating enrollment:");
+   }
+   finally{
     navigate(`/contestview/${contestId}`);
+   }
+
+    
   };
   const navigate = useNavigate();
   useEffect(() => {
@@ -70,8 +138,39 @@ const AvailableContest = () => {
     return durationString.trim();
   };
 
+  const handleClick = async (contest) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/enrollment/${student._id}/${contest._id}`);
+      if (response.data.enrollment) {
+        navigate(`/contestview/${contest._id}`);
+        return;
+      }
+      setEnterContest(true);
+      setActiveContest(contest);
+    } catch (error) {
+      console.error('Error checking enrollment:', error);
+    }
+  };
+  
+
   return (
-    <main className="w-full h-screen flex justify-between items-start">
+ enterContest ? (
+  <div className="w-full h-screen flex justify-center items-center bg-gray-100">
+  <div className="w-96 p-8 bg-white rounded-lg shadow-md">
+    <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
+    <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
+    <button 
+      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      onClick={() => handleContestDetailsClick(activeContest._id)}
+    >
+      Enter Contest
+    </button>
+  </div>
+</div>
+
+    ) :
+ ( 
+  <main className="w-full h-screen flex justify-between items-start">
       <Sidebar />
      {
         loading?
@@ -110,7 +209,8 @@ const AvailableContest = () => {
                   className={
                     index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"
                   }
-                  onClick={()=>handleContestDetailsClick(contest._id)}
+                  // onClick={()=>handleContestDetailsClick(contest._id)}
+                  onClick={()=> handleClick(contest)}
                 >
                   <td className="px-6 py-4 text-blue-200">{contest.name}</td>
                   <td className="px-6 py-4 text-blue-200">
@@ -127,7 +227,7 @@ const AvailableContest = () => {
           </table>
         </div>
       </section>)}
-    </main>
+    </main>)
   );
 };
 
