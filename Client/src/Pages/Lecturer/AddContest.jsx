@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddContest = ({ onAdd }) => {
   const [name, setName] = useState("");
@@ -16,17 +18,24 @@ const AddContest = ({ onAdd }) => {
   const [problemsList, setProblemList] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [loading,setLoading] = useState(false)
+  const [disabled_btn,setDisabled_btn] = useState(false)
 
   const fetchData = async()=> {
+    setLoading(true)
     try {
         const res = await fetch("http://localhost:4000/api/problems");
         const data = await res.json();
         setProblemList(data.problems);
       } catch (error) {
-        console.error("Error fetching problems:", error);
+        toast.error("Error fetching problems:", error);
+      }
+      finally{
+        setLoading(false)
       }
   }
   const fetchContestById = async (contestId) => {
+    setLoading(true)
     try {
       const response = await axios.get(`http://localhost:4000/api/contest/${contestId}`);
       const contest = response.data.contest;
@@ -40,7 +49,10 @@ const AddContest = ({ onAdd }) => {
       setSelectedProblems(problems);
       console.log("selected problems is ",problems)
     } catch (error) {
-      console.error("Error fetching contest details:", error);
+      toast.error("Error fetching contest details:", error);
+    }
+    finally{
+      setLoading(false)
     }
   };
   
@@ -70,15 +82,39 @@ const AddContest = ({ onAdd }) => {
     }
   };
   const handleSubmit = async(e) => {
+    
     e.preventDefault();
+    setDisabled_btn(true)
     // Validation can be added here if needed
     if (!name || !startDate || !endDate || (!durationDays && !durationHours && !durationMinutes)) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
+      setTimeout(() => {
+        setDisabled_btn(false)},1000)
       return;
     }
-    // Convert duration to minutes
-    console.log(durationDays,durationHours,durationMinutes)
+
     const totalDurationMinutes = (parseInt(durationDays) * 24 * 60) + (parseInt(durationHours) * 60) + parseInt(durationMinutes);
+
+     // Ensure end date is after start date
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (end <= start) {
+    toast.error("End date must be after start date. Please reselect the dates.");
+    setTimeout(() => {
+      setDisabled_btn(false)},1000)
+    return;
+  }
+
+  // Calculate the difference between start and end dates in minutes
+  const durationDifference = Math.floor((end - start) / 60000);
+
+  // Ensure duration is less than or equal to the difference between end date and start date
+  if (totalDurationMinutes > durationDifference) {
+    toast.error("The specified duration is longer than the time between the start and end dates. Please adjust the duration.");
+    setTimeout(() => {
+      setDisabled_btn(false)},1000)
+    return;
+  }
     // Create new contest object
     const newContest = {
       name,
@@ -94,12 +130,18 @@ const AddContest = ({ onAdd }) => {
         } else {
           await axios.post("http://localhost:4000/api/contest", newContest);
         }
-        alert("Contest saved successfully");
+        toast.success("Contest saved successfully");
         navigate("/contest");
       } catch (error) {
         console.error("Error saving contest:", error);
-        alert("Failed to save contest");
+        toast.error("Failed to save contest");
       }
+
+      finally{
+        setDisabled_btn(false)
+      }
+
+    
 
     setName("");
     setStartDate("");
@@ -145,6 +187,7 @@ const AddContest = ({ onAdd }) => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
+      <ToastContainer  autoClose='400' />
       <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
         <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
           <h2 className="text-2xl font-bold mb-4">Add Contest</h2>
@@ -230,7 +273,9 @@ const AddContest = ({ onAdd }) => {
                 </div>
               ))}
             </div>
-            <button type="submit" className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+            <button 
+            disabled = {disabled_btn}
+            type="submit" className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
             >
                <FaPlus className="mr-2" /> {id ? "Save Changes" : "Add Contest"}
             </button>

@@ -83,7 +83,7 @@ const Contest = () => {
 
   const endContest = async (contestId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/contest/${contestId}`, {
+      const response = await fetch(`http://localhost:4000/api/contest/end/${contestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
