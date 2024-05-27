@@ -221,7 +221,7 @@ export default function Output(props) {
     const currentTime = new Date().getTime();
     const contestEndTime = new Date(createdTime).getTime() + contestDuration * 60 * 1000;
 
-    if (currentTime > contestEndTime) {
+    if (currentTime > contestEndTime & contestEndTime !== 0) {
       toast.error('Contest duration has ended. Cannot submit.');
       return;
     }
