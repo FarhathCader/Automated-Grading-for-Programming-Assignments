@@ -26,24 +26,56 @@ async function addContest(req, res) {
 }
 
 
+// const endContest = async (req, res) => {
+//   const { id } = req.params;
+//   console.log("id",id)
+//   try {
+//     const updatedContest = await Contest.findByIdAndUpdate(
+//       id,
+//       { endDate: new Date() },
+//       { new: true }
+//     );
+//     if (!updatedContest) {
+//       return res.status(404).json({ message: 'Contest not found' });
+//     }
+
+//     res.status(200).json({ contest: updatedContest });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to end contest', error });
+//   }
+// };
 const endContest = async (req, res) => {
   const { id } = req.params;
-  console.log("id",id)
+  console.log("id", id);
+
   try {
-    const updatedContest = await Contest.findByIdAndUpdate(
-      id,
-      { endDate: new Date() },
-      { new: true }
-    );
-    if (!updatedContest) {
+    // Fetch the contest details
+    const contest = await Contest.findById(id);
+    if (!contest) {
       return res.status(404).json({ message: 'Contest not found' });
     }
+
+    const endDate = new Date();
+    const startDate = new Date(contest.startDate);
+    const actualDuration = Math.floor((endDate - startDate) / 60000); // Duration in minutes
+
+    console.log('Actual duration:', actualDuration,'end',endDate,'start',startDate);
+    // Update the end date and possibly the duration
+    const updatedContest = await Contest.findByIdAndUpdate(
+      id,
+      {
+        endDate: endDate,
+        duration: Math.min(contest.duration, actualDuration) // Update duration if necessary
+      },
+      { new: true }
+    );
 
     res.status(200).json({ contest: updatedContest });
   } catch (error) {
     res.status(500).json({ message: 'Failed to end contest', error });
   }
 };
+
 
 const getContests = async (req,res)=>{
     try{
@@ -89,6 +121,7 @@ const getContest = async (req, res) => {
 
 
 const updateContest = async (req, res) => {
+  console.log("req.body",req.body)
     try {
       const { name, startDate, endDate, duration, problems } = req.body;
       console.log(req.body)
