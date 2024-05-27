@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SyncLoader from 'react-spinners/MoonLoader';
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const AddContest = ({ onAdd }) => {
   const [name, setName] = useState("");
@@ -282,6 +289,11 @@ const AddContest = ({ onAdd }) => {
           </form>
         </div>
       </section>
+      {loading && (
+        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
+          <SyncLoader color="red" loading={true} size={80} css={override} />
+        </div>
+      )}
     </main>
   );
 };
