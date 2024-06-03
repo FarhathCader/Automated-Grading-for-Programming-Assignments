@@ -1,12 +1,25 @@
 {
 
   "scripts": {
+
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
+
     "start": "cd server && npm install && npm run dev",
-    "heroku-postbuild": "cd Client && npm install --only=dev && npm install && npm run build"
+
+    "heroku-postbuild": "cd Client && npm install --only=dev && npm install && npm run build",
+    "vite": "^5.2.12"
+
   },
+
   "dependencies": {
+
     "classnames": "^2.5.1",
-    "concurrently": "^8.2.2"
+
+    "concurrently": "^8.2.2",
+
+    "vite": "^5.2.12"
+
   }
+
 }
+
