@@ -29,7 +29,7 @@ const QuestionBank = () => {
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:4000/api/problems");
+      const response = await axios.get(`${backendUrl}/api/problems`);
       setProblems(response.data.problems);
     } catch (error) {
       console.error("Error fetching questions:", error);
