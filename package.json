@@ -40,6 +40,10 @@
 
   },
 
+  "engines": {
+    "node": "18.17.0"
+  },
+
   "dependencies": {
 
     "classnames": "^2.5.1",
