@@ -11,6 +11,7 @@ import classNames from "classnames";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import logo from "../assets/Images/profile.jpg";
+import { backendUrl } from "../../config";
 
 const override = {
   display: "block",
@@ -47,7 +48,7 @@ const Header = ({ bgColor }) => {
     setLoading(true);
     try {
       if(user._id === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const res = await axios.get(`${backendUrl}/api/image/${user._id}`);
       const data = await res.data;
       if (data) {
         setClient(data.image.url);

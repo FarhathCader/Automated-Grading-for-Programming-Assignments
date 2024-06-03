@@ -12,6 +12,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import useFetchUser from "../../hooks/fetchUser";
 import SyncLoader from 'react-spinners/SyncLoader';
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -30,7 +31,7 @@ const EditStudentProfile = (props) => {
   const userId = student.userId;
   const logo = props.logo;
   const [image, setImage] = useState(logo);
-  const url = "http://localhost:4000/api/image"
+  const url = `${backendUrl}/api/image`
 
   //handle and convert it in base 64
   const handleImage = (e) => {
@@ -50,7 +51,7 @@ const EditStudentProfile = (props) => {
   const save = async () => {
 
     try {
-      const res = await axios.put(`http://localhost:4000/api/student/${props.student._id}`, {
+      const res = await axios.put(`${backendUrl}/api/student/${props.student._id}`, {
         username,
         email,
         regNo: registrationNumber
@@ -114,7 +115,7 @@ const EditStudentProfile = (props) => {
   const handleDeleteButtonClick = async() => {
     setUploading(true);
     try {
-      const res = await axios.delete(`http://localhost:4000/api/image/${userId}`);
+      const res = await axios.delete(`${backendUrl}/api/image/${userId}`);
       const data = await res.data;
       if (res.status === 200) {
         setImage(Logo);

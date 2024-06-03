@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
+import { backendUrl } from "../../config";
 axios.defaults.withCredentials = true;
 
 const variants = {
@@ -72,7 +73,7 @@ const Sidebar = () => {
 
     try{
       const response = await axios.post(
-        "http://localhost:4000/api/user/logout",
+        `${backendUrl}/api/user/logout`,
         null,
         { withCredentials: true }
       );

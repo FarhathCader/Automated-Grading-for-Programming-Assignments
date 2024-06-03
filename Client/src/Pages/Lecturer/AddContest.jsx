@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from 'react-spinners/MoonLoader';
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -31,7 +32,7 @@ const AddContest = ({ onAdd }) => {
   const fetchData = async()=> {
     setLoading(true)
     try {
-        const res = await fetch("http://localhost:4000/api/problems");
+        const res = await fetch(`${backendUrl}/api/problems`);
         const data = await res.json();
         setProblemList(data.problems);
       } catch (error) {
@@ -44,7 +45,7 @@ const AddContest = ({ onAdd }) => {
   const fetchContestById = async (contestId) => {
     setLoading(true)
     try {
-      const response = await axios.get(`http://localhost:4000/api/contest/${contestId}`);
+      const response = await axios.get(`${backendUrl}/api/contest/${contestId}`);
       const contest = response.data.contest;
       const { name, startDate, endDate, duration, problems } = contest;
       setName(name);

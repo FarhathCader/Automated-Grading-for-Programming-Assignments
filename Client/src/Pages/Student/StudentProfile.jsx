@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useSelector } from "react-redux";
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -39,7 +40,7 @@ const StudentProfile = () => {
     setLoading(true);
     try {
       if (user._id === undefined) return;
-      const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
+      const res = user && await axios.get(`${backendUrl}/api/student/${user._id}`);
       const data = res && (await res.data);
       if (data) setStudent(data);
     } catch (err) {
@@ -53,7 +54,7 @@ const StudentProfile = () => {
     setLoading(true);
     try {
       if (user._id === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const res = await axios.get(`${backendUrl}/api/image/${user._id}`);
       const data = await res.data;
       if (data) {
         setClient(data.image.url);

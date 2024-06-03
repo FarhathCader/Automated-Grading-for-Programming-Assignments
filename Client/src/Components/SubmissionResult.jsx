@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ClipLoader from 'react-spinners/ClipLoader';
 import moment from 'moment';
 import DetailedSubmission from './DetailedSubmission';
+import { backendUrl } from '../../config';
 // import NavbarSubmission from './NavbarSubmission';
 
 const override = {
@@ -33,7 +34,7 @@ const SubmissionResult = (props) => {
   const fetchProblem = async (problemId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
+      const response = await axios.get(`${backendUrl}/api/problems/${problemId}`);
       setProblem(response.data.problem);
     } catch (error) {
       toast.error('Failed to fetch problem.');
@@ -45,7 +46,7 @@ const SubmissionResult = (props) => {
   const fetchSubmissions = async (userId, problemId, contestId) => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:4000/api/submission/', {
+      const response = await axios.get(`${backendUrl}/api/submission/`, {
         params: {
           userId: userId,
           problemId: problemId,
@@ -67,7 +68,7 @@ const SubmissionResult = (props) => {
   const handleViewResults = async (submissionId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:4000/api/submission/${submissionId}`);
+      const response = await axios.get(`${backendUrl}/api/submission/${submissionId}`);
       setSelectedSubmission(response.data.submission);
       setViewResults(true);
     } catch (error) {

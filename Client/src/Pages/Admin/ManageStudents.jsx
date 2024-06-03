@@ -5,6 +5,7 @@ import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -26,7 +27,7 @@ const ManageStudents = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/student");
+      const response = await fetch(`${backendUrl}/api/student`);
       if (response.ok) {
         const data = await response.json();
         setStudents(data);
@@ -43,7 +44,7 @@ const ManageStudents = () => {
   }
   const deleteStudent = async (id) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/student/${id}`, {
+      const response = await fetch(`${backendUrl}/api/student/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {

@@ -6,6 +6,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -34,7 +35,7 @@ const AvailableContest = () => {
     setLoading(true);
     try {
       if (user._id === undefined) return;
-      const res = user && await axios.get(`http://localhost:4000/api/student/${user._id}`);
+      const res = user && await axios.get(`${backendUrl}/api/student/${user._id}`);
       const data = res && (await res.data);
       if (data) setStudent(data);
     } catch (err) {
@@ -76,7 +77,7 @@ const AvailableContest = () => {
 
   const handleContestDetailsClick = async (contestId) => {
    try{
-    const response  = await axios.post(`http://localhost:4000/api/enrollment/`, {studentId: student._id, contestId});
+    const response  = await axios.post(`${backendUrl}/api/enrollment/`, {studentId: student._id, contestId});
     console.log("response", response.data);
    }
    catch(error){
@@ -96,7 +97,7 @@ const AvailableContest = () => {
   const fetchAvailableContests = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/contest");
+      const response = await fetch(`${backendUrl}/api/contest`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }
@@ -140,7 +141,7 @@ const AvailableContest = () => {
 
   const handleClick = async (contest) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/enrollment/${student._id}/${contest._id}`);
+      const response = await axios.get(`${backendUrl}/api/enrollment/${student._id}/${contest._id}`);
       if (response.data.enrollment) {
         navigate(`/contestview/${contest._id}`);
         return;

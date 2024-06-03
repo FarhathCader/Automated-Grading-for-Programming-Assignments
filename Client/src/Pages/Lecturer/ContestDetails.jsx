@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { backendUrl } from "../../../config";
 
 const ContestDetails = () => {
   const formatDuration = (minutes) => {
@@ -37,7 +38,7 @@ const ContestDetails = () => {
 
   const fetchContestById = async (contestId) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/contest/${id}`);
+      const response = await axios.get(`${backendUrl}/api/contest/${id}`);
       setContest(response.data.contest);
       // Fetch problems using problem IDs
       fetchProblems(response.data.contest.problems);
@@ -48,7 +49,7 @@ const ContestDetails = () => {
 
   const fetchProblems = async (problemIds) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/problems");
+      const response = await axios.get(`${backendUrl}/api/problems`);
       const problemsData = response.data.problems;
       // Filter problems based on problem IDs
       const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));

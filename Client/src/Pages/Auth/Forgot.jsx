@@ -5,6 +5,7 @@ import { FaEnvelopeOpen } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { backendUrl } from "../../../config";
 
 const Forgot = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Forgot = () => {
 
   const handleForgot = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:4000/api/user/forgot', {
+    const response = await fetch(`${backendUrl}/api/user/forgot`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

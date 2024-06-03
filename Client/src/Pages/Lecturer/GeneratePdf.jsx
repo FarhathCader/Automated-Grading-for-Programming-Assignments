@@ -3,6 +3,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaFilePdf } from "react-icons/fa";
 import SyncLoader from "react-spinners/ClipLoader";
+import { backendUrl } from "../../../config";
+
 const override = {
     display: "block",
     margin: "0 auto",
@@ -17,7 +19,7 @@ const GeneratePdf = ({ contest }) => {
     setLoading(true);
     const fetchStudents = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/enrollment/contest/${contest._id}/enrolled-students-grades`);
+        const response = await fetch(`${backendUrl}/api/enrollment/contest/${contest._id}/enrolled-students-grades`);
         const data = await response.json();
         setStudents(data.studentsWithGrades);
         

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -25,7 +26,7 @@ const Practice = () => {
     const fetchQuestions = async () => {
         setLoading(true);
       try {
-        const response = await axios.get("http://localhost:4000/api/problems");
+        const response = await axios.get(`${backendUrl}/api/problems`);
         const practiceProblems = response.data.problems.filter(problem => problem.category.toLowerCase() === 'practice');
         setProblems(practiceProblems);
       } catch (error) {

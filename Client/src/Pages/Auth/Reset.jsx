@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { backendUrl } from "../../../config";
+
 
 
 const Reset = () => {
@@ -33,7 +35,7 @@ const Reset = () => {
         toast('Passwords do not match',{type: "error"})
         return;
       }
-      const response = await fetch(`http://localhost:4000/api/user/reset/${token}`, {
+      const response = await fetch(`${backendUrl}/api/user/reset/${token}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

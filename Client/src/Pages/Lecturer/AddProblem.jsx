@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FaPlus } from 'react-icons/fa';
+import { backendUrl } from "../../../config";
 
 const AddProblem = () => {
   const [formData, setFormData] = useState({
@@ -114,7 +115,7 @@ const AddProblem = () => {
 
   const fetchProblemDetails = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/problems/${id}`);
+      const response = await axios.get(`${backendUrl}/api/problems/${id}`);
       const problem = response.data.problem;
       setFormData({
         name: problem.name,
@@ -176,7 +177,7 @@ const AddProblem = () => {
       return;
     }
 
-    const url = id ? `http://localhost:4000/api/problems/${id}` : 'http://localhost:4000/api/problems';
+    const url = id ? `${backendUrl}/api/problems/${id}` : `${backendUrl}/api/problems`;
     const method = id ? 'PUT' : 'POST';
 
     try {

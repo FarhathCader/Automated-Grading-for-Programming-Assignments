@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import EditAdminProfile from './EditAdminProfile';
+import { backendUrl } from '../../../config';
 const override = {
   display: "block",
   margin: "0 auto",
@@ -34,7 +35,7 @@ const AdminProfile = () => {
     setLoading(true);
     try {
       if (user._id === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const res = await axios.get(`${backendUrl}/api/image/${user._id}`);
       const data = await res.data;
       if (data) {
         setClient(data.image.url);
@@ -50,7 +51,7 @@ const AdminProfile = () => {
     setLoading(true);
     try{
       if(user._id === undefined) return;
-      const res = user && await axios.get(`http://localhost:4000/api/admin/${user._id}`);
+      const res = user && await axios.get(`${backendUrl}/api/admin/${user._id}`);
       const data = res && (await res.data);
       if (data) {
         setAdmin(data);

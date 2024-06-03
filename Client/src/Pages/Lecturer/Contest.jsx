@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import GeneratePdf from "./GeneratePdf";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -29,7 +30,7 @@ const Contest = () => {
   const fetchContests = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/contest");
+      const response = await fetch(`${backendUrl}/api/contest`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }
@@ -66,7 +67,7 @@ const Contest = () => {
 
   const deleteContest = async (contestId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/contest/${contestId}`, {
+      const response = await fetch(`${backendUrl}/api/contest/${contestId}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -83,7 +84,7 @@ const Contest = () => {
 
   const endContest = async (contestId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/contest/end/${contestId}`, {
+      const response = await fetch(`${backendUrl}/api/contest/end/${contestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

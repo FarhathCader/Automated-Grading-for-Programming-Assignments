@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from 'react'
+import { backendUrl } from '../../config';
 
 export default function Sample() {
 
@@ -6,7 +7,7 @@ export default function Sample() {
 
     useEffect(()=>{
         const fetchSamples = async () => {
-            const response = await fetch('http://localhost:4000/api/sample');
+            const response = await fetch(`${backendUrl}/api/sample`);
             const data = await response.json();
             if(response.ok){
                 setSamples(data.samples);
