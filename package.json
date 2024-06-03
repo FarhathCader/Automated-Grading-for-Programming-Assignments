@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
     "start": "cd server && npm install && npm run dev",
-    "heroku-postbuild": "npm install --prefix client        && npm run build --prefix client" 
+    "heroku-postbuild": "cd Client && npm install && npm run build"
   },
   "dependencies": {
     "classnames": "^2.5.1",
