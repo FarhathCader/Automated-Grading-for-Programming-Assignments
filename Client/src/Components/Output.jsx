@@ -190,7 +190,7 @@ export default function Output(props) {
     console.log("sending submission with", passedWeight, totalWeight, grade,status);
     try {
 
-      const response = await axios.post('http://localhost:4000/api/submission/', {
+      const response = await axios.post(`${backendUrl}/api/submission/`, {
         problemId: problem._id, // Assuming problem object contains _id
         code: value,
         language: language,
