@@ -51,7 +51,7 @@ const Login = () => {
       }
       else{
         try{
-          const res = await axios.post('https://zee-code-3234074b267f.herokuapp.com:4000/api/user/login', { email, password },{withCredentials: true, credentials: 'include'})
+          const res = await axios.post('http://localhost:4000/api/user/login', { email, password },{withCredentials: true, credentials: 'include'})
           const data = await res.data;
           console.log(data.msg)
           toast.success(data.msg);
