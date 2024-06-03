@@ -1,7 +1,9 @@
 {
 
   "scripts": {
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\""
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
+    "start": "cd server && npm install && npm run dev",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "classnames": "^2.5.1",
