@@ -6,7 +6,7 @@
 
     "start": "cd server && npm install && npm run dev",
 
-    "heroku-postbuild": "cd Client && npm install --only=dev && npm install && npm run build",
+    "heroku-postbuild": "cd Client && npm install && npm run build",
     "@monaco-editor/react": "^4.6.0",
     "axios": "^1.6.8",
     "concurrently": "^8.2.2",
