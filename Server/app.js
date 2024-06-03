@@ -7,7 +7,20 @@ app.use(cookieParser());
 // app.use(express.json());
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
-app.use(cors({ credentials: true, origin: "https://zee-code-3234074b267f.herokuapp.com" }));
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://zee-code-3234074b267f.herokuapp.com']
+  : ['http://localhost:5173', 'https://zee-code-3234074b267f.herokuapp.com']; // Add other local origins if necessary
+
+app.use(cors({
+  credentials: true,
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
