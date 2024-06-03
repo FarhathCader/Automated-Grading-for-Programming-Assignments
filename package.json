@@ -4,7 +4,7 @@
 
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
 
-    "start": "cd server && npm install && npm run dev",
+    "start": "cd Server && npm install && npm run dev",
 
     "heroku-postbuild": "cd Client && npm install && npm run build",
     "@monaco-editor/react": "^4.6.0",
