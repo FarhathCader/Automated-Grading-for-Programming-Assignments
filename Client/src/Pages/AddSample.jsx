@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
+import { backendUrl } from '../../config';
 
 export default function AddSample() {
 
@@ -9,7 +10,7 @@ export default function AddSample() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:4000/api/sample',{
+        const response = await fetch(`${backendUrl}/api/sample`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

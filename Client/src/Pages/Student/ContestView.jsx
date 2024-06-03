@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from 'react-spinners/ClipLoader';
 import CountDown from "./CountDown";
 import { useSelector } from "react-redux";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -47,7 +48,7 @@ const ContestView = () => {
   const fetchTotalGrade = async () => {
     try {
       if(user._id === undefined || id === undefined) return;
-      const response = await axios.get(`http://localhost:4000/api/submission/${user._id}/${id}/total-grade`);
+      const response = await axios.get(`${backendUrl}/api/submission/${user._id}/${id}/total-grade`);
       const data = response.data.totalGrade;
       setTotalGrade(data);
     } catch (error) {
@@ -59,7 +60,7 @@ const ContestView = () => {
     setLoading(true);
     try {
       if(user._id === undefined || contest._id === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/enrollment/time/${user._id}/${contest._id}`);
+      const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contest._id}`);
       const data = res.data.createdAt;
       if (data) setEnr(data);
     } catch (err) {
@@ -85,7 +86,7 @@ const ContestView = () => {
   const fetchProblems = async (problemIds) => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:4000/api/problems");
+      const response = await axios.get(`${backendUrl}/api/problems`);
       const problemsData = response.data.problems;
       const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));
   
@@ -93,7 +94,7 @@ const ContestView = () => {
       const solvedStatuses = await Promise.all(
         selectedProblems.map(async (problem) => {
           if(user._id === undefined || problem._id === undefined || contest._id === undefined) return;
-          const isSolvedResponse = await axios.get(`http://localhost:4000/api/submission/is-solved/${user._id}/${problem._id}/${contest._id}`);
+          const isSolvedResponse = await axios.get(`${backendUrl}/api/submission/is-solved/${user._id}/${problem._id}/${contest._id}`);
           return isSolvedResponse.data.isSolved;
         })
       );
@@ -116,7 +117,7 @@ const ContestView = () => {
   const fetchContest = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:4000/api/contest/${id}`);
+      const response = await axios.get(`${backendUrl}/api/contest/${id}`);
       const data = response.data.contest;
       setContest(data);
     } catch (error) {

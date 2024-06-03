@@ -29,8 +29,10 @@
     "@monaco-editor/react": "^4.6.0",
     "@reduxjs/toolkit": "^2.2.1",
     "@uiw/react-codemirror": "^4.22.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "classnames": "^2.5.1",
     "codemirror": "^6.0.1",
+    "dotenv": "^16.4.5",
     "framer-motion": "^11.0.8",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
@@ -48,8 +50,7 @@
     "react-toastify": "^10.0.4",
     "redux-persist": "^6.0.0",
     "toastify": "^2.0.1",
-    "vite": "^5.1.4",
-    "@vitejs/plugin-react": "^4.2.1"
+    "vite": "^5.1.4"
   },
   "devDependencies": {
     "@babel/plugin-syntax-jsx": "^7.24.1",

@@ -166,6 +166,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 import { Link, useLocation } from "react-router-dom";
+import { backendUrl } from "../../config";
 
 const variants = {
   expanded: { width: "20%" },
@@ -215,7 +216,7 @@ const SidebarAdmin = () => {
   const handleLogout = async () => {
     // Handle logout
     const response = await axios.post(
-      "http://localhost:4000/api/user/logout",
+      `${backendUrl}/api/user/logout`,
       null,
       { withCredentials: true }
     );

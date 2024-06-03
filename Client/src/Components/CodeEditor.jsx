@@ -8,6 +8,7 @@ import NavbarSubmission from './NavbarSubmission';
 import { useSelector } from 'react-redux';
 import SubmissionResult from './SubmissionResult';
 import MoonLoader from 'react-spinners/MoonLoader';
+import { backendUrl } from '../../config';
 const override = {
   display: "block",
   margin: "0 auto",
@@ -31,7 +32,7 @@ export default function CodeEditor() {
       const fetchData = async () => {
         setLoading(true);
         try {
-          const response = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
+          const response = await axios.get(`${backendUrl}/api/problems/${problemId}`);
           const data = response.data;
           setProblem(data.problem);
           

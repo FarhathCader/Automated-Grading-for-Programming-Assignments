@@ -12,6 +12,7 @@ import { authActions } from "../store";
 axios.defaults.withCredentials = true;
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../config";
 
 const override = {
   display: "block",
@@ -30,7 +31,6 @@ const Login = () => {
   const userType = useSelector((state) => state.userType);
 
   useEffect(() => {
-    // Redirect user to appropriate dashboard if already logged in
     if (isLoggedin) {
       if (userType === "student") {
         navigate("/dashboard_std");
@@ -51,7 +51,7 @@ const Login = () => {
       }
       else{
         try{
-          const res = await axios.post('http://localhost:4000/api/user/login', { email, password },{withCredentials: true, credentials: 'include'})
+          const res = await axios.post(`${backendUrl}/api/user/login`, { email, password },{withCredentials: true, credentials: 'include'})
           const data = await res.data;
           console.log(data.msg)
           toast.success(data.msg);

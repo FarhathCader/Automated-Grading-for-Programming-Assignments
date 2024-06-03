@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 axios.defaults.withCredentials = true;
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -35,7 +36,7 @@ const LecturerProfile = () => {
     setLoading(true);
     try{
       if(user._id === undefined) return;
-      const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
+      const res = user && await axios.get(`${backendUrl}/api/lecturer/${user._id}`);
       const data = res && (await res.data);
       if (data) setLecturer(data);
     }
@@ -53,7 +54,7 @@ const LecturerProfile = () => {
     setLoading(true);
     try {
       if(user._id === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/image/${user._id}`);
+      const res = await axios.get(`${backendUrl}/api/image/${user._id}`);
       const data = await res.data;
       if (data) {
         setClient(data.image.url);

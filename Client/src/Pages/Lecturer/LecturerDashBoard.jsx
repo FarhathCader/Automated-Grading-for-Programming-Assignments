@@ -8,7 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { ToastContainer,toast } from 'react-toastify';
 import { authActions } from "../../store";
-
+import { backendUrl } from "../../../config";
 const override = {
   display: "block",
   margin: "0 auto",
@@ -27,7 +27,7 @@ const LecturerDashBoard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/user/logout', null, { withCredentials: true });
+      const response = await axios.post(`${backendUrl}/api/user/logout`, null, { withCredentials: true });
       const data = response.data;
       if (response.status === 200) {
         toast.success(data.msg);
@@ -53,7 +53,7 @@ const LecturerDashBoard = () => {
     try {
 
       if(user._id === undefined) return;
-      const res = user && await axios.get(`http://localhost:4000/api/lecturer/${user._id}`);
+      const res = user && await axios.get(`${backendUrl}/api/lecturer/${user._id}`);
       const data = res && (await res.data);
       if (data) {
         setLecturer(data);

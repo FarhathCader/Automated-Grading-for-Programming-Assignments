@@ -4,6 +4,7 @@ import Header from "../../Sections/Header";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { backendUrl } from '../../../config';
 
 const override = {
   display: "block",
@@ -25,7 +26,7 @@ const CompletedContest = () => {
     setLoading(true);
     try {
       if (!user._id) return;
-      const response = await fetch(`http://localhost:4000/api/enrollment/contest/${user._id}/enrolled-contests`);
+      const response = await fetch(`${backendUrl}/api/enrollment/contest/${user._id}/enrolled-contests`);
       if (!response.ok) {
         throw new Error("Failed to fetch enrolled contests");
       }

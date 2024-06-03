@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import axios from 'axios';
+import { backendUrl } from '../../config';
 export default function Sample() {
 
   const [students, setStudents] = useState([]);
 
   const fetchEnrolledStudents = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/enrollment/6644b2d66eefd0203275ae84`);
+      const response = await axios.get(`${backendUrl}/api/enrollment/6644b2d66eefd0203275ae84`);
       setStudents(response.data.enrolledStudents);
       console.log(response);
     }

@@ -12,6 +12,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import useFetchUser from "../../hooks/fetchUser";
 import SyncLoader from 'react-spinners/SyncLoader';
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -29,7 +30,7 @@ const EditAdminProfile = (props) => {
   const userId = admin.userId;
   const logo = props.logo;
   const [image, setImage] = useState(logo);
-  const url = "http://localhost:4000/api/image"
+  const url = `${backendUrl}/api/image`
 
   //handle and convert it in base 64
   const handleImage = (e) => {
@@ -49,7 +50,7 @@ const EditAdminProfile = (props) => {
   const save = async () => {
 
     try {
-      const res = await axios.put(`http://localhost:4000/api/admin/${props.admin._id}`, {
+      const res = await axios.put(`${backendUrl}/api/admin/${props.admin._id}`, {
         username,
         email,
       });
@@ -112,7 +113,7 @@ const EditAdminProfile = (props) => {
   const handleDeleteButtonClick = async() => {
     setUploading(true);
     try {
-      const res = await axios.delete(`http://localhost:4000/api/image/${userId}`);
+      const res = await axios.delete(`${backendUrl}/api/image/${userId}`);
       const data = await res.data;
       if (res.status === 200) {
         setImage(Logo);

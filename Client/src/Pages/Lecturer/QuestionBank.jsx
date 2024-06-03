@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -56,7 +57,7 @@ const handleConfirmDelete = async () => {
   if (problemToDelete) {
     try {
       const response = await axios.delete(
-        `http://localhost:4000/api/problems/${problemToDelete._id}`
+        `${backendUrl}/api/problems/${problemToDelete._id}`
       );
       console.log(response.data.msg);
       fetchQuestions();

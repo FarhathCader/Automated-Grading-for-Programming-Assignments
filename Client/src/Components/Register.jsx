@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
+import { backendUrl } from "../../config";
 
 const override = {
   display: "block",
@@ -46,7 +47,7 @@ const Signup = () => {
       toast.error('Passwords do not match');
     } else {
       try {
-        const response = await axios.post('http://localhost:4000/api/user/send', {
+        const response = await axios.post(`${backendUrl}/api/user/send`, {
           username,
           email,
           password,
@@ -72,7 +73,7 @@ const Signup = () => {
     setIsVerifying(true);
 
     try {
-      const response = await axios.post('http://localhost:4000/api/user/signup', {
+      const response = await axios.post(`${backendUrl}/api/user/signup`, {
         username,
         email,
         password,

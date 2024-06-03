@@ -4,6 +4,8 @@ import SidebarAdmin from "../../Sections/SidebarAdmin";
 import { FaSearch, FaEdit, FaTrash, FaAdjust, FaToggleOff, FaToggleOn } from "react-icons/fa"; 
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
+import { backendUrl } from "../../../config";
+
 
 const override = {
   display: "block",
@@ -25,7 +27,7 @@ const ManageLecturers = () => {
   const fetchLecturers = async () => {
     setLoading(true); // Set loading to true when fetching data
     try {
-      const response = await fetch("http://localhost:4000/api/lecturer");
+      const response = await fetch(`${backendUrl}/api/lecturer`);
       if (response.ok) {
         const data = await response.json();
         setLecturers(data);
@@ -42,7 +44,7 @@ const ManageLecturers = () => {
   const toggleApprovalStatus = async (id, isApproved, email) => {
     setLoading(true); // Set loading to true when updating data
     try {
-      const response = await fetch(`http://localhost:4000/api/lecturer/${id}`, {
+      const response = await fetch(`${backendUrl}/api/lecturer/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +65,7 @@ const ManageLecturers = () => {
   };
   const deleteLecturer = async (lecturerId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/lecturer/${lecturerId}`, {
+      const response = await fetch(`${backendUrl}/api/lecturer/${lecturerId}`, {
         method: "DELETE",
       });
       if (!response.ok) {

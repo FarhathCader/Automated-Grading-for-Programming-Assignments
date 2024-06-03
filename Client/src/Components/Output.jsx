@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import axios from 'axios';
+import { backendUrl } from '../../config';
 
 const override = {
   display: "block",
@@ -36,7 +37,7 @@ export default function Output(props) {
   const fetchCreatedTime = async () => {
     try {
       if (user._id === undefined || contestId === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/enrollment/time/${user._id}/${contestId}`);
+      const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contestId}`);
       const data = res.data.createdAt;
       console.log("created time", data);
       if (data) setCreatedTime(data);
@@ -48,7 +49,7 @@ export default function Output(props) {
   const fetchContestDuration = async () => {
     try {
       if (contestId === undefined) return;
-      const res = await axios.get(`http://localhost:4000/api/contest/${contestId}`);
+      const res = await axios.get(`${backendUrl}/api/contest/${contestId}`);
       const data = res.data.contest.duration;
       console.log("contest duration", data);
       if (data) setContestDuration(data);

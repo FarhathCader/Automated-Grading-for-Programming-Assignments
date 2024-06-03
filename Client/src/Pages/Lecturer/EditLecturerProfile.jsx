@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SyncLoader from "react-spinners/ClipLoader";
+import { backendUrl } from "../../../config";
 
 const override = {
   display: "block",
@@ -27,12 +28,12 @@ const EditLectureProfile = (props) => {
   const [uploading, setUploading] = useState(false);
   const [upload, setUpload] = useState(false);
   const [image, setImage] = useState(logo);
-  const url = "http://localhost:4000/api/image"
+  const url = `${backendUrl}/api/image`
 
   const save = async () => {
 
     try{
-      const res  = await axios.put(`http://localhost:4000/api/lecturer/${props.lecturer._id}`,{
+      const res  = await axios.put(`${backendUrl}/api/lecturer/${props.lecturer._id}`,{
         username,
         email,
       });
@@ -115,7 +116,7 @@ const EditLectureProfile = (props) => {
   const handleDeleteButtonClick = async() => {
     setUploading(true);
     try {
-      const res = await axios.delete(`http://localhost:4000/api/image/${userId}`);
+      const res = await axios.delete(`${backendUrl}/api/image/${userId}`);
       const data = await res.data;
       if (res.status === 200) {
         setImage(Logo);
