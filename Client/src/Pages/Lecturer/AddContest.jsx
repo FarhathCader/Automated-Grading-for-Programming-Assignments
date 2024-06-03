@@ -134,9 +134,9 @@ const AddContest = ({ onAdd }) => {
 
     try {
         if (id) {
-          await axios.put(`http://localhost:4000/api/contest/${id}`, newContest);
+          await axios.put(`${backendUrl}/api/contest/${id}`, newContest);
         } else {
-          await axios.post("http://localhost:4000/api/contest", newContest);
+          await axios.post(`${backendUrl}/api/contest`, newContest);
         }
         toast.success("Contest saved successfully");
         navigate("/contest");
