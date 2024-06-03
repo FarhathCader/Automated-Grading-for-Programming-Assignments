@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path  = require('path')
 require("dotenv").config();
+
 
 
 const app = require("./app")
@@ -17,5 +19,13 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('../client/dist'));
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+    }
+    );
+  }
 
   module.exports = app;
