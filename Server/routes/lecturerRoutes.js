@@ -1,7 +1,7 @@
 const express = require('express');
 const routes = express.Router();
 
-const { updateLecturer,getLecturer,getLecturers,deleteLecturer } = require('../controller/LecturerController');
+const { updateLecturer,getLecturer,getLecturers,deleteLecturer } = require('../controller/lecturerController');
 
 routes.put('/:id', updateLecturer);
 routes.get('/:userId', getLecturer);
