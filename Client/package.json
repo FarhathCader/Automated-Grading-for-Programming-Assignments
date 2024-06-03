@@ -49,7 +49,9 @@
     "redux-persist": "^6.0.0",
     "serve": "^14.2.3",
     "toastify": "^2.0.1",
-    "vite": "^5.1.4"
+    "vite": "^5.1.4",
+    "@vitejs/plugin-react": "^4.2.1"
+
   },
   "devDependencies": {
     "@babel/plugin-syntax-jsx": "^7.24.1",
