@@ -8,8 +8,8 @@ def generate_commit_message():
     return random.choice(messages)
 
 # Start and end dates for committing
-start_date = datetime(2024, 4, 14)
-end_date = datetime(2024, 5, 11)
+start_date = datetime(2024, 5, 14)
+end_date = datetime(2024, 6, 10)
 
 # Calculate the number of days between the start and end dates
 num_days = (end_date - start_date).days + 1
