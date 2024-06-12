@@ -3,7 +3,6 @@ const Problem = require('../models/problems')
 const addProblem = async (req,res)=>{
     try{
         const{name,category,description,difficulty,testCases,grade,initialCode,programmingLanguage,examples} = req.body;
-      console.log(req.body)
 
         const problem = await Problem.create({
             name,
@@ -23,14 +22,12 @@ const addProblem = async (req,res)=>{
     }
 
     catch(err){
-        console.log(err)
         return res.status(400).json({msg : 'Error Occured',error : err.message})
     }
 
 }
 
 const getProblems = async (req,res)=>{
-    console.log("get problems")
     try{
         const problems = await Problem.find()
         return res.status(200).json({problems})
@@ -57,7 +54,6 @@ const deleteProblem = async (req,res)=>{
 const getProblem = async (req,res)=>{
     try{
         const problem = await Problem.findById(req.params.id.toString())
-    console.log("getting problem",problem.name)
 
         return res.status(200).json({problem})
     }
@@ -72,7 +68,6 @@ const updateInitialCode = async (req, res) => {
         // Find the problem by ID
         const problem = await Problem.findById(req.params.id);
 
-        console.log("updateing",problem.name," problem")
 
         if (!problem) {
             return res.status(404).json({ msg: 'Problem not found' });
@@ -100,7 +95,6 @@ const updateInitialCode = async (req, res) => {
 const updateProblem = async (req, res) => {
     try {
       const { name, category, description, difficulty, testCases, grade, initialCode,examples} = req.body;
-      console.log(req.body)
       const updatedProblem = await Problem.findByIdAndUpdate(
         req.params.id,
         {
@@ -123,7 +117,6 @@ const updateProblem = async (req, res) => {
   };
 
 const getPracticeProblems = async (req,res)=>{
-    console.log("get practice problems");
   try {
     const { page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;

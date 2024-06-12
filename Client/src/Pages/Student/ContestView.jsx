@@ -6,6 +6,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import CountDown from "./CountDown";
 import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
+import NotFoundPage from "../../Components/NotFoundPage";
 
 const override = {
   display: "block",
@@ -44,6 +45,7 @@ const ContestView = () => {
   const user = useSelector(state => state.user);
   const [enr, setEnr] = useState({});
   const [totalGrade, setTotalGrade] = useState(0);
+  const [notFound, setNotFound] = useState(false);
 
   const fetchTotalGrade = async () => {
     try {
@@ -122,8 +124,10 @@ const ContestView = () => {
       setContest(data);
     } catch (error) {
       console.error("Error fetching contest:", error);
+      setNotFound(true);
     } finally {
       setLoading(false);
+      console.log("data",contest);
     }
   };
 
@@ -153,6 +157,7 @@ const ContestView = () => {
   }, [contest]);
 
   return (
+    notFound === false ?
     <div className="container mx-auto mt-10 ">
       {contest && enr && <CountDown contestDuration={contest.duration} enrollmentCreatedAt={enr} />}
       {loading ? (
@@ -217,6 +222,8 @@ const ContestView = () => {
         </div>
       )}
     </div>
+    :
+    <NotFoundPage />
   );
 };
 

@@ -10,22 +10,18 @@ const getEnrolledStudentsWithGrades = async (req, res) => {
     // Find all enrollments for the given contestId
     const enrollments = await Enrollment.find({ contestId });
 
-    console.log('enrollments',enrollments);
 
     // Extract student IDs from the enrollments
     const studentIds = enrollments.map(enrollment => enrollment.studentId);
 
-    console.log('studentIds',studentIds);
 
     // Query the Student collection to get details of enrolled students
     const students = await Student.find({ _id: { $in: studentIds } });
 
-    console.log('students',students);
     // Calculate total grades for each student in the contest
     const studentsWithGrades = await Promise.all(students.map(async (student) => {
     const submissions = await Submission.find({ userId: student.userId, contestId });
 
-      console.log('submissions',submissions);
       // Group submissions by problem ID
       const submissionGroups = {};
       submissions.forEach(submission => {
@@ -64,7 +60,6 @@ const getEnrolledStudentsWithGrades = async (req, res) => {
 
 const getEnrolledStudents = async (req, res) => {
   try {
-    console.log('getEnrolledStudents',req.params);
     const { contestId } = req.params;
 
     // Find all enrollments for the given contestId
@@ -78,8 +73,6 @@ const getEnrolledStudents = async (req, res) => {
 
     res.status(200).json({ enrolledStudents });
   } catch (error) {
-
-    console.log('Error fetching enrolled students:', error);
     res.status(500).json({ error: 'Failed to fetch enrolled students' });
   }
 };
@@ -149,14 +142,25 @@ const getEnrolledContests = async (req, res) => {
     if (!student) {
       return res.status(404).json({ error: 'Student not found' });
     }
-    const enrollments = await Enrollment.find({ studentId: student._id});
-    const contestIds = enrollments.map(enrollment => enrollment.contestId);
-    const contests = await Contest.find({ _id: { $in: contestIds } });
-    res.status(200).json({ contests });
+    const contests = await Contest.find({});
+    const contestIds = contests.map(contest => contest._id);
+    const enrollments = await Enrollment.find({ studentId: student._id,
+      contestId: { $in: contestIds } }).populate('contestId');
+    
+    const currentDate = new Date();
+    const availableContests = enrollments.filter(enrollment => {
+      const endDate = new Date(enrollment.contestId.endDate);
+      return currentDate > endDate || currentDate.getTime() > enrollment.createdAt.getTime() + enrollment.contestId.duration*60000;
+    }).map(enrollment => enrollment.contestId);
+
+    res.status(200).json({ contests : availableContests });
   } catch (error) {
     console.error('Error fetching enrolled contests:', error);
     res.status(500).json({ error: 'Failed to fetch enrolled contests' });
   }
 };
+
+
+
 
 module.exports = { getEnrolledStudentsWithGrades,getEnrolledStudents , createEnrollment, getEnrolledStudent, getEnrollmentTime,getEnrolledContests};

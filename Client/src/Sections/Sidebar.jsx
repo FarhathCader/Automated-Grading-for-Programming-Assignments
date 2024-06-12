@@ -13,6 +13,8 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 import { backendUrl } from "../../config";
+import { useSearchParams } from 'react-router-dom';
+
 axios.defaults.withCredentials = true;
 
 const variants = {
@@ -54,6 +56,8 @@ const Sidebar = () => {
   const location = useLocation(); // Get the current location
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -122,6 +126,7 @@ const Sidebar = () => {
             <Link
               key={item.name}
               to={item.link}
+              
               id="link-box"
               className={
                 "flex justify-start items-center gap-4 w-full cursor-pointer rounded-xl " +

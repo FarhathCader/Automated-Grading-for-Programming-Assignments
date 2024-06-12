@@ -40,14 +40,12 @@ const updateStudent = async (req, res) => {
 
 const getStudent = async (req, res) => {
     const { userId } = req.params;
-    console.log(userId)
 
     try {
         // Find the student with the provided userId
         const student = await Student.findOne({ userId });
 
         if (!student) {
-            console.log("no student found")
             return res.status(404).json({ error: 'Student not found' });
         }
 
@@ -69,7 +67,6 @@ const getStudents = async (req, res) => {
 
 
         if (!students) {
-            console.log("no student found")
             return res.status(404).json({ error: 'Student not found' });
         }
 
@@ -91,9 +88,6 @@ const deleteStudent = async (req, res) => {
 
         // Find and delete the user associated with the lecturer's email
         const deletedUser = await User.findOneAndDelete({ email: deletedStudent.email });
-        if (!deletedUser) {
-            console.log("User not found"); // Handle if the associated user is not found
-        }
 
         res.status(200).json({ lecturer: deletedStudent, user: deletedUser });
     } catch (error) {
