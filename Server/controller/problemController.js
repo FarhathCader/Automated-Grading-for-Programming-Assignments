@@ -121,6 +121,21 @@ const updateProblem = async (req, res) => {
       return res.status(400).json({ msg: err.message });
     }
   };
+
+const getPracticeProblems = async (req,res)=>{
+    console.log("get practice problems");
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const problems = await Problem.find().skip(skip).limit(Number(limit));
+    const total = await Problem.countDocuments();
+
+    return res.status(200).json({ problems, total });
+  } catch (err) {
+    return res.status(400).json({ msg: err.message });
+  }
+}
   
 
-module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem}
+module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems}
