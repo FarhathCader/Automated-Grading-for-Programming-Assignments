@@ -9,7 +9,7 @@ import { backendUrl } from '../../../config';
 const override = {
   display: "block",
   margin: "0 auto",
-  borderColor: "red",
+  borderColor: "blue",
 };
 
 const CompletedContest = () => {
@@ -19,6 +19,7 @@ const CompletedContest = () => {
   const user = useSelector(state => state.user);
 
   useEffect(() => {
+    if (!user._id) return;
     fetchEnrolledContests();
   }, [user]);
 
@@ -31,12 +32,7 @@ const CompletedContest = () => {
         throw new Error("Failed to fetch enrolled contests");
       }
       const data = await response.json();
-      const availableContests = data.contests.filter(contest => {
-        const currentDate = new Date();
-        const endDate = new Date(contest.endDate);
-        return currentDate > endDate;
-      });
-      setContests(availableContests);
+      setContests(data.contests);
     } catch (error) {
       console.error("Error fetching enrolled contests:", error);
     } finally {
@@ -75,8 +71,13 @@ const CompletedContest = () => {
       <Sidebar />
       {loading ? (
         <div className="w-full flex justify-center items-center h-screen">
-          <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
-        </div>
+        <ClipLoader
+          color="blue"
+          loading={true}
+          size={150}
+          css={override}
+        />
+      </div>
       ) : (
         <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
           <Header bgColor="blue" />

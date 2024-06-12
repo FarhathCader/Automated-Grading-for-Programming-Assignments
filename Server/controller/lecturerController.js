@@ -3,7 +3,6 @@ const User = require('../models/user');
 
 const updateLecturer = async (req, res) => {
     const { id } = req.params;
-    console.log(req.body)
     try {
         // Check if the provided email already exists in the database
 
@@ -44,7 +43,6 @@ const getLecturer = async (req, res) => {
         const lecturer = await Lecturer.findOne({ userId });
 
         if (!lecturer) {
-            console.log("no student found")
             return res.status(404).json({ error: 'Student not found' });
         }
 
@@ -63,7 +61,6 @@ const getLecturers = async (req, res) => {
 
 
         if (!lecturers) {
-            console.log("no Lecturer found")
             return res.status(404).json({ error: 'Lecturer not found' });
         }
 
@@ -85,9 +82,6 @@ const deleteLecturer = async (req, res) => {
 
         // Find and delete the user associated with the lecturer's email
         const deletedUser = await User.findOneAndDelete({ email: deletedLecturer.email });
-        if (!deletedUser) {
-            console.log("User not found"); // Handle if the associated user is not found
-        }
 
         res.status(200).json({ lecturer: deletedLecturer, user: deletedUser });
     } catch (error) {

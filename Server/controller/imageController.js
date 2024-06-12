@@ -3,7 +3,6 @@ const User = require('../models/user');
 const cloudinary = require('../utils/cloudinary');
 
 const uploadImage = async (req, res) => {
-    console.log("uploadImage",req.body)
     const { image, userId } = req.body;
 
 

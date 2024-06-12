@@ -25,7 +25,6 @@ function generateSecureOTP(length) {
 let otp;
 
 const sendOtp = async(req,res)=>{
-        console.log(req.body);
         try{
         const {username,email,password,usertype,registrationNumber} = req.body;
         if(!username || !email || !password){
@@ -41,7 +40,6 @@ const sendOtp = async(req,res)=>{
         
         const availableLecturer =  await Lecturer.findOne({email : email.toLowerCase()}) ;
         const availableStudent =  await student.findOne({email :email.toLowerCase()});
-        console.log(availableLecturer,availableStudent)
         if(availableStudent || availableLecturer){
               return res.status(400).json({error:'Email already exists'});
         }
@@ -86,7 +84,6 @@ const sendOtp = async(req,res)=>{
     
             } else {
                 return res.status(200).json({msg:`Verify with the otp send to the email`});
-            //   console.log(data)
             }
           });
     
@@ -95,7 +92,6 @@ const sendOtp = async(req,res)=>{
         // return res.json({msg: 'User created successfully', otp});
         }
         catch(error){
-            console.log(error)
            return res.status(400).json({error: error.message});
         }
         
@@ -109,16 +105,13 @@ const signup = async (req,res)=>{
     
     try{
     const {username,email,password,usertype,OTP,registrationNumber} = req.body;
-    console.log(req.body);
     console.log(`OTP ${OTP} otp ${otp}`)
     hashedPassword = await bcrypt.hash(password,10);
 
     if(!OTP){
-        console.log("empty otp")
         return res.status(400).json({error: 'Please enter the OTP'});
     }
     if(OTP !== otp){
-        console.log("invalid otp")
         return res.status(400).json({error: 'Invalid OTP'});
     }
     else{
@@ -133,7 +126,6 @@ const signup = async (req,res)=>{
                
             const user = await User.create({username,email: email.toLowerCase(),password : hashedPassword,usertype});
             const stdnt = await student.create({username,email: email.toLowerCase(),password : hashedPassword,userId : user._id,regNo : registrationNumber});
-            console.log(stdnt);
         
             }
     }
@@ -141,7 +133,6 @@ const signup = async (req,res)=>{
     return res.status(200).json({msg: 'User created successfully'});
     }
     catch(error){
-        console.log(error)
        return res.status(400).json({error: error.message});
     }
     
@@ -194,7 +185,6 @@ const login = async (req, res) => {
 
         return res.status(200).json({ msg: userType, user });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -208,8 +198,7 @@ const login = async (req, res) => {
 
 const verifyToken = (req,res,next)=>{
     const cookie = req.headers.cookie;
-    // console.log("cookie is ",cookie)
-    // console.log("tokens",tokens);
+    
 
     if(!cookie){
          res.status(401).json({error: 'Cookie Expired Please login again'});
@@ -220,8 +209,7 @@ const verifyToken = (req,res,next)=>{
          res.status(401).json({error: 'Unauthorized'});
             return;
     }
-    // console.log("cookie",cookie);
-    // console.log("token",token);
+  
 
 
 
@@ -229,14 +217,11 @@ const verifyToken = (req,res,next)=>{
         if(err){
               res.status(403).json({error: 'Invalid Token'});
               return
-            //  console.log("error",err.message)
             // return;
         }
         else{
             // res.status(200).json({msg: 'success'});
-            console.log("Req.id",req.id);
             req.id = user.id;
-            // console.log("user id first",user.id)
             next();
 
 
@@ -269,7 +254,6 @@ const getUser = async (req, res) => {
 
 const refreshToken = async (req,res,next)=>{
     const cookie = req.headers.cookie;
-    console.log("cookie is ",cookie," on time",new Date().toLocaleTimeString());
     if(!cookie){
         return res.status(401).json({error: 'Cookie expired please login again'});
     }
@@ -290,7 +274,6 @@ const refreshToken = async (req,res,next)=>{
             expiresIn: '7d'
         })
 
-        console.log("re generated token",token);
 
         res.cookie(String(user.id),token,{
             path : '/',
@@ -348,10 +331,9 @@ const forgotPassword =
             
               transporter.sendMail(mailOptions, function(err, data) {
                 if (err) {
-                  console.log("Error " + err);
+                  return res.status(400).json({error:`${err}`});
                 } else {
                     return res.status(200).json({msg:`Check your email for the password reset link`});
-                //   console.log(data)
                 }
               });
 
@@ -370,7 +352,6 @@ const forgotPassword =
         async (req,res)=>{
             const {password} = req.body;
             const token = req.params.token;
-            console.log(token,password)
             if(!password){
                 return res.status(400).json({error : 'Password is mandatory'});
             }

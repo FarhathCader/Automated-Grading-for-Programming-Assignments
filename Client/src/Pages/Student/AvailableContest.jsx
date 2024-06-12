@@ -91,24 +91,20 @@ const AvailableContest = () => {
   };
   const navigate = useNavigate();
   useEffect(() => {
+    if (!student) return;
     fetchAvailableContests();
-  }, []);  
+  }, [student]);  
   
   const fetchAvailableContests = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${backendUrl}/api/contest`);
+      const response = await fetch(`${backendUrl}/api/contest/available/${student._id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }
       const data = await response.json();
-      const availableContests = data.contests.filter(contest => {
-        const currentDate = new Date();
-        const startDate = new Date(contest.startDate);
-        const endDate = new Date(contest.endDate);
-        return currentDate >= startDate && currentDate <= endDate;
-      });
-      setContests(availableContests);
+      setContests(data.availableContests_);
+      console.log("data", data);
     } catch (error) {
       console.error("Error fetching contests:", error);
     }

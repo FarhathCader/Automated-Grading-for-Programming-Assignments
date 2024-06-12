@@ -19,7 +19,6 @@ const Contest = () => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
-  const [contestToEnd, setContestToEnd] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -82,31 +81,7 @@ const Contest = () => {
     }
   };
 
-  const endContest = async (contestId) => {
-    try {
-      const response = await fetch(`${backendUrl}/api/contest/end/${contestId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ endDate: new Date().toISOString() }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to end contest");
-      }
-      // Update the contest's end date in the state
-      setContests((prevContests) =>
-        prevContests.map((contest) =>
-          contest._id === contestId ? { ...contest, endDate: new Date().toISOString() } : contest
-        )
-      );
-    } catch (error) {
-      console.error("Error ending contest:", error);
-    }
-    finally {
-      window.location.reload();
-    }
-  };
+ 
 
   const handleDeleteConfirmation = (contestId) => {
     setContestToDelete(contestId);
@@ -121,22 +96,12 @@ const Contest = () => {
     }
   };
 
-  const handleEndConfirmation = (contestId) => {
-    setContestToEnd(contestId);
-    setShowConfirmation(true);
-  };
+ 
 
-  const handleConfirmEnd = () => {
-    if (contestToEnd) {
-      endContest(contestToEnd);
-      setContestToEnd(null);
-      setShowConfirmation(false);
-    }
-  };
+
 
   const handleCancelAction = () => {
     setContestToDelete(null);
-    setContestToEnd(null);
     setShowConfirmation(false);
   };
 
@@ -238,9 +203,8 @@ const Contest = () => {
                             />
                             <button
                               className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                              onClick={() => handleEndConfirmation(contest._id)}
                             >
-                              End Contest
+                              View Progress
                             </button>
                           </>
                         )}
@@ -261,10 +225,10 @@ const Contest = () => {
               {showConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="bg-white p-4 rounded shadow">
-                    <p className="mb-4">Are you sure you want to {contestToDelete ? 'delete' : 'end'} this contest? You cannot undo this action.</p>
+                    <p className="mb-4">Are you sure you want to delete this contest? You cannot undo this action.</p>
                     <div className="flex justify-end">
-                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={contestToDelete ? handleConfirmDelete : handleConfirmEnd}>
-                        {contestToDelete ? 'Delete' : 'End'} 
+                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={ handleConfirmDelete}>
+                        Delete
                       </button>
                       <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelAction}>
                         Cancel

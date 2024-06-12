@@ -1,5 +1,6 @@
 const contest = require('../models/contest');
 const Contest = require('../models/contest')
+const Enrollment = require('../models/enrollment')
 
 
 async function addContest(req, res) {
@@ -24,57 +25,6 @@ async function addContest(req, res) {
         res.status(500).json({ error: 'Failed to add contest' });
     }
 }
-
-
-// const endContest = async (req, res) => {
-//   const { id } = req.params;
-//   console.log("id",id)
-//   try {
-//     const updatedContest = await Contest.findByIdAndUpdate(
-//       id,
-//       { endDate: new Date() },
-//       { new: true }
-//     );
-//     if (!updatedContest) {
-//       return res.status(404).json({ message: 'Contest not found' });
-//     }
-
-//     res.status(200).json({ contest: updatedContest });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to end contest', error });
-//   }
-// };
-const endContest = async (req, res) => {
-  const { id } = req.params;
-  console.log("id", id);
-
-  try {
-    // Fetch the contest details
-    const contest = await Contest.findById(id);
-    if (!contest) {
-      return res.status(404).json({ message: 'Contest not found' });
-    }
-
-    const endDate = new Date();
-    const startDate = new Date(contest.startDate);
-    const actualDuration = Math.floor((endDate - startDate) / 60000); // Duration in minutes
-
-    console.log('Actual duration:', actualDuration,'end',endDate,'start',startDate);
-    // Update the end date and possibly the duration
-    const updatedContest = await Contest.findByIdAndUpdate(
-      id,
-      {
-        endDate: endDate,
-        duration: Math.min(contest.duration, actualDuration) // Update duration if necessary
-      },
-      { new: true }
-    );
-
-    res.status(200).json({ contest: updatedContest });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to end contest', error });
-  }
-};
 
 
 const getContests = async (req,res)=>{
@@ -121,10 +71,8 @@ const getContest = async (req, res) => {
 
 
 const updateContest = async (req, res) => {
-  console.log("req.body",req.body)
     try {
       const { name, startDate, endDate, duration, problems } = req.body;
-      console.log(req.body)
       const updatedContest = await Contest.findByIdAndUpdate(
         req.params.id,
         {
@@ -139,5 +87,39 @@ const updateContest = async (req, res) => {
     }
   };
   
+const getAvilabalContests = async (req, res) => {
+    try {
+      const { studentId } = req.params;
+      const contests = await Contest.find();
+      const currentDate = new Date();
+      const availableContests = contests.filter(contest => {
+        const startDate = new Date(contest.startDate);
+        const endDate = new Date(contest.endDate);
+        return currentDate >= startDate && currentDate <= endDate;
+      });
+      const availableContestIds = availableContests.map(contest => contest._id.toString());
+      const enrollments = await Enrollment.find({ studentId, contestId: { $in: availableContestIds } }).populate('contestId');
+       const conteststoremove = enrollments.filter(contest => {
+        return contest.createdAt.getTime() + contest.contestId.duration*60000 < currentDate.getTime();      
+       }).map(contest => contest.contestId._id.toString());
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest,endContest}
+       const availableContests_ = availableContests.filter(contest => {
+        return !conteststoremove.includes(contest._id.toString());
+      }
+    )
+      res.status(200).json({availableContests_});
+      
+      
+
+
+      
+  }
+  catch (error) {
+    console.error('Error fetching available contests:', error);
+    res.status(500).json({ error: 'Failed to fetch available contests' });
+  }
+}
+
+  
+
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests}
