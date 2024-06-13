@@ -129,7 +129,7 @@ const Contest = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <SidebarLecturer />
+      {/* <SidebarLecturer /> */}
       {
         loading ? (
           <div className="w-full flex justify-center items-center h-screen">
@@ -141,8 +141,8 @@ const Contest = () => {
             />
           </div>
         ) : (
-          <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
-            <Header bgColor="fuchsia" />
+          <section className="w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
+            {/* <Header bgColor="fuchsia" /> */}
             <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
               <div className="flex items-center justify-between w-full mb-4">
                 <div className="relative flex-grow mr-4">

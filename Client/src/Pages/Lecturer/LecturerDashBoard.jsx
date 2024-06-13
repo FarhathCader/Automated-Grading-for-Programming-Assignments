@@ -9,6 +9,7 @@ import {  CSSProperties } from "react";
 import { ToastContainer,toast } from 'react-toastify';
 import { authActions } from "../../store";
 import { backendUrl } from "../../../config";
+import Approval from "./Approval";
 const override = {
   display: "block",
   margin: "0 auto",
@@ -19,7 +20,7 @@ const LecturerDashBoard = () => {
   const navigate = useNavigate();
   const isLoggedin = useSelector((state) => state.isLoggedin);
   const userType = useSelector((state) => state.userType);
-  const [isApproved, setIsApproved] = useState();
+  const [isApproved, setIsApproved] = useState(true);
   const [lecturer, setLecturer] = useState(null);
   const [loading, setLoading] = useState(true);
   const user  = useSelector(state => state.user);
@@ -70,11 +71,11 @@ const LecturerDashBoard = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-     {isApproved ?  <SidebarLecturer  /> : null}
+     {/* {isApproved ?  <SidebarLecturer  /> : null} */}
      { 
      !loading ? 
     ( <section className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-        <Header bgColor="fuchsia" />
+        {/* <Header bgColor="fuchsia" /> */}
        
       
         <div className="w-100 p-6 bg-fuchsia-100 rounded-xl shadow-lg flex flex-col items-center mt-20">
@@ -82,9 +83,8 @@ const LecturerDashBoard = () => {
             Welcome to your Dashboard!
           </h1>
          
-         {
-          isApproved ? 
-        ( <div className="mb-6 flex flex-col items-center justify-center">
+         
+        <div className="mb-6 flex flex-col items-center justify-center">
             <p className="text-gray-600 text-lg mb-4">
               Explore the available contests or start practicing to sharpen your skills.
             </p>
@@ -100,21 +100,13 @@ const LecturerDashBoard = () => {
                 </button>
               </Link>
             </div>
-          </div>):
-           (
-            <div className="flex flex-col items-center">
-            <div className="bg-yellow-200 text-yellow-800 p-4 mb-4 rounded-md">
-              Your account is awaiting approval from the admin. Please wait until you are approved to access your dashboard.
-            </div>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 focus:outline-none"
-            >
-              Logout
-            </button>
           </div>
-          )
-          }
+
+         {!isApproved && <Approval handleLogout={handleLogout} />}
+          
+        
+
+          
         </div>
         
       

@@ -22,7 +22,7 @@ async function addContest(req, res) {
         res.status(201).json({ message: 'Contest created successfully', contest });
     } catch (error) {
         console.error('Error adding contest:', error);
-        res.status(500).json({ error: 'Failed to add contest' });
+        res.status(500).json({ error: err.message });
     }
 }
 

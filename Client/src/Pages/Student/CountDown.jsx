@@ -38,9 +38,9 @@ const CountDown = ({ contestDuration, enrollmentCreatedAt }) => {
   return (
     <div className="flex items-center justify-center bg-gray-100 p-6">
     <div className="bg-white p-6 rounded-lg shadow-lg w-full">
-      <p className="text-xl text-gray-700 text-center">
+     {enrollmentCreatedAt && <p className="text-xl text-gray-700 text-center">
         {timeRemaining === null ? 'Contest Ended' : `Time Remaining: ${timeRemaining}`}
-      </p>
+      </p>}
     </div>
   </div>
   );

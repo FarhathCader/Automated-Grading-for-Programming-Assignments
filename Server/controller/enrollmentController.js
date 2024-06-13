@@ -128,7 +128,15 @@ const getEnrollmentTime = async (req, res) => {
       return res.status(404).json({ error: 'Enrollment not found' });
     }
 
-    res.status(200).json({ createdAt: enrollment.createdAt });
+    const contest = await Contest.findById(contestId);
+
+    if (!contest) {
+      return res.status(404).json({ error: 'Contest not found' });
+    }
+
+    const duration = Math.min(contest.duration, (new Date(contest.endDate).getTime() - new Date(enrollment.createdAt).getTime()) / 60000)
+
+    res.status(200).json({ createdAt: enrollment.createdAt, duration});
   } catch (error) {
     console.error('Error fetching enrollment time:', error);
     res.status(500).json({ error: 'Failed to fetch enrollment time' });

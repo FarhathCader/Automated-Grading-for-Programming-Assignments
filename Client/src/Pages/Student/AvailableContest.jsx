@@ -11,15 +11,13 @@ import { backendUrl } from "../../../config";
 const override = {
   display: "block",
   margin: "0 auto",
-  borderColor: "red",
+  borderColor: "blue",
 };
 
 const AvailableContest = () => {
-  
-  // Dummy contest data
 
-  const [contests, setContests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [contests, setContests] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [enterContest, setEnterContest] = useState(false);
   const [activeContest, setActiveContest] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState("");
@@ -32,17 +30,14 @@ const AvailableContest = () => {
   }, [user]);
 
   const fetchStudent = async () => {
-    setLoading(true);
     try {
       if (user._id === undefined) return;
       const res = user && await axios.get(`${backendUrl}/api/student/${user._id}`);
       const data = res && (await res.data);
       if (data) setStudent(data);
     } catch (err) {
-      console.log("error", err.message)
-    } finally {
-      setLoading(false);
-    }
+      toast.error("Error fetching student data");
+    } 
   };
 
   useEffect(() => {
@@ -78,7 +73,6 @@ const AvailableContest = () => {
   const handleContestDetailsClick = async (contestId) => {
    try{
     const response  = await axios.post(`${backendUrl}/api/enrollment/`, {studentId: student._id, contestId});
-    console.log("response", response.data);
    }
    catch(error){
      toast.error("Error creating enrollment:");
@@ -104,7 +98,6 @@ const AvailableContest = () => {
       }
       const data = await response.json();
       setContests(data.availableContests_);
-      console.log("data", data);
     } catch (error) {
       console.error("Error fetching contests:", error);
     }
@@ -135,6 +128,7 @@ const AvailableContest = () => {
     return durationString.trim();
   };
 
+
   const handleClick = async (contest) => {
     try {
       const response = await axios.get(`${backendUrl}/api/enrollment/${student._id}/${contest._id}`);
@@ -148,83 +142,84 @@ const AvailableContest = () => {
       console.error('Error checking enrollment:', error);
     }
   };
-  
 
   return (
- enterContest ? (
-  <div className="w-full h-screen flex justify-center items-center bg-gray-100">
-  <div className="w-96 p-8 bg-white rounded-lg shadow-md">
-    <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
-    <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
-    <button 
-      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      onClick={() => handleContestDetailsClick(activeContest._id)}
-    >
-      Enter Contest
-    </button>
-  </div>
-</div>
-
-    ) :
- ( 
-  <main className="w-full h-screen flex justify-between items-start">
-      <Sidebar />
-     {
-        loading?
-        (
-      
-          <div className="w-full flex justify-center items-center h-screen">
-                <ClipLoader
-                  color="blue"
-                  loading={true}
-                  size={150}
-                  css={override}
-                />
-              </div>
-        
-        ) : 
-
-      (<section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-        <Header bgColor="blue" />
-        <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
-          <h2 className="text-xl font-semibold mb-4 text-blue-950">
-            Available Contests
-          </h2>
-          <table className="w-full">
-            <thead>
-              <tr className="bg-blue-200">
-                <th className="px-6 py-3 text-left text-blue-800">Name</th>
-                <th className="px-6 py-3 text-left text-blue-800">End Date</th>
-                <th className="px-6 py-3 text-left text-blue-800">Duration</th>
-                <th className="px-6 py-3 text-left text-blue-800">Problems</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contests.map((contest, index) => (
-                <tr
-                  key={index}
-                  className={
-                    index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"
-                  }
-                  // onClick={()=>handleContestDetailsClick(contest._id)}
-                  onClick={()=> handleClick(contest)}
-                >
-                  <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                  <td className="px-6 py-4 text-blue-200">
-                  {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
-
-                  </td>
-                  <td className="px-6 py-4 text-blue-200">
-                    {formatDuration(contest.duration)}
-                  </td>
-                  <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    enterContest ? (
+      <div className="w-full h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-96 p-8 bg-white rounded-lg shadow-md">
+          <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
+          <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
+          <button 
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={() => handleContestDetailsClick(activeContest._id)}
+          >
+            Enter Contest
+          </button>
         </div>
-      </section>)}
-    </main>)
+      </div>
+    ) : ( 
+      <main className="w-full h-screen flex justify-between items-start">
+        {/* <Sidebar /> */}
+        {loading ? (
+          <div className="w-full flex justify-center items-center h-screen">
+          <ClipLoader
+            color="blue"
+            loading={true}
+            size={150}
+            css={override}
+          />
+        </div>
+        ) : (
+          <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+            {/* <Header bgColor="blue" /> */}
+           
+            {contests && contests.length > 0 ? (
+               <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
+              <h2 className="text-xl font-semibold mb-4 text-blue-950">
+                Available Contests
+              </h2>
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-blue-200">
+                      <th className="px-6 py-3 text-left text-blue-800">Name</th>
+                      <th className="px-6 py-3 text-left text-blue-800">End Date</th>
+                      <th className="px-6 py-3 text-left text-blue-800">Duration</th>
+                      <th className="px-6 py-3 text-left text-blue-800">Problems</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contests.map((contest, index) => (
+                      <tr
+                        key={index}
+                        className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"}
+                        onClick={() => handleClick(contest)}
+                      >
+                        <td className="px-6 py-4 text-blue-200">{contest.name}</td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        </td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {formatDuration(contest.duration)}
+                        </td>
+                        <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                </div>
+              ) : (
+                <div className="w-full h-screen flex justify-center items-center">
+                <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+                  <h1 className="text-4xl font-bold text-blue-900 mb-4">No available Contests</h1>
+                  <p className="text-lg text-blue-950">There are no available contests right now. Come back later!</p>
+                </div>
+              </div>
+
+              )}
+          </section>
+        )}
+      </main>
+    )
   );
 };
 

@@ -16,7 +16,7 @@ export default function StudentDashboard() {
   return (
    
     <main className='w-full h-screen flex justify-between items-start'>
-      <Sidebar/>
+      {/* <Sidebar/> */}
       
       <Feed/>
     </main>
