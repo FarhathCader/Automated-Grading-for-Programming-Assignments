@@ -14,7 +14,7 @@ const override = {
 
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
 
@@ -81,9 +81,10 @@ const CompletedContest = () => {
       ) : (
         <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
           {/* <Header bgColor="blue" /> */}
+          {contests && contests.length > 0 ? (
           <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 overflow-x-auto">
             <h2 className="text-xl font-semibold mb-4 text-blue-950">Completed Contests</h2>
-            {contests.length > 0 ? (
+        
               <div className="w-full overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -114,10 +115,19 @@ const CompletedContest = () => {
                   </tbody>
                 </table>
               </div>
+
+              </div>
             ) : (
-              <p className="text-lg text-blue-950">You have no completed contests. Participate in a contest to see it here!</p>
+              <div className="w-full h-screen flex justify-center items-center">
+              <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+                <h1 className="text-4xl font-bold text-blue-900 mb-4">No Completed Contests</h1>
+                <p className="text-lg text-blue-950 text-center">You have no completed contests. Participate in a contest to see it here!!</p>
+              </div>
+            </div>
+    
+
+
             )}
-          </div>
         </section>
       )}
     </main>

@@ -75,11 +75,13 @@ function App() {
         <Route path="/practice" element={<Practice />} />
         <Route path="/profile_std" element={<StudentProfile />} />
         <Route path="/profile_std/edit" element={<EditStudentProfile />} />
-        <Route path='/problems/:problemId' element={<CodeEditor />} />
-        <Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
-        <Route path="/contestview/:id" element={<ContestView />} />
 
 </Route>
+<Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
+<Route path="/contestview/:id" element={<ContestView />} />
+<Route path='/problems/:problemId' element={<CodeEditor />} />
+
+
 
       </Route>
 
