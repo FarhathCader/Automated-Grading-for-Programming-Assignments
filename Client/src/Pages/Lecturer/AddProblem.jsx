@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FaPlus } from 'react-icons/fa';
 import { backendUrl } from "../../../config";
+import { useSelector } from 'react-redux';
 
 const AddProblem = () => {
+  const user = useSelector(state => state.user);
   const [formData, setFormData] = useState({
     name: '',
     difficulty: '',
@@ -26,7 +28,8 @@ const AddProblem = () => {
     ],
     testCases: [],
     grade: 0,
-    examples: []
+    examples: [],
+    isPractice: false,
   });
   const { id } = useParams();
   const navigate = useNavigate()
@@ -35,6 +38,15 @@ const AddProblem = () => {
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+
+  const handleCheckboxChangePractice = (e) => {
+    const { checked } = e.target;
+    setFormData({
+      ...formData,
+      isPractice: checked,
     });
   };
 
@@ -66,7 +78,7 @@ const AddProblem = () => {
     });
   };
 
-  
+
 
   const handleTestCaseChange = (e, index, field) => {
     const { value } = e.target;
@@ -78,7 +90,7 @@ const AddProblem = () => {
       testCases: updatedTestCases
     });
   };
-  
+
   const handleCheckboxChange = (e, index) => {
     const { checked } = e.target;
     const updatedTestCases = [...formData.testCases];
@@ -88,7 +100,7 @@ const AddProblem = () => {
       testCases: updatedTestCases
     });
   };
-  
+
   const addTestCase = () => {
     console.log("add test case")
     setFormData({
@@ -96,7 +108,7 @@ const AddProblem = () => {
       testCases: [...formData.testCases, { input: '', expectedOutput: '', isSample: false, weight: 0 }]
     });
   };
-  
+
   const removeTestCase = (index) => {
     const updatedTestCases = [...formData.testCases];
     updatedTestCases.splice(index, 1);
@@ -105,13 +117,15 @@ const AddProblem = () => {
       testCases: updatedTestCases
     });
   };
-  
+
 
   useEffect(() => {
     if (id) {
       fetchProblemDetails(id);
     }
   }, [id]);
+
+
 
   const fetchProblemDetails = async (id) => {
     try {
@@ -131,15 +145,15 @@ const AddProblem = () => {
       console.error('Error fetching problem details:', error);
     }
   };
-    useEffect(() => {
-    
-    if(localStorage.getItem('codes')){
-      setFormData({...formData, initialCode :JSON.parse(localStorage.getItem('codes'))});
+  useEffect(() => {
+
+    if (localStorage.getItem('codes')) {
+      setFormData({ ...formData, initialCode: JSON.parse(localStorage.getItem('codes')) });
 
     }
   }, []);
 
-  
+
   const updateInitialCode = (newInitialCode) => {
     setFormData({
       ...formData,
@@ -151,24 +165,27 @@ const AddProblem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validation code here...
-        if(!formData.name){
+    if (!formData.name) {
       toast.error('Name is required');
       return;
     }
-    if(!formData.difficulty){
+    if (!formData.difficulty) {
       toast.error('Difficulty is required');
       return;
     }
-    if(!formData.category){
+    if (!formData.category) {
       toast.error('Category is required');
       return;
     }
-    if(!formData.description){
+    if (!formData.description) {
       toast.error('Description is required');
       return;
     }
-    if(!formData.grade){
+    if (!formData.grade) {
       toast.error('Grade is required');
+      return;
+    }
+    if(user._id === undefined){
       return;
     }
     const invalidTestCase = formData.testCases.find(testCase => testCase.weight <= 0);
@@ -181,17 +198,17 @@ const AddProblem = () => {
     const method = id ? 'PUT' : 'POST';
 
     try {
-      await axios({
+      const response = await axios({
         method: method,
         url: url,
-        data: formData,
+        data:{ ...formData,createdBy : user._id},
       });
+      console.log(response)
       toast.success(`${id ? 'Problem updated' : 'Problem added'} successfully!`);
       localStorage.clear();
       navigate('/qbank');
     } catch (error) {
-      console.error('Error:', error);
-      toast.error(`Error ${id ? 'updating' : 'adding'} problem. Please try again.`);
+      toast.error(`Error ${id ? 'updating' : 'adding'} problem. ${error}`);
     }
   };
 
@@ -203,9 +220,20 @@ const AddProblem = () => {
           <label className="block mb-1 text-sm font-medium text-gray-700">Name:</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
         </div>
+
         <div>
           <label className="block mb-1 text-sm font-medium text-gray-700">Difficulty:</label>
-          <input type="text" name="difficulty" value={formData.difficulty} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
+          <select
+            name="difficulty"
+            value={formData.difficulty}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+          >
+            <option value="">Select an Option</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium text-gray-700">Category:</label>
@@ -222,63 +250,60 @@ const AddProblem = () => {
         <div className="col-span-2">
           <h3 className="text-lg font-semibold mb-2">Test Cases:</h3>
           {formData.testCases.map((testCase, index) => (
-          <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4 mb-5">
-          <label className="block mb-1 text-sm font-medium text-gray-700">Test Case {index + 1}:</label>
-          <div className="space-y-2">
-            <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
-            <textarea
-              type="text"
-              name="input"
-              value={testCase.input}
-              onChange={(e) => handleTestCaseChange(e, index, 'input')}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
-            <textarea
-              type="text"
-              name={`expectedoutput`}
-              value={testCase.expectedOutput}
-              onChange={(e) => handleTestCaseChange(e, index, 'expectedOutput')}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <div className="inline-flex items-center">
-            <input
-              type="checkbox"
-              name={`isSample`}
-              checked={testCase.isSample}
-              onChange={(e) => handleCheckboxChange(e, index)}
-              className="mr-2"
-            />
-            <span className="text-sm font-medium text-gray-700">Sample</span>
-          </div>
-          <div className="space-y-2">
-            <label className="block mb-1 text-sm font-medium text-gray-700">Weight:</label>
-            <input
-              type="number"
-              name={`weight`}
-              value={testCase.weight}
-              onChange={(e) => handleTestCaseChange(e, index, 'weight')}
-              placeholder="Weight"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-          <button className='mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600' type="button" onClick={() => removeTestCase(index)}>Remove Testcase</button>
-        </div>
+            <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4 mb-5">
+              <label className="block mb-1 text-sm font-medium text-gray-700">Test Case {index + 1}:</label>
+              <div className="space-y-2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
+                <textarea
+                  type="text"
+                  name="input"
+                  value={testCase.input}
+                  onChange={(e) => handleTestCaseChange(e, index, 'input')}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
+                <textarea
+                  type="text"
+                  name={`expectedoutput`}
+                  value={testCase.expectedOutput}
+                  onChange={(e) => handleTestCaseChange(e, index, 'expectedOutput')}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  name={`isSample`}
+                  checked={testCase.isSample}
+                  onChange={(e) => handleCheckboxChange(e, index)}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium text-gray-700">Sample</span>
+              </div>
+              <div className="space-y-2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">Weight:</label>
+                <input
+                  type="number"
+                  name={`weight`}
+                  value={testCase.weight}
+                  onChange={(e) => handleTestCaseChange(e, index, 'weight')}
+                  placeholder="Weight"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <button className='mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600' type="button" onClick={() => removeTestCase(index)}>Remove Testcase</button>
+            </div>
           ))}
           <button type="button" onClick={addTestCase} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-          Add New Testcase</button>
+            Add New Testcase</button>
         </div>
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Grade:</label>
-          <input type="number" name="grade" value={formData.grade} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
-        </div>
+
         <div className="col-span-2">
           <h3 className="text-lg font-semibold mb-2">Examples:</h3>
           {formData.examples.map((example, index) => (
-              <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4">
+            <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4">
               <label className="block mb-1 text-sm font-medium text-gray-700">Example {index + 1}:</label>
               <div className="space-y-2">
                 <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
@@ -315,6 +340,21 @@ const AddProblem = () => {
           ))}
           <button type="button" onClick={addExample} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Add Example</button>
         </div>
+
+        <div>
+          <label className="block mb-1 text-sm font-medium text-gray-700">Grade:</label>
+          <input type="number" name="grade" value={formData.grade} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
+        </div>
+        <div>
+          <label className="block mb-1 text-sm font-medium text-gray-700">Add to Practice List:</label>
+          <input
+            type="checkbox"
+            name="isPractice"
+            checked={formData.isPractice}
+            onChange={handleCheckboxChangePractice}
+            className="mr-2"
+          />
+        </div>
         <div className="col-span-2">
           <button type="submit" className="w-full bg-indigo-500 text-white px-6 py-3 rounded-md hover:bg-indigo-600">
             {id ? 'Update Problem' : 'Add Problem'}
@@ -335,7 +375,7 @@ const AddProblem = () => {
       />
     </div>
   );
-  
+
 };
 
 export default AddProblem;

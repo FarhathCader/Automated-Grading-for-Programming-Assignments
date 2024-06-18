@@ -27,6 +27,14 @@ const problemSchema = new mongoose.Schema({
             }
         ]
     },
+
+    isPractice : {
+        type : Boolean
+    },
+    createdBy:{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User'
+    },
     //testcases has input and expected output
     testCases: {
         type: [
