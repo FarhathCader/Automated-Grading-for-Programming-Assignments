@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from 'react-spinners/MoonLoader';
 import { backendUrl } from "../../../config";
+import { useSelector } from "react-redux";
 
 const override = {
   display: "block",
@@ -28,6 +29,8 @@ const AddContest = ({ onAdd }) => {
   const { id } = useParams();
   const [loading,setLoading] = useState(false)
   const [disabled_btn,setDisabled_btn] = useState(false)
+
+  const user = useSelector(state => state.user);
 
   const fetchData = async()=> {
     setLoading(true)
@@ -129,7 +132,8 @@ const AddContest = ({ onAdd }) => {
       startDate,
       endDate,
       duration: totalDurationMinutes,
-      problems: selectedProblems 
+      problems: selectedProblems,
+      createdBy : user._id
     };
 
     try {

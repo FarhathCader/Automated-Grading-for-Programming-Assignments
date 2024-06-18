@@ -160,7 +160,13 @@ const Contest = () => {
                   </button>
                 </div>
               </div>
-              <table className="w-full">
+
+              </div>
+
+              <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+
+         {   filteredContests && filteredContests.length > 0 ?
+           <table className="w-full">
                 <thead>
                   <tr className="bg-fuchsia-200">
                     <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
@@ -216,12 +222,26 @@ const Contest = () => {
                   ))}
                 </tbody>
               </table>
+              :
+              <div className="w-full flex justify-center items-center mt-5">
+          <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
+            <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
+            <p className="text-lg text-fuchsia-700 text-center">
+              There are no {!showCompleted ? 'active' : 'completed'} contests. Start by adding a contest.
+            </p>
+          </div>
+        </div>
+              }
+              </div>
+
               <button
                 className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
                 onClick={handleShowCompletedClick}
               >
                 {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
               </button>
+              
+         
               {showConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="bg-white p-4 rounded shadow">
@@ -237,7 +257,7 @@ const Contest = () => {
                   </div>
                 </div>
               )}
-            </div>
+            
           </section>
         )
       }

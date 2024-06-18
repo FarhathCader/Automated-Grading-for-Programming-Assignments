@@ -5,7 +5,8 @@ const Enrollment = require('../models/enrollment')
 
 async function addContest(req, res) {
     try {
-        const { name, startDate, endDate, duration, problems } = req.body;
+        const { name, startDate, endDate, duration, problems,createdBy } = req.body;
+        
 
         // Create a new Contest document
         const contest = new Contest({
@@ -13,7 +14,8 @@ async function addContest(req, res) {
             startDate,
             endDate,
             duration,
-            problems
+            problems,
+            createdBy
         });
 
         // Save the contest to the database
@@ -28,6 +30,7 @@ async function addContest(req, res) {
 
 
 const getContests = async (req,res)=>{
+  
     try{
         const contests = await Contest.find()
         return res.status(200).json({contests})
