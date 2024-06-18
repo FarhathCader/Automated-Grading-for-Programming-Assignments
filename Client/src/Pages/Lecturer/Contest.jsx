@@ -7,6 +7,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import GeneratePdf from "./GeneratePdf";
 import { backendUrl } from "../../../config";
+import { useSelector } from "react-redux";
 
 const override = {
   display: "block",
@@ -19,17 +20,18 @@ const Contest = () => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const user = useSelector(state => state.user);
 
   useEffect(() => {
     fetchContests();
-  }, []);
+  }, [user]);
 
   const fetchContests = async () => {
-    setLoading(true);
     try {
-      const response = await fetch(`${backendUrl}/api/contest`);
+      if(user._id === undefined)return
+      const response = await fetch(`${backendUrl}/api/contest/${user._id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }
@@ -38,6 +40,7 @@ const Contest = () => {
     } catch (error) {
       console.error("Error fetching contests:", error);
     } finally {
+      if(user._id !== undefined)
       setLoading(false);
     }
   };

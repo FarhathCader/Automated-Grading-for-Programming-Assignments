@@ -30,9 +30,13 @@ async function addContest(req, res) {
 
 
 const getContests = async (req,res)=>{
-  
+
     try{
-        const contests = await Contest.find()
+
+        console.log(req)
+
+        const {userId} = req.params;
+        const contests = await Contest.find({createdBy:userId})
         return res.status(200).json({contests})
     }
     catch(err){
