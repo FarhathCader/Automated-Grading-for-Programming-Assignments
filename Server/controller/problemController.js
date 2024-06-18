@@ -1,8 +1,12 @@
 const Problem = require('../models/problems')
+const User = require('../models/user')
 
 const addProblem = async (req,res)=>{
     try{
         const{name,category,description,difficulty,testCases,grade,initialCode,programmingLanguage,examples,isPractice,createdBy} = req.body;
+
+        const added = await User.findById(createdBy);
+
 
         const problem = await Problem.create({
             name,
@@ -15,7 +19,8 @@ const addProblem = async (req,res)=>{
             programmingLanguage,
             examples,
             isPractice,
-            createdBy
+            createdBy,
+            addedBy : added.username
         })
 
         return res.status(201).json({problem})
@@ -55,7 +60,7 @@ const deleteProblem = async (req,res)=>{
 
 const getProblem = async (req,res)=>{
     try{
-        const problem = await Problem.findById(req.params.id.toString())
+        const problem = await Problem.findById(req.params.id.toString());
 
         return res.status(200).json({problem})
     }

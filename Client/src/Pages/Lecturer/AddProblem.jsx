@@ -185,6 +185,10 @@ const AddProblem = () => {
       toast.error('Grade is required');
       return;
     }
+    if(formData.testCases.length === 0){
+      toast.error('Test Cases cannot be empty');
+      return;
+    }
     if(user._id === undefined){
       return;
     }

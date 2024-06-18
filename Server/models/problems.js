@@ -35,6 +35,10 @@ const problemSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
     },
+
+    addedBy:{
+        type : String
+    },
     //testcases has input and expected output
     testCases: {
         type: [

@@ -54,6 +54,7 @@ import SubmissionResult from "./Components/SubmissionResult";
 import Layout from "./Components/Layout";
 import Sidebar from "./Sections/Sidebar";
 import SidebarLecturer from "./Sections/SidebarLecturer";
+import ViewProblem from "./Pages/Lecturer/ViewProblem";
 
 
 
@@ -92,13 +93,17 @@ function App() {
         <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
         <Route path="/contest" element={<Contest />} />
-        <Route path="/addcontest" element={<AddContest />} />
-        <Route path="/editcontest/:id" element={<AddContest />} />
-        <Route path="/contest/:id" element={<ContestDetails />} />
         <Route path="/problem" element={<QuestionBank />} />
-        <Route path="/addproblem" element={<AddProblem />} />
-        <Route path="/editproblem/:id" element={<AddProblem />} />
 </Route>
+<Route path="/addproblem" element={<AddProblem />} />
+<Route path="/editproblem/:id" element={<AddProblem />} />
+<Route path="/addcontest" element={<AddContest />} />
+<Route path="/editcontest/:id" element={<AddContest />} />
+<Route path="/contest/:id" element={<ContestDetails />} />
+<Route path="/problem/:id" element={<ViewProblem />} />
+
+
+
 
       </Route>
 
