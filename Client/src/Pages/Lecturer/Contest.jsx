@@ -7,6 +7,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import GeneratePdf from "./GeneratePdf";
 import { backendUrl } from "../../../config";
+import { useSelector } from "react-redux";
 
 const override = {
   display: "block",
@@ -19,17 +20,18 @@ const Contest = () => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [contestToDelete, setContestToDelete] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const user = useSelector(state => state.user);
 
   useEffect(() => {
     fetchContests();
-  }, []);
+  }, [user]);
 
   const fetchContests = async () => {
-    setLoading(true);
     try {
-      const response = await fetch(`${backendUrl}/api/contest`);
+      if(user._id === undefined)return
+      const response = await fetch(`${backendUrl}/api/contest/${user._id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }
@@ -38,6 +40,7 @@ const Contest = () => {
     } catch (error) {
       console.error("Error fetching contests:", error);
     } finally {
+      if(user._id !== undefined)
       setLoading(false);
     }
   };
@@ -129,7 +132,7 @@ const Contest = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <SidebarLecturer />
+      {/* <SidebarLecturer /> */}
       {
         loading ? (
           <div className="w-full flex justify-center items-center h-screen">
@@ -141,8 +144,8 @@ const Contest = () => {
             />
           </div>
         ) : (
-          <section className="w-4/5 bg-white flex-grow flex flex-col justify-start items-center p-4">
-            <Header bgColor="fuchsia" />
+          <section className="w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
+            {/* <Header bgColor="fuchsia" /> */}
             <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
               <div className="flex items-center justify-between w-full mb-4">
                 <div className="relative flex-grow mr-4">
@@ -160,7 +163,13 @@ const Contest = () => {
                   </button>
                 </div>
               </div>
-              <table className="w-full">
+
+              </div>
+
+              <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+
+         {   filteredContests && filteredContests.length > 0 ?
+           <table className="w-full">
                 <thead>
                   <tr className="bg-fuchsia-200">
                     <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
@@ -216,12 +225,26 @@ const Contest = () => {
                   ))}
                 </tbody>
               </table>
+              :
+              <div className="w-full flex justify-center items-center mt-5">
+          <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
+            <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
+            <p className="text-lg text-fuchsia-700 text-center">
+              There are no {!showCompleted ? 'active' : 'completed'} contests. Start by adding a contest.
+            </p>
+          </div>
+        </div>
+              }
+              </div>
+
               <button
                 className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
                 onClick={handleShowCompletedClick}
               >
                 {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
               </button>
+              
+         
               {showConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
                   <div className="bg-white p-4 rounded shadow">
@@ -237,7 +260,7 @@ const Contest = () => {
                   </div>
                 </div>
               )}
-            </div>
+            
           </section>
         )
       }

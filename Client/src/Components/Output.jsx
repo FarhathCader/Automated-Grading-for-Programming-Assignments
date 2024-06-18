@@ -31,6 +31,7 @@ export default function Output(props) {
   const [createdTime, setCreatedTime] = useState(0);
   const [contestDuration, setContestDuration] = useState(0);
 
+
   const user = useSelector(state => state.user);
 
 
@@ -38,38 +39,36 @@ export default function Output(props) {
     try {
       if (user._id === undefined || contestId === undefined) return;
       const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contestId}`);
-      const data = res.data.createdAt;
-      console.log("created time", data);
-      if (data) setCreatedTime(data);
+      const data = res.data;
+      if (data) {
+      setCreatedTime(data.createdAt);
+      console.log("created time", data.createdAt);
+      setContestDuration(data.duration);
+      console.log("contest duration", data.duration);
+      }
+     
     } catch (err) {
       console.log("Error fetching enrollment:", err.message);
     }
   }
 
-  const fetchContestDuration = async () => {
-    try {
-      if (contestId === undefined) return;
-      const res = await axios.get(`${backendUrl}/api/contest/${contestId}`);
-      const data = res.data.contest.duration;
-      console.log("contest duration", data);
-      if (data) setContestDuration(data);
-    } catch (err) {
-      console.log("Error fetching contest duration:", err.message);
-    }
-  }
+  // const fetchContestDuration = async () => {
+  //   try {
+  //     if (contestId === undefined) return;
+  //     const res = await axios.get(`${backendUrl}/api/contest/${contestId}`);
+  //     const data = res.data.contest.duration;
+  //     console.log("contest duration", data);
+  //     if (data) setContestDuration(data);
+  //   } catch (err) {
+  //     console.log("Error fetching contest duration:", err.message);
+  //   }
+  // }
 
   useEffect(() => {
-    fetchCreatedTime();
     if(user && contestId){
-
+      fetchCreatedTime();
     }
   }, [user, contestId]);
-
-  useEffect(() => {
-    if(contestId){
-      fetchContestDuration();
-    }
-  }, [contestId]);
 
 
 

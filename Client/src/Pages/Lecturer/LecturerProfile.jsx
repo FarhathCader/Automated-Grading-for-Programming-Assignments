@@ -77,7 +77,7 @@ const LecturerProfile = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <LecturerSidebar />
+      {/* <LecturerSidebar /> */}
 
         {
           loading ? 
@@ -101,7 +101,7 @@ const LecturerProfile = () => {
           </div>
         ) : (
           <div className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-        <Header bgColor="fuchsia" />
+        {/* <Header bgColor="fuchsia" /> */}
 
           <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
           <div className="px-6">

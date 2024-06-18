@@ -46,6 +46,8 @@ const ContestView = () => {
   const [enr, setEnr] = useState({});
   const [totalGrade, setTotalGrade] = useState(0);
   const [notFound, setNotFound] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [shouldRender, setShouldRender] = useState(false);
 
   const fetchTotalGrade = async () => {
     try {
@@ -63,27 +65,19 @@ const ContestView = () => {
     try {
       if(user._id === undefined || contest._id === undefined) return;
       const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contest._id}`);
-      const data = res.data.createdAt;
-      if (data) setEnr(data);
+      const data = res.data;
+      console.log("data",data);
+      if (data) {
+        setEnr(data.createdAt);
+        setDuration(data.duration);
+        setShouldRender(true);
+      }
     } catch (err) {
       console.log("Error fetching enrollment:", err.message);
     } finally {
       setLoading(false);
     }
   }
-  // const fetchProblems = async (problemIds) => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get("http://localhost:4000/api/problems");
-  //     const problemsData = response.data.problems;
-  //     const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));
-  //     setProblems(selectedProblems);
-  //   } catch (error) {
-  //     console.error("Error fetching problems:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchProblems = async (problemIds) => {
     setLoading(true);
@@ -136,8 +130,7 @@ const ContestView = () => {
 
   useEffect(() => {
     if (id) {
-      fetchContest();
-      
+      fetchContest();     
     }
   }, [id]); // Dependency: id (contest ID)
 
@@ -157,9 +150,12 @@ const ContestView = () => {
   }, [contest]);
 
   return (
+
     notFound === false ?
     <div className="container mx-auto mt-10 ">
-      {contest && enr && <CountDown contestDuration={contest.duration} enrollmentCreatedAt={enr} />}
+      {shouldRender &&
+        <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />}
+      
       {loading ? (
         <div className="flex justify-center bg-white p-8 rounded-lg shadow-xl">
           <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />

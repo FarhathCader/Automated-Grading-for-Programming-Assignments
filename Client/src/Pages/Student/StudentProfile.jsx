@@ -76,7 +76,7 @@ const StudentProfile = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <Sidebar />
+      {/* <Sidebar /> */}
       {loading ? (
         <div className="w-full flex justify-center items-center h-screen">
           <ClipLoader
@@ -93,7 +93,7 @@ const StudentProfile = () => {
           </div>
         ) : (
           <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-              <Header bgColor="blue" />
+              {/* <Header bgColor="blue" /> */}
             <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-blue-900 w-full mb-6 shadow-lg rounded-xl">
               <div className="px-6">
                 <div className="flex-grow flex flex-col items-center justify-start">

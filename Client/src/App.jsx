@@ -41,7 +41,7 @@ import Contest from "./Pages/Lecturer/Contest";
 import EditLectureProfile from "./Pages/Lecturer/EditLecturerProfile";
 import ManageStudents from "./Pages/Admin/ManageStudents";
 import AdminProfile from "./Pages/Admin/AdminProfile";
-
+import Header from "./Sections/Header";
 import AddContest from "./Pages/Lecturer/AddContest";
 import ContestDetails from "./Pages/Lecturer/ContestDetails";
 import AddProblem from "./Pages/Lecturer/AddProblem";
@@ -51,6 +51,9 @@ import ContestView from "./Pages/Student/ContestView";
 import Sample from "./Components/Sample";
 import SubmissionResult from "./Components/SubmissionResult";
 // import NavbarSubmission from "./Components/NavbarSubmission";
+import Layout from "./Components/Layout";
+import Sidebar from "./Sections/Sidebar";
+import SidebarLecturer from "./Sections/SidebarLecturer";
 
 
 
@@ -62,23 +65,29 @@ function App() {
   useFetchUser();
 
   return (
+
     <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
+      <Route element={<Layout bgColor="blue" />}>
         <Route path="/dashboard_std" element={<StudentDashboard />} />
         <Route path="/available" element={<AvailableContest />} />
         <Route path="/completed" element={<CompletedContest />} />
         <Route path="/practice" element={<Practice />} />
         <Route path="/profile_std" element={<StudentProfile />} />
         <Route path="/profile_std/edit" element={<EditStudentProfile />} />
-        <Route path='/problems/:problemId' element={<CodeEditor />} />
-        <Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
-        <Route path="/contestview/:id" element={<ContestView />} />
+
+</Route>
+<Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
+<Route path="/contestview/:id" element={<ContestView />} />
+<Route path='/problems/:problemId' element={<CodeEditor />} />
 
 
 
       </Route>
 
       <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/" />}>
+      <Route element={<Layout bgColor="fuchsia" isLecturer = {true} />}>
+
         <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
         <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
@@ -89,6 +98,7 @@ function App() {
         <Route path="/problem" element={<QuestionBank />} />
         <Route path="/addproblem" element={<AddProblem />} />
         <Route path="/editproblem/:id" element={<AddProblem />} />
+</Route>
 
       </Route>
 

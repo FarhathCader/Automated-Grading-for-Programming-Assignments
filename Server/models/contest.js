@@ -22,7 +22,11 @@ const contestSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Problem'
         }
-    ]
+    ],
+    createdBy :{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User'       
+            }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Contest', contestSchema);

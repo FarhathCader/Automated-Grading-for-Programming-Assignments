@@ -14,7 +14,7 @@ const override = {
 
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
 
@@ -68,54 +68,66 @@ const CompletedContest = () => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
-      <Sidebar />
+      {/* <Sidebar /> */}
       {loading ? (
         <div className="w-full flex justify-center items-center h-screen">
-        <ClipLoader
-          color="blue"
-          loading={true}
-          size={150}
-          css={override}
-        />
-      </div>
+          <ClipLoader
+            color="blue"
+            loading={true}
+            size={150}
+            cssOverride={override}
+          />
+        </div>
       ) : (
         <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-          <Header bgColor="blue" />
+          {/* <Header bgColor="blue" /> */}
+          {contests && contests.length > 0 ? (
           <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 overflow-x-auto">
             <h2 className="text-xl font-semibold mb-4 text-blue-950">Completed Contests</h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-blue-200">
-                    <th className="px-6 py-3 text-left text-blue-800">Name</th>
-                    <th className="px-6 py-3 text-left text-blue-800">End Date</th>
-                    <th className="px-6 py-3 text-left text-blue-800">Duration</th>
-                    <th className="px-6 py-3 text-left text-blue-800">Problems</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contests.map((contest, index) => (
-                    <tr
-                      key={index}
-                      className={
-                        index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"
-                      }
-                      onClick={() => handleContestDetailsClick(contest._id)}
-                    >
-                      <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                      <td className="px-6 py-4 text-blue-200">
-                        {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
-                      </td>
-                      <td className="px-6 py-4 text-blue-200">
-                        {formatDuration(contest.duration)}
-                      </td>
-                      <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
+        
+              <div className="w-full overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-blue-200">
+                      <th className="px-6 py-3 text-left text-blue-800">Name</th>
+                      <th className="px-6 py-3 text-left text-blue-800">End Date</th>
+                      <th className="px-6 py-3 text-left text-blue-800">Duration</th>
+                      <th className="px-6 py-3 text-left text-blue-800">Problems</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {contests.map((contest, index) => (
+                      <tr
+                        key={index}
+                        className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"}
+                        onClick={() => handleContestDetailsClick(contest._id)}
+                      >
+                        <td className="px-6 py-4 text-blue-200">{contest.name}</td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        </td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {formatDuration(contest.duration)}
+                        </td>
+                        <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              </div>
+            ) : (
+              <div className="w-full h-screen flex justify-center items-center">
+              <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+                <h1 className="text-4xl font-bold text-blue-900 mb-4">No Completed Contests</h1>
+                <p className="text-lg text-blue-950 text-center">You have no completed contests. Participate in a contest to see it here!!</p>
+              </div>
             </div>
-          </div>
+    
+
+
+            )}
         </section>
       )}
     </main>
