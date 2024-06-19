@@ -1,6 +1,6 @@
 // useFetchUser.js
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {authActions} from '../store';
 import axios from 'axios';
 import { backendUrl } from '../../config';
@@ -11,36 +11,59 @@ let firstRender = true;
 
 const useFetchUser = () => {
   const dispatch = useDispatch();
-
-
+  const isLoggedin = useSelector((state) => state.isLoggedin);
+  const [error, setError] = useState(null); // Add error state
+   
   useEffect(() => {
     const fetchUser = async () => {
 
 
    
         try {
+          console.log("fetching")
+
           const res = await axios.get(`${backendUrl}/api/user/user`, { withCredentials: true });
           const data = res.data;
           if (data.user) {
             dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
-            console.log("auth actions login")
           }
         } catch (err) {
-          dispatch(authActions.logout());
+        //   console.log(err.response)
+        // if(err.response.status === 401){
+        //   dispatch(authActions.logout())
+        // }
+        if(err.message === 'Network Error' || err.response.status === 500){
+          setError(err);
+
+        }
+        else{
+          dispatch(authActions.logout())
+
+        }
+        console.log(err)
         }
   
     };
 
    const refreshUser = async () => {
+    if(!isLoggedin)return;
       try {
+        console.log("refreshing")
         const res = await axios.get(`${backendUrl}/api/user/refresh`, { withCredentials: true });
         const data = res.data;
         if (data.user) {
           dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
         }
       } catch (err) {
-        console.log("error is",err.response.data.error)
-        dispatch(authActions.logout());
+        if(err.message === 'Network Error' || err.response.status === 500){
+          setError(err);
+
+        }
+        else{
+          dispatch(authActions.logout())
+
+        }
+
       }
     };
 
@@ -52,8 +75,7 @@ const useFetchUser = () => {
   
     const intervalId = setInterval(() => {
       refreshUser();
-      console.log("refreshing user")
-    }, 1000*60*60);
+    }, 1000*20);
 
     // Clear interval when component unmounts
     return () => clearInterval(intervalId);
@@ -61,7 +83,9 @@ const useFetchUser = () => {
 
    
     
-  }, []);
+  }, [dispatch,isLoggedin]);
+
+  return error; 
 };
 
 export default useFetchUser;
