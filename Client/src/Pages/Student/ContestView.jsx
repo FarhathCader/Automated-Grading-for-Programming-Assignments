@@ -50,9 +50,10 @@ const ContestView = () => {
   const [duration, setDuration] = useState(0);
   const [shouldRender, setShouldRender] = useState(false);
 
+
   const fetchTotalGrade = async () => {
     try {
-      if(user._id === undefined || id === undefined) return;
+      if (user._id === undefined || id === undefined) return;
       const response = await axios.get(`${backendUrl}/api/submission/${user._id}/${id}/total-grade`);
       const data = response.data.totalGrade;
       setTotalGrade(data);
@@ -64,10 +65,10 @@ const ContestView = () => {
   const fetchCreatedTime = async () => {
     setLoading(true);
     try {
-      if(user._id === undefined || contest._id === undefined) return;
+      if (user._id === undefined || contest._id === undefined) return;
       const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contest._id}`);
       const data = res.data;
-      console.log("data",data);
+      console.log("data", data);
       if (data) {
         setEnr(data.createdAt);
         setDuration(data.duration);
@@ -86,22 +87,22 @@ const ContestView = () => {
       const response = await axios.get(`${backendUrl}/api/problems`);
       const problemsData = response.data.problems;
       const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));
-  
+
       // Fetch solved status for each problem
       const solvedStatuses = await Promise.all(
         selectedProblems.map(async (problem) => {
-          if(user._id === undefined || problem._id === undefined || contest._id === undefined) return;
+          if (user._id === undefined || problem._id === undefined || contest._id === undefined) return;
           const isSolvedResponse = await axios.get(`${backendUrl}/api/submission/is-solved/${user._id}/${problem._id}/${contest._id}`);
           return isSolvedResponse.data.isSolved;
         })
       );
-  
+
       // Combine problem data with solved statuses
       const problemsWithStatus = selectedProblems.map((problem, index) => ({
         ...problem,
         solved: solvedStatuses[index]
       }));
-  
+
       setProblems(problemsWithStatus);
     } catch (error) {
       console.error("Error fetching problems:", error);
@@ -109,7 +110,7 @@ const ContestView = () => {
       setLoading(false);
     }
   };
-  
+
 
   const fetchContest = async () => {
     setLoading(true);
@@ -122,16 +123,43 @@ const ContestView = () => {
       setNotFound(true);
     } finally {
       setLoading(false);
-      console.log("data",contest);
+      console.log("data", contest);
     }
   };
 
+  useEffect(() => {
+    if(user._id === undefined)return
+    console.log("Sending data")
+    const pid = localStorage.getItem('problemId');
+    const cid = localStorage.getItem('contestId');
+    const codes = JSON.parse(localStorage.getItem('codes'))
+    const uid = user._id
+    if(pid !== null && uid !== null){
+      sendDraft(pid,uid,cid,codes)
+      localStorage.clear();
+    }
 
+  }, [])
+
+
+  const sendDraft = async (pid,uid,cid,codes) => {
+    setLoading(true);
+    try {
+      const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
+        codes
+      });
+      console.log('Draft saved:', response.data);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
   useEffect(() => {
     if (id) {
-      fetchContest();     
+      fetchContest();
     }
   }, [id]); // Dependency: id (contest ID)
 
@@ -153,75 +181,75 @@ const ContestView = () => {
   return (
 
     notFound === false ?
-    <div className="container mx-auto mt-10 ">
-      <BackButton/>
-      {shouldRender &&
-        <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />}
-      
-      {loading ? (
-        <div className="flex justify-center bg-white p-8 rounded-lg shadow-xl">
-          <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
-        </div>
-      ) : (
-        <div className="bg-white p-8 rounded-lg shadow-xl">
-          <h2 className="text-3xl font-bold mb-6">{contest.name}</h2>
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <p className="text-gray-600">Deadline:</p>
-              <p className="text-gray-800">
-                {new Date(contest.endDate).toLocaleString([], {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
-                  hour12: true
-                })}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-600">Duration:</p>
-              <p className="text-gray-800">{formatDuration(contest.duration)}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Total Grade:</p>
-              <p className="text-gray-800">{parseFloat(totalGrade).toFixed(2)}</p>
-            </div>
-          </div>
+      <div className="container mx-auto mt-10 ">
+        <BackButton />
+        {shouldRender &&
+          <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />}
 
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {problems.map((problem, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-md p-4 hover:bg-blue-100 transition duration-300 cursor-pointer"
-                onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
-              >
-                <header className="mb-4">
-                  <h4 className="text-lg font-semibold">{problem.name}</h4>
-                </header>
-                <div className="text-gray-700 mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">{problem.difficulty}</span>
-                    <span className="text-sm text-gray-600">Category: {problem.category}</span>
-                    <span className="text-sm text-gray-600">Max Grade: {problem.grade}</span>
+        {loading ? (
+          <div className="flex justify-center bg-white p-8 rounded-lg shadow-xl">
+            <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
+          </div>
+        ) : (
+          <div className="bg-white p-8 rounded-lg shadow-xl">
+            <h2 className="text-3xl font-bold mb-6">{contest.name}</h2>
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <p className="text-gray-600">Deadline:</p>
+                <p className="text-gray-800">
+                  {new Date(contest.endDate).toLocaleString([], {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                  })}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-600">Duration:</p>
+                <p className="text-gray-800">{formatDuration(contest.duration)}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Total Grade:</p>
+                <p className="text-gray-800">{parseFloat(totalGrade).toFixed(2)}</p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {problems.map((problem, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-md p-4 hover:bg-blue-100 transition duration-300 cursor-pointer"
+                  onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
+                >
+                  <header className="mb-4">
+                    <h4 className="text-lg font-semibold">{problem.name}</h4>
+                  </header>
+                  <div className="text-gray-700 mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-gray-600">{problem.difficulty}</span>
+                      <span className="text-sm text-gray-600">Category: {problem.category}</span>
+                      <span className="text-sm text-gray-600">Max Grade: {problem.grade}</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      className={`bg-${problem.solved ? 'green' : 'blue'}-500 text-white py-2 px-4 rounded-md`}
+                      onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
+                    >
+                      {problem.solved ? 'Solved' : 'Solve Problem'}
+                    </button>
                   </div>
                 </div>
-                <div className="flex justify-end">
-                  <button
-                    className={`bg-${problem.solved ? 'green' : 'blue'}-500 text-white py-2 px-4 rounded-md`}
-                    onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
-                  >
-                    {problem.solved ? 'Solved' : 'Solve Problem'}
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-    :
-    <NotFoundPage />
+        )}
+      </div>
+      :
+      <NotFoundPage />
   );
 };
 

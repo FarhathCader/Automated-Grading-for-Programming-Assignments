@@ -44,9 +44,7 @@ export default function Output(props) {
       const data = res.data;
       if (data) {
       setCreatedTime(data.createdAt);
-      console.log("created time", data.createdAt);
       setContestDuration(data.duration);
-      console.log("contest duration", data.duration);
       }
      
     } catch (err) {
@@ -98,10 +96,28 @@ export default function Output(props) {
         weight: testCase.weight
       }));
       const status = grading() === problem.grade;
-      sendSubmission(grading(), testCases, results,status);
+      sendSubmission(grading(), testCases, results,status);    
       setShouldSubmit(false);
+      deleteDraft(problem._id,user._id,contestId)
+      localStorage.clear()
     }
   }, [shouldSubmit, finalProblemGrade, results]);
+
+
+
+  const deleteDraft = async (problemId, userId, contestId) => {
+    setIsLoading(true)
+    try {
+        const response = await axios.delete(`${backendUrl}/api/draft/${problemId}/${userId}/${contestId}`);
+        console.log('Draft deleted:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting draft:', error);
+        throw error;
+    }finally{
+      setIsLoading(false)
+    }
+};
 
   const grading = () => {
     const passedPercentage_ = totalWeight ? (passedWeight / totalWeight) * 100 : 0;
@@ -236,6 +252,10 @@ export default function Output(props) {
     }
   };
 
+const handleCancel = ()=>{
+  window.history.back();
+}
+
   return (
     <div className='flex flex-col space-y-4'>
       <div className='flex justify-around space-x-4 w-full'>
@@ -257,7 +277,7 @@ export default function Output(props) {
         <button
           className='bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600'
           type='button'
-          onClick={()=>navigate(-1)}
+          onClick={handleCancel}
           disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'CANCEL'}
         </button>

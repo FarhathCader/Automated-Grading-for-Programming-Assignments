@@ -38,6 +38,7 @@ app.use('/api/submission',require('./routes/submissionRoutes'))
 app.use('/api/admin',require('./routes/adminRoutes'))
 app.use('/api/image',require('./routes/imageRoutes'))
 app.use('/api/enrollment',require('./routes/enrollmentRoutes'))
+app.use('/api/draft',require('./routes/draftCodesRoutes'))
 
 
 

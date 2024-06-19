@@ -30,7 +30,7 @@ const QuestionBank = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(1); // Set the number of problems per page
+  const [problemsPerPage] = useState(5); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
@@ -49,6 +49,10 @@ const QuestionBank = () => {
     console.log("current page", currentPage)
     fetchQuestions(currentPage);
   }, [currentPage]);
+
+  useEffect(()=>{
+    localStorage.clear();
+  },[])
 
 
   const fetchQuestions = async (page) => {

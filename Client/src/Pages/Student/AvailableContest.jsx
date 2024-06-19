@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BackButton from "../../Components/BackButton";
 
 const override = {
   display: "block",
@@ -163,7 +164,8 @@ const AvailableContest = () => {
 
   return (
     enterContest ? (
-      <div className="w-full h-screen flex justify-center items-center bg-gray-100">
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
+        <BackButton/>
         <div className="w-96 p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
           <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>

@@ -25,7 +25,7 @@ const Contest = () => {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [currentPage, setCurrentPage] = useState(1);
-  const [contestsPerPage] = useState(1); // Set the number of problems per page
+  const [contestsPerPage] = useState(5); // Set the number of problems per page
   const [totalContests, setTotalContests] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)

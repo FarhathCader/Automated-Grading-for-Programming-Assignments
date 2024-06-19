@@ -10,6 +10,7 @@ import SubmissionResult from './SubmissionResult';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { backendUrl } from '../../config';
 import BackButton from './BackButton';
+import Loading from './Loading';
 const override = {
   display: "block",
   margin: "0 auto",
@@ -23,19 +24,22 @@ export default function CodeEditor() {
     const [sampleTestCases,setSampleTestCases] = useState([]);
     const [allTestCases,setAllTestCases] = useState([]);
     const [viewSubmission, setViewSubmission] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [codes,setCodes] = useState(null);
+    const [shouldFetch,setShouldFetch] = useState(false);
     const user = useSelector(state => state.user);
     const navigate = useNavigate();
 
     
     useEffect(() => {
-
+      if(user._id === undefined)return;
       const fetchData = async () => {
         setLoading(true);
         try {
           const response = await axios.get(`${backendUrl}/api/problems/${problemId}`);
           const data = response.data;
           setProblem(data.problem);
+          setShouldFetch(true)
           
           // Filter sample test cases and store them in sampleTestCases state
           if (data.problem.testCases) {
@@ -53,9 +57,35 @@ export default function CodeEditor() {
       fetchData();
     }, [problemId]);
 
-    useEffect(() => {
-      console.log("user problem contest",user._id,problemId,contestId)
-    },[user._id,problemId,contestId]);
+    useEffect(()=>{
+      if(shouldFetch){
+        fetchDraft(problemId,user._id,contestId)
+      }
+    },[shouldFetch])
+
+    const fetchDraft = async(pid,uid,cid) =>{
+      setLoading(true)
+      try{
+        const response = await axios.get(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
+        console.log("response",response)
+        if(response.data.draftCodes === null){
+          console.log(problem.initialCode)
+          setCodes(problem.initialCode)
+        }else{
+          setCodes(response.data.draftCodes.codes);
+
+        }
+        console.log("response codes",response.data.draftCodes);
+      }
+      catch(err){
+        console.log(err)
+      }
+      finally{
+        setLoading(false)
+      }
+
+    }
+
 
     const updateInitialCode = (newInitialCode) => {
       setProblem({ ...problem, initialCode: newInitialCode });
@@ -70,13 +100,19 @@ export default function CodeEditor() {
       }
     };
 
+    if(loading){
+      return <Loading/>
+    }
+
 
     return (
         <div className='mx-auto px-4 py-8 flex flex-col justify-center items-start space-x-4'>
           <BackButton/>
             <div className="w-full"> {/* Added w-full class to make the Navbar take full width */}
     <NavbarSubmission handleNavigation = {handleNavigation} viewSubmission=  {viewSubmission}/>
+          
   </div>
+
        {viewSubmission ? (
       <div className="w-full"> {/* Ensure full width when viewing submission */}
       <SubmissionResult userId={user._id} problemId={problemId} contestId={contestId}/>
@@ -132,10 +168,10 @@ export default function CodeEditor() {
 </div>
 }
         {!viewSubmission && <div className='w-full'>
-            {problem && (
+            {problem && codes && (
               <TestCaseContext.Provider value={{ sampleTestCases, allTestCases }}>
                 <CodingEditor
-                  initialCode={problem.initialCode}
+                  initialCode={codes || problem.initialCode}
                   onUpdateInitialCode={updateInitialCode}
                   showOutput={true}
                   problem={problem}
@@ -146,11 +182,8 @@ export default function CodeEditor() {
           </div>
           
           }
-             {loading && (
-        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
-          <MoonLoader color="blue" loading={true} size={220} css={override} />
-        </div>
-      )}
+
+       
         </div>
       );
 }
