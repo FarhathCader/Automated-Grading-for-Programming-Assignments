@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import GeneratePdf from "./GeneratePdf";
 import { backendUrl } from "../../../config";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const override = {
   display: "block",
@@ -23,20 +24,89 @@ const Contest = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [contestsPerPage] = useState(1); // Set the number of problems per page
+  const [totalContests, setTotalContests] = useState(0);
+  const [showBtn, setShowBtn] = useState(false);
+  const [totalPages,setTotalPages] = useState(0)
+
+  useEffect(()=>{
+    const total = Math.ceil(totalContests / contestsPerPage)
+    if(total === 0)return
+    setTotalPages(total);
+    if(  total > 1)setShowBtn(true)
+  },[totalContests,showBtn])
 
   useEffect(() => {
-    fetchContests();
-  }, [user]);
+    console.log("current page", currentPage)
+    if(showCompleted){
+      fetchCompletedContests(currentPage)
+    }else{
+      fetchAvailableContests(currentPage)
+    }
+  }, [user,currentPage,showCompleted]);
 
-  const fetchContests = async () => {
+
+  // const fetchContests = async () => {
+  //   try {
+  //     setLoading(true)
+  //     if(user._id === undefined)return
+  //     const response = await fetch(`${backendUrl}/api/contest/all/${user._id}`);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch contests");
+  //     }
+  //     const data = await response.json();
+  //     setContests(data.contests);
+  //     setAvailableContests(data.availableContests);
+  //     setCompletedContests(data.completedContests);
+  //   } catch (error) {
+  //     console.error("Error fetching contests:", error);
+  //   } finally {
+  //     if(user._id !== undefined)
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchCompletedContests = async (page) => {
+    setLoading(true)
     try {
       if(user._id === undefined)return
-      const response = await fetch(`${backendUrl}/api/contest/all/${user._id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch contests");
-      }
-      const data = await response.json();
-      setContests(data.contests);
+      const response = await axios.get(`${backendUrl}/api/contest/completed/${user._id}`,
+        {
+          params: {
+            page: page,
+            limit: contestsPerPage,
+          },
+        }
+      );
+      setContests(response.data.completedContests);
+      console.log("complete",response.data.completedContests)
+      setTotalContests(response.data.total);
+    } catch (error) {
+      console.error("Error fetching contests:", error);
+    } finally {
+      if(user._id !== undefined)
+      setLoading(false);
+    }
+  };
+
+
+  const fetchAvailableContests = async (page) => {
+    setLoading(true)
+    try {
+      if(user._id === undefined)return
+      const response = await axios.get(`${backendUrl}/api/contest/available/${user._id}`
+        ,
+        {
+          params: {
+            page: page,
+            limit: contestsPerPage,
+          },
+        }
+      );
+      setContests(response.data.availableContests);
+      console.log("available",response.data.availableContests)
+      setTotalContests(response.data.total);
     } catch (error) {
       console.error("Error fetching contests:", error);
     } finally {
@@ -124,13 +194,21 @@ const Contest = () => {
     setShowCompleted((prevShowCompleted) => !prevShowCompleted);
   };
 
-  const currentTimestamp = new Date().getTime();
 
-  const filteredContests = showCompleted
-    ? contests.filter((contest) => new Date(contest.endDate).getTime() < currentTimestamp)
-    : contests.filter((contest) => new Date(contest.endDate).getTime() >= currentTimestamp);
+  const handleNext = () => {
+    if (currentPage !== totalPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
 
-  return (
+  const handlePrev = () => {
+    if (currentPage !== 1) {
+      setCurrentPage((prev) => prev - 1)
+
+    }
+  }
+
+return (
     <main className="w-full h-screen flex justify-between items-start">
       {/* <SidebarLecturer /> */}
       {
@@ -166,9 +244,17 @@ const Contest = () => {
 
               </div>
 
-              <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+              <button
+                className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
+                onClick={handleShowCompletedClick}
+              >
+                {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
+              </button>
+             
 
-         {   filteredContests && filteredContests.length > 0 ?
+         {   contests && contests.length > 0 ?
+            <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+
            <table className="w-full">
                 <thead>
                   <tr className="bg-fuchsia-200">
@@ -185,7 +271,7 @@ const Contest = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredContests.map((contest, index) => (
+                  {contests.map((contest, index) => (
                     <tr
                       key={index}
                       className={
@@ -225,7 +311,28 @@ const Contest = () => {
                   ))}
                 </tbody>
               </table>
+             {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
+                <button
+                  onClick={handlePrev}
+                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === 1}
+                >
+                  Prev
+                </button>
+                <span className="text-fuchsia-800 font-semibold">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNext}
+                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>}
+              </div>
               :
+              <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
               <div className="w-full flex justify-center items-center mt-5">
           <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
             <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
@@ -234,16 +341,10 @@ const Contest = () => {
             </p>
           </div>
         </div>
+        </div>
               }
-              </div>
 
-              <button
-                className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
-                onClick={handleShowCompletedClick}
-              >
-                {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
-              </button>
-              
+        
          
               {showConfirmation && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">

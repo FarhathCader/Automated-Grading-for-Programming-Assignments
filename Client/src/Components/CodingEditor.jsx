@@ -87,7 +87,7 @@ export default function CodingEditor(props) {
       />
     </div>
     {showOutput && (
-      <div className="w-full md:w-1/2 bg-transparent rounded-md p-4">
+      <div className="w-full bg-transparent rounded-md p-4">
         <Output language={language} value={value} problem={problem}  contestId={contestId}/>
       </div>
     )}

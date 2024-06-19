@@ -251,7 +251,7 @@ const AddContest = ({ onAdd }) => {
   }
 
   return (
-    <main className="w-full h-screen flex justify-between items-start bg-gray-100">
+    <main className="w-full h-screen flex justify-between items-start bg-white">
       <ToastContainer
         position="top-right"
         autoClose={1000}
@@ -263,15 +263,14 @@ const AddContest = ({ onAdd }) => {
         draggable
         pauseOnHover
         theme="light" />
-      <section className="w-4/5 bg-white h-screen flex-grow flex flex-col justify-start items-center p-4 shadow-lg">
-        <div className="w-full max-w-screen-lg mx-auto p-6  rounded-xl shadow-xl flex flex-col items-center mt-20">
-          <h2 className="text-3xl font-bold mb-6 text-gray-900">Add Contest</h2>
+      <section className="w-full lg:w-4/5 bg-white  flex-grow flex flex-col justify-start items-center p-4">
+        <div className="w-full lg:max-w-full mx-auto p-6 rounded-xl flex flex-col items-center mt-20">
           <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
           <div className="flex justify-between space-x-4">
               <button
                 type="button"
                 className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/contest')}
               >
                 Cancel
               </button>

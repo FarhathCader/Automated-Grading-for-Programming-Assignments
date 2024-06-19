@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import { FaPlus } from 'react-icons/fa';
 import { backendUrl } from "../../../config";
 import { useSelector } from 'react-redux';
+import BackButton from '../../Components/BackButton';
 
 const AddProblem = (props) => {
   const user = useSelector(state => state.user);
@@ -148,7 +149,8 @@ const AddProblem = (props) => {
         initialCode: problem.initialCode,
         testCases: problem.testCases,
         grade: problem.grade,
-        examples: problem.examples || [] // Ensure examples exist before setting
+        examples: problem.examples || [],
+        isPractice : problem.isPractice // Ensure examples exist before setting
       });
     } catch (error) {
       console.error('Error fetching problem details:', error);
@@ -227,12 +229,19 @@ const AddProblem = (props) => {
 
       }
     } catch (error) {
-      toast.error(`Error ${id ? 'updating' : 'adding'} problem. ${error}`);
+      if(error.response.status === 403){
+      toast.error(`Problem With Same Name Existing`);
+      }
+      else{
+        toast.error(`Error ${id ? 'updating' : 'adding'} problem. ${error}`);
+
+      }
     }
   };
 
   return (
-    <div className="mx-auto p-6 bg-white rounded-xl shadow-md">
+    <div className="mx-auto p-6 bg-white rounded-xl shadow-md w-full max-w-3xl lg:max-w-full">
+      <BackButton/>
   <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Problem' : 'Add Problem'}</h2>
   <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-8">
 

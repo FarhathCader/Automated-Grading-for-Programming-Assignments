@@ -13,6 +13,7 @@ const useFetchUser = () => {
   const dispatch = useDispatch();
   const isLoggedin = useSelector((state) => state.isLoggedin);
   const [error, setError] = useState(null); // Add error state
+  const [loading, setLoading] = useState(true); 
    
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,10 +29,6 @@ const useFetchUser = () => {
             dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
           }
         } catch (err) {
-        //   console.log(err.response)
-        // if(err.response.status === 401){
-        //   dispatch(authActions.logout())
-        // }
         if(err.message === 'Network Error' || err.response.status === 500){
           setError(err);
 
@@ -41,6 +38,9 @@ const useFetchUser = () => {
 
         }
         console.log(err)
+        }
+        finally{
+          setLoading(false);
         }
   
     };
@@ -52,7 +52,7 @@ const useFetchUser = () => {
         const res = await axios.get(`${backendUrl}/api/user/refresh`, { withCredentials: true });
         const data = res.data;
         if (data.user) {
-          dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
+          //dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
         }
       } catch (err) {
         if(err.message === 'Network Error' || err.response.status === 500){
@@ -63,8 +63,13 @@ const useFetchUser = () => {
           dispatch(authActions.logout())
 
         }
+        
+      }
+      finally{
+        setLoading(false)
 
       }
+
     };
 
     if(firstRender){
@@ -85,7 +90,7 @@ const useFetchUser = () => {
     
   }, [dispatch,isLoggedin]);
 
-  return error; 
+  return { loading, error };
 };
 
 export default useFetchUser;

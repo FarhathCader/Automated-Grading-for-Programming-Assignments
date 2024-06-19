@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import SubmissionResult from './SubmissionResult';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { backendUrl } from '../../config';
+import BackButton from './BackButton';
 const override = {
   display: "block",
   margin: "0 auto",
@@ -72,6 +73,7 @@ export default function CodeEditor() {
 
     return (
         <div className='mx-auto px-4 py-8 flex flex-col justify-center items-start space-x-4'>
+          <BackButton/>
             <div className="w-full"> {/* Added w-full class to make the Navbar take full width */}
     <NavbarSubmission handleNavigation = {handleNavigation} viewSubmission=  {viewSubmission}/>
   </div>

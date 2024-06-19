@@ -56,17 +56,22 @@ import Sidebar from "./Sections/Sidebar";
 import SidebarLecturer from "./Sections/SidebarLecturer";
 import ErrorComponent from "./Components/ErrorComponent";
 
-
+import Loading from './Components/Loading'
 
 function App() {
 
 
-  const error = useFetchUser(); // Get error from hook
+  const { loading, error } = useFetchUser();
 
   if (error) {
     console.log(error)
     return <ErrorComponent message="Failed to fetch user data" />; // Conditionally render the error component
   }
+
+  if(loading){
+    return <Loading/>
+  }
+
 
   return (
  <>
