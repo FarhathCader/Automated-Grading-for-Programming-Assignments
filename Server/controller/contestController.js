@@ -145,38 +145,73 @@ const updateContest = async (req, res) => {
     }
   };
   
+// const getAvilabalContests = async (req, res) => {
+//     try {
+//       const { studentId } = req.params;
+//       const contests = await Contest.find();
+//       const currentDate = new Date();
+//       const availableContests = contests.filter(contest => {
+//         const startDate = new Date(contest.startDate);
+//         const endDate = new Date(contest.endDate);
+//         return currentDate >= startDate && currentDate <= endDate;
+//       });
+//       const availableContestIds = availableContests.map(contest => contest._id.toString());
+//       const enrollments = await Enrollment.find({ studentId, contestId: { $in: availableContestIds } }).populate('contestId');
+//        const conteststoremove = enrollments.filter(contest => {
+//         return contest.createdAt.getTime() + contest.contestId.duration*60000 < currentDate.getTime();      
+//        }).map(contest => contest.contestId._id.toString());
+
+//        const availableContests_ = availableContests.filter(contest => {
+//         return !conteststoremove.includes(contest._id.toString());
+//       }
+//     )
+//       res.status(200).json({availableContests_});
+      
+      
+
+
+      
+//   }
+//   catch (error) {
+//     console.error('Error fetching available contests:', error);
+//     res.status(500).json({ error: 'Failed to fetch available contests' });
+//   }
+// }
+
 const getAvilabalContests = async (req, res) => {
-    try {
-      const { studentId } = req.params;
-      const contests = await Contest.find();
-      const currentDate = new Date();
-      const availableContests = contests.filter(contest => {
-        const startDate = new Date(contest.startDate);
-        const endDate = new Date(contest.endDate);
-        return currentDate >= startDate && currentDate <= endDate;
-      });
-      const availableContestIds = availableContests.map(contest => contest._id.toString());
-      const enrollments = await Enrollment.find({ studentId, contestId: { $in: availableContestIds } }).populate('contestId');
-       const conteststoremove = enrollments.filter(contest => {
-        return contest.createdAt.getTime() + contest.contestId.duration*60000 < currentDate.getTime();      
-       }).map(contest => contest.contestId._id.toString());
+  try {
+    const { studentId } = req.params;
+    const currentDate = new Date();
 
-       const availableContests_ = availableContests.filter(contest => {
-        return !conteststoremove.includes(contest._id.toString());
-      }
-    )
-      res.status(200).json({availableContests_});
-      
-      
+    // Fetch only the contests that are currently ongoing
+    const contests = await Contest.find({
+      startDate: { $lte: currentDate },
+      endDate: { $gte: currentDate }
+    });
 
+    const contestIds = contests.map(contest => contest._id.toString());
 
-      
-  }
-  catch (error) {
+    // Fetch enrollments for the student in the ongoing contests
+    const enrollments = await Enrollment.find({
+      studentId,
+      contestId: { $in: contestIds }
+    }, 'contestId createdAt').populate('contestId', 'duration');
+
+    // Calculate the contests to remove based on the duration and createdAt
+    const contestIdsToRemove = new Set(enrollments.filter(enrollment => {
+      return enrollment.createdAt.getTime() + enrollment.contestId.duration * 60000 < currentDate.getTime();
+    }).map(enrollment => enrollment.contestId._id.toString()));
+
+    // Filter available contests by removing the contests that have ended for the student
+    const availableContests_ = contests.filter(contest => !contestIdsToRemove.has(contest._id.toString()));
+
+    res.status(200).json({ availableContests_ });
+  } catch (error) {
     console.error('Error fetching available contests:', error);
     res.status(500).json({ error: 'Failed to fetch available contests' });
   }
-}
+};
+
 
   
 

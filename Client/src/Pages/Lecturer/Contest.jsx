@@ -95,7 +95,7 @@ const Contest = () => {
     setLoading(true)
     try {
       if(user._id === undefined)return
-      const response = await axios.get(`${backendUrl}/api/contest/available/${user._id}`
+      const response = await axios.get(`${backendUrl}/api/contest/available-contests/${user._id}`
         ,
         {
           params: {

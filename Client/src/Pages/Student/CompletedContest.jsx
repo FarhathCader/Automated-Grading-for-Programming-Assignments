@@ -5,6 +5,9 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { backendUrl } from '../../../config';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from 'axios';
 
 const override = {
   display: "block",
@@ -15,26 +18,35 @@ const override = {
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5); // Number of contests per page
+  const [totalPages, setTotalPages] = useState(0);
+  const [showBtn,setShowBtn] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
 
   useEffect(() => {
     if (!user._id) return;
     fetchEnrolledContests();
-  }, [user]);
+  }, [user,currentPage]);
 
   const fetchEnrolledContests = async () => {
     setLoading(true);
     try {
       if (!user._id) return;
-      const response = await fetch(`${backendUrl}/api/enrollment/contest/${user._id}/enrolled-contests`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch enrolled contests");
-      }
-      const data = await response.json();
-      setContests(data.contests);
+      const response = await axios.get(`${backendUrl}/api/enrollment/contest/${user._id}/enrolled-contests`);
+      const allContests = response.data.contests;
+      const totalContests = allContests.length;
+      const total = Math.ceil(totalContests / perPage)
+      setTotalPages(total);
+      if(total > 1)setShowBtn(true)
+      const startIndex = (currentPage - 1) * perPage;
+      const endIndex = startIndex + perPage;
+      const contestsForPage = allContests.slice(startIndex, endIndex);
+      setContests(contestsForPage);
     } catch (error) {
-      console.error("Error fetching enrolled contests:", error);
+      toast.error("Error fetching enrolled contests:", error);
+      console.log(error)
     } finally {
       setLoading(false);
     }
@@ -64,6 +76,17 @@ const CompletedContest = () => {
 
   const handleContestDetailsClick = (contestId) => {
     navigate(`/contestview/${contestId}`);
+  };
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   return (
@@ -114,6 +137,25 @@ const CompletedContest = () => {
                     ))}
                   </tbody>
                 </table>
+                {showBtn &&  <div className="flex justify-center items-center mt-4">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                  >
+                    Prev
+                  </button>
+                  <span className="mx-4 text-blue-800">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>}
               </div>
 
               </div>
@@ -130,6 +172,17 @@ const CompletedContest = () => {
             )}
         </section>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" />
     </main>
   );
 }
