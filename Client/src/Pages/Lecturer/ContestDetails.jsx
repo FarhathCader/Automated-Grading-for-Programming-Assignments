@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { backendUrl } from "../../../config";
+import ClipLoader from "react-spinners/ClipLoader";
+import { CSSProperties } from "react";
+import { FaArrowLeft } from 'react-icons/fa';
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 
 const ContestDetails = () => {
+
+
+  const [loading,setLoading] = useState(true);
+  const navigate = useNavigate();
+
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / (24 * 60));
     const hours = Math.floor((minutes % (24 * 60)) / 60);
@@ -45,6 +60,7 @@ const ContestDetails = () => {
     } catch (error) {
       console.error("Error fetching contest details:", error);
     }
+ 
   };
 
   const fetchProblems = async (problemIds) => {
@@ -56,46 +72,83 @@ const ContestDetails = () => {
       setProblems(selectedProblems);
     } catch (error) {
       console.error("Error fetching problems:", error);
+    }   finally{
+      setLoading(false);
     }
   };
 
+  if(loading){
+    return  <div className="w-full flex justify-center items-center h-screen">
+    <ClipLoader
+      color="red"
+      loading={true}
+      size={150}
+      css={override}
+    />
+  </div>
+  }
+
   return (
-    <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-700 rounded-xl shadow-lg flex flex-col items-center mt-20">
-      <h2 className="text-2xl font-bold mb-4">{contest.name}</h2>
-      <div className="flex items-center justify-between w-full mb-4">
-        <div className="flex items-center">
-          <span className="text-fuchsia-200 mr-2">Deadline:</span>
-          <span className="text-fuchsia-200">{new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</span>
+    <div className="flex justify-center items-center min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="container mx-auto px-4 py-8 rounded-lg shadow-lg mt-20 bg-white">
+    <button
+    onClick={()=> navigate(-1)} // Replace with your actual back functionality
+    className="flex items-center text-lg font-semibold mb-4 bg-gray-200 rounded-md px-4 py-2 hover:bg-gray-300 focus:bg-gray-300 border border-futuristic-color"
+  >
+    <FaArrowLeft className="mr-2 " /> Back
+  </button>
+  
+    <div className="max-w-screen-lg mx-auto">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">{contest.name}</h2>
+  
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+        <div className="flex items-center mb-4 md:mb-0">
+          <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM8 5a5 5 0 017.5-4.34M6 21a5 5 0 007.5 4.34M10 18v-6l4 2-4 2z" />
+          </svg>
+          <span className="text-lg text-gray-700">Deadline: {new Date(contest.endDate).toLocaleString([], { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</span>
         </div>
         <div className="flex items-center">
-          <span className="text-fuchsia-200 mr-2">Duration:</span>
-          <span className="text-fuchsia-200">{formatDuration(contest.duration)}</span>
+          <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4M8 16h8M8 8h8M16 20a4 4 0 100-8 4 4 0 000 8z" />
+          </svg>
+          <span className="text-lg text-gray-700">Duration: {formatDuration(contest.duration)}</span>
         </div>
       </div>
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Selected Problems:</h3>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2">Problem Name</th>
-              <th className="border border-gray-300 p-2">Difficulty</th>
-              <th className="border border-gray-300 p-2">Grade</th>
-              <th className="border border-gray-300 p-2">Category</th>
-            </tr>
-          </thead>
-          <tbody>
-            {problems.map((problem) => (
-              <tr key={problem._id} className="border border-gray-300">
-                <td className="border border-gray-300 p-2">{problem.name}</td>
-                <td className="border border-gray-300 p-2">{problem.difficulty}</td>
-                <td className="border border-gray-300 p-2">{problem.grade}</td>
-                <td className="border border-gray-300 p-2">{problem.category}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  
+      {problems && problems.length > 0 &&
+        <div className="mb-8">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">Selected Problems:</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-3 px-6 text-left text-gray-700">Problem Name</th>
+                  <th className="py-3 px-6 text-left text-gray-700">Difficulty</th>
+                  <th className="py-3 px-6 text-left text-gray-700">Grade</th>
+                  <th className="py-3 px-6 text-left text-gray-700">Category</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {problems.map((problem) => (
+                  <tr key={problem._id} className="text-gray-800">
+                    <td className="py-4 px-6">{problem.name}</td>
+                    <td className="py-4 px-6">{problem.difficulty}</td>
+                    <td className="py-4 px-6">{problem.grade}</td>
+                    <td className="py-4 px-6">{problem.category}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
     </div>
+  </div>
+  
+    </div>
+
+  
   );
 };
 

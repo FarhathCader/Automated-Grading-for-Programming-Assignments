@@ -31,7 +31,7 @@ const Contest = () => {
   const fetchContests = async () => {
     try {
       if(user._id === undefined)return
-      const response = await fetch(`${backendUrl}/api/contest/${user._id}`);
+      const response = await fetch(`${backendUrl}/api/contest/all/${user._id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch contests");
       }

@@ -55,6 +55,7 @@ import Layout from "./Components/Layout";
 import Sidebar from "./Sections/Sidebar";
 import SidebarLecturer from "./Sections/SidebarLecturer";
 import ViewProblem from "./Pages/Lecturer/ViewProblem";
+import SelectProblems from "./Pages/Lecturer/SelectProblems";
 
 
 
@@ -101,6 +102,8 @@ function App() {
 <Route path="/editcontest/:id" element={<AddContest />} />
 <Route path="/contest/:id" element={<ContestDetails />} />
 <Route path="/problem/:id" element={<ViewProblem />} />
+<Route path="/select" element={<SelectProblems />} />
+
 
 
 

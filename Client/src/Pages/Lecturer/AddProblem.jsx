@@ -11,8 +11,9 @@ import { FaPlus } from 'react-icons/fa';
 import { backendUrl } from "../../../config";
 import { useSelector } from 'react-redux';
 
-const AddProblem = () => {
+const AddProblem = (props) => {
   const user = useSelector(state => state.user);
+  const {isContest,onSelection,onClose} = props;
   const [formData, setFormData] = useState({
     name: '',
     difficulty: '',
@@ -42,6 +43,15 @@ const AddProblem = () => {
   };
 
 
+  const handleCancelAction = ()=>{
+    if(isContest){
+      onClose();
+    }
+    else{
+      navigate(-1)
+    }
+  }
+
   const handleCheckboxChangePractice = (e) => {
     const { checked } = e.target;
     setFormData({
@@ -59,7 +69,6 @@ const AddProblem = () => {
       examples: updatedExamples
     });
   };
-
 
 
   const addExample = () => {
@@ -210,7 +219,13 @@ const AddProblem = () => {
       console.log(response)
       toast.success(`${id ? 'Problem updated' : 'Problem added'} successfully!`);
       localStorage.clear();
-      navigate('/qbank');
+      if(isContest){
+        onSelection(response.data.problem);
+        onClose();
+      }else{
+        navigate('/qbank');
+
+      }
     } catch (error) {
       toast.error(`Error ${id ? 'updating' : 'adding'} problem. ${error}`);
     }
@@ -218,16 +233,27 @@ const AddProblem = () => {
 
   return (
     <div className="mx-auto p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Problem' : 'Add Problem'}</h2>
-      <form className="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-8" onSubmit={handleSubmit}>
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Name:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
-        </div>
+  <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Problem' : 'Add Problem'}</h2>
+  <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-8">
 
+    {/* Problem Details Section */}
+    <div className="col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Difficulty:</label>
+          <label htmlFor="name" className="block mb-1 text-sm font-medium text-gray-700">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+        <div>
+          <label htmlFor="difficulty" className="block mb-1 text-sm font-medium text-gray-700">Difficulty:</label>
           <select
+            id="difficulty"
             name="difficulty"
             value={formData.difficulty}
             onChange={handleChange}
@@ -240,144 +266,224 @@ const AddProblem = () => {
           </select>
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Category:</label>
-          <input type="text" name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
-        </div>
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Description:</label>
-          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full h-40 px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
-        </div>
-        <div className="col-span-2">
-          <label className="block mb-1 text-sm font-medium text-gray-700">Initial Code:</label>
-          <CodingEditor onUpdateInitialCode={updateInitialCode} initialCode={formData.initialCode} showOutput={false} />
-        </div>
-        <div className="col-span-2">
-          <h3 className="text-lg font-semibold mb-2">Test Cases:</h3>
-          {formData.testCases.map((testCase, index) => (
-            <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4 mb-5">
-              <label className="block mb-1 text-sm font-medium text-gray-700">Test Case {index + 1}:</label>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
-                <textarea
-                  type="text"
-                  name="input"
-                  value={testCase.input}
-                  onChange={(e) => handleTestCaseChange(e, index, 'input')}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
-                <textarea
-                  type="text"
-                  name={`expectedoutput`}
-                  value={testCase.expectedOutput}
-                  onChange={(e) => handleTestCaseChange(e, index, 'expectedOutput')}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <div className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  name={`isSample`}
-                  checked={testCase.isSample}
-                  onChange={(e) => handleCheckboxChange(e, index)}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Sample</span>
-              </div>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Weight:</label>
-                <input
-                  type="number"
-                  name={`weight`}
-                  value={testCase.weight}
-                  onChange={(e) => handleTestCaseChange(e, index, 'weight')}
-                  placeholder="Weight"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <button className='mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600' type="button" onClick={() => removeTestCase(index)}>Remove Testcase</button>
-            </div>
-          ))}
-          <button type="button" onClick={addTestCase} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-            Add New Testcase</button>
-        </div>
-
-        <div className="col-span-2">
-          <h3 className="text-lg font-semibold mb-2">Examples:</h3>
-          {formData.examples.map((example, index) => (
-            <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4">
-              <label className="block mb-1 text-sm font-medium text-gray-700">Example {index + 1}:</label>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
-                <textarea
-                  type="text"
-                  name={`input`}
-                  value={example.input}
-                  onChange={(e) => handleExampleChange(e, index)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
-                <textarea
-                  type="text"
-                  name={`output`}
-                  value={example.output}
-                  onChange={(e) => handleExampleChange(e, index)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">Explanation:</label>
-                <textarea
-                  type="text"
-                  name={`explanation`}
-                  value={example.explanation}
-                  onChange={(e) => handleExampleChange(e, index)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-              <button type="button" className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-green-600" onClick={() => removeExample(index)}>Remove</button>
-            </div>
-          ))}
-          <button type="button" onClick={addExample} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Add Example</button>
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Grade:</label>
-          <input type="number" name="grade" value={formData.grade} onChange={handleChange} className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500" />
-        </div>
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Add to Practice List:</label>
+          <label htmlFor="category" className="block mb-1 text-sm font-medium text-gray-700">Category:</label>
           <input
-            type="checkbox"
-            name="isPractice"
-            checked={formData.isPractice}
-            onChange={handleCheckboxChangePractice}
-            className="mr-2"
+            type="text"
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
           />
         </div>
         <div className="col-span-2">
-          <button type="submit" className="w-full bg-indigo-500 text-white px-6 py-3 rounded-md hover:bg-indigo-600">
-            {id ? 'Update Problem' : 'Add Problem'}
+          <label htmlFor="description" className="block mb-1 text-sm font-medium text-gray-700">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full h-40 px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Initial Code Editor */}
+    <div className="col-span-2">
+      <label className="block mb-1 text-sm font-medium text-gray-700">Initial Code:</label>
+      <CodingEditor onUpdateInitialCode={updateInitialCode} initialCode={formData.initialCode} showOutput={false} />
+    </div>
+
+    {/* Test Cases Section */}
+    <div className="col-span-2">
+      <h3 className="text-lg font-semibold mb-2">Test Cases:</h3>
+      {formData.testCases.map((testCase, index) => (
+        <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4 mb-5">
+          {/* Test Case Inputs */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
+            <textarea
+              type="text"
+              name="input"
+              value={testCase.input}
+              onChange={(e) => handleTestCaseChange(e, index, 'input')}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Expected Output */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
+            <textarea
+              type="text"
+              name="expectedOutput"
+              value={testCase.expectedOutput}
+              onChange={(e) => handleTestCaseChange(e, index, 'expectedOutput')}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Sample Checkbox */}
+          <div className="inline-flex items-center">
+            <input
+              type="checkbox"
+              name="isSample"
+              checked={testCase.isSample}
+              onChange={(e) => handleCheckboxChange(e, index)}
+              className="mr-2"
+            />
+            <span className="text-sm font-medium text-gray-700">Sample</span>
+          </div>
+          {/* Weight Input */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Weight:</label>
+            <input
+              type="number"
+              name="weight"
+              value={testCase.weight}
+              onChange={(e) => handleTestCaseChange(e, index, 'weight')}
+              placeholder="Weight"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Remove Test Case Button */}
+          <button
+            className='mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600'
+            type="button"
+            onClick={() => removeTestCase(index)}
+          >
+            Remove Testcase
           </button>
         </div>
-      </form>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      ))}
+      {/* Add Test Case Button */}
+      <button
+        type="button"
+        onClick={addTestCase}
+        className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+      >
+        Add New Testcase
+      </button>
     </div>
+
+    {/* Examples Section */}
+    <div className="col-span-2">
+      <h3 className="text-lg font-semibold mb-2">Examples:</h3>
+      {formData.examples.map((example, index) => (
+        <div key={index} className="bg-gray-100 rounded-md p-4 space-y-4">
+          {/* Example Inputs */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Input:</label>
+            <textarea
+              type="text"
+              name="input"
+              value={example.input}
+              onChange={(e) => handleExampleChange(e, index)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Expected Output */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Expected Output:</label>
+            <textarea
+              type="text"
+              name="output"
+              value={example.output}
+              onChange={(e) => handleExampleChange(e, index)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Explanation */}
+          <div className="space-y-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">Explanation:</label>
+            <textarea
+              type="text"
+              name="explanation"
+              value={example.explanation}
+              onChange={(e) => handleExampleChange(e, index)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          {/* Remove Example Button */}
+          <button
+            type="button"
+            className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            onClick={() => removeExample(index)}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+      {/* Add Example Button */}
+      <button
+        type="button"
+        onClick={addExample}
+        className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+      >
+        Add Example
+      </button>
+    </div>
+
+    {/* Grade and Practice List Section */}
+    <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+      <div>
+        <label htmlFor="grade" className="block mb-1 text-sm font-medium text-gray-700">Grade:</label>
+        <input
+          type="number"
+          id="grade"
+          name="grade"
+          value={formData.grade}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+        />
+      </div>
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="isPractice"
+          name="isPractice"
+          checked={formData.isPractice}
+          onChange={handleCheckboxChangePractice}
+          className="mr-2"
+        />
+        <label htmlFor="isPractice" className="text-sm font-medium text-gray-700">Add to Practice List</label>
+      </div>
+    </div>
+
+    {/* Buttons Section */}
+    <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+      <button
+        type="submit"
+        className="w-full bg-indigo-500 text-white px-6 py-3 rounded-md hover:bg-indigo-600"
+      >
+        
+                  {id ? 'Update Problem' : 'Add Problem'}
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full bg-gray-300 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-400"
+                    onClick = {()=>handleCancelAction()}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            
+              {/* Toast Notifications */}
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+            </div>
+            
+
   );
 
 };

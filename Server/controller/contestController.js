@@ -1,6 +1,7 @@
 const contest = require('../models/contest');
 const Contest = require('../models/contest')
 const Enrollment = require('../models/enrollment')
+const Problem = require('../models/problems')
 
 
 async function addContest(req, res) {
@@ -66,7 +67,10 @@ const getContest = async (req, res) => {
       if (!contest) {
         return res.status(404).json({ error: 'Contest not found' });
       }
-      res.status(200).json({ contest });
+      const problems = await Contest.findById(id).populate('problems');
+      const problems_ = problems.problems;
+      console.log(problems_);
+      res.status(200).json({ contest,problems : problems_});
     } catch (error) {
       console.error('Error fetching contest:', error);
       res.status(500).json({ error: 'Failed to fetch contest' });
