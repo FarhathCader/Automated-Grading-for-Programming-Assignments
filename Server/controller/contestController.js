@@ -34,13 +34,63 @@ const getContests = async (req,res)=>{
 
     try{
         const {userId} = req.params;
-        const contests = await Contest.find({createdBy:userId})
+        const contests = await Contest.find({createdBy:userId})      
         return res.status(200).json({contests})
     }
     catch(err){
         return res.status(400).json({msg : err.message})
     }
 }
+
+
+const getCompletedContests = async (req, res) => {
+  try {
+
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const { userId } = req.params;
+    const currentTimestamp = new Date().getTime();
+
+      const completedContests = await Contest.find({
+          createdBy: userId,
+          endDate: { $lt: currentTimestamp }
+      }).skip(skip).limit(Number(limit));
+
+      const total = await Contest.find({
+        createdBy: userId,
+        endDate: { $lt: currentTimestamp }
+    }).countDocuments();
+
+      return res.status(200).json({completedContests,total});
+  } catch (err) {
+      return res.status(400).json({ msg: err.message });
+  }
+}
+
+const getOngoingContests = async (req, res) => {
+  try {
+    
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+      const { userId } = req.params;
+      const currentTimestamp = new Date().getTime();
+
+      const availableContests = await Contest.find({
+          createdBy: userId,
+          endDate: { $gte: currentTimestamp }
+      }).skip(skip).limit(Number(limit));
+
+      const total = await Contest.find({
+        createdBy: userId,
+        endDate: { $gte: currentTimestamp }
+    }).countDocuments();
+      return res.status(200).json({availableContests,total});
+  } catch (err) {
+      return res.status(400).json({ msg: err.message });
+  }
+}
+
+
 
 async function deleteContest(req, res) {
     const contestId = req.params.id;
@@ -130,4 +180,4 @@ const getAvilabalContests = async (req, res) => {
 
   
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests}
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests}

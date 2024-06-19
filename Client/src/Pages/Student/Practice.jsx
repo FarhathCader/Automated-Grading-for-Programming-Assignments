@@ -20,7 +20,7 @@ const Practice = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(10); // Set the number of problems per page
+  const [problemsPerPage] = useState(1); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
@@ -156,7 +156,7 @@ const Practice = () => {
         <ClipLoader color="blue" loading={true} size={150} css={override} />
       </div>
     ) : (
-      <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+      <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
         {
           problems && problems.length === 0 ?
 
@@ -168,15 +168,16 @@ const Practice = () => {
             </div>
             :
 
-        <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 transition duration-500 ease-in-out transform hover:scale-105">
+        <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
           <h2 className="text-xl italic font-semibold mb-4 text-blue-950 bg-blue-200 p-4 rounded">
             Practice Makes Perfect
           </h2>
-            <table className="w-4/5 border-collapse">
+            <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-blue-200">
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Problem Name</th>
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Difficulty</th>
+                  <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Category</th>
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Grade</th>
                 </tr>
               </thead>
@@ -184,19 +185,20 @@ const Practice = () => {
                 {problems.map((problem, index) => (
                   <tr
                     key={index}
-                    className={`cursor-pointer transition duration-300 ease-in-out transform ${
+                    className={`cursor-pointer ${
                       index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
-                    } hover:scale-105`}
+                    }`}
                     onClick={() => navigate(`/problems/${problem._id}`)}
                   >
                     <td className="px-6 py-4 text-blue-200">{problem.name}</td>
                     <td className="px-6 py-4 text-blue-200">{problem.difficulty}</td>
+                    <td className="px-6 py-4 text-blue-200">{problem.category}</td>
                     <td className="px-6 py-4 text-blue-200">{problem.grade}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {showBtn && <div className="w-full flex justify-between items-center mt-4">
+            {showBtn && <div className="w-full flex justify-center items-center mt-4 gap-6">
                 <button
                   onClick={handlePrev}
                   className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"

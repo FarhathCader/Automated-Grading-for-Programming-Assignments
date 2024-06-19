@@ -30,7 +30,7 @@ const QuestionBank = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(10); // Set the number of problems per page
+  const [problemsPerPage] = useState(1); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
@@ -235,7 +235,7 @@ const QuestionBank = () => {
                   ))}
                 </tbody>
               </table>
-             {showBtn && <div className="w-full flex justify-between items-center mt-4">
+             {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
                 <button
                   onClick={handlePrev}
                   className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
