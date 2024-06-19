@@ -100,6 +100,14 @@ const AddContest = ({ onAdd }) => {
       return;
     }
 
+    if(selectedProblems.length === 0){
+      toast.error("Please add problems");
+      setTimeout(() => {
+        setDisabled_btn(false)
+      }, 1000)
+      return;
+    }
+
     const totalDurationMinutes = (parseInt(durationDays) * 24 * 60) + (parseInt(durationHours) * 60) + parseInt(durationMinutes);
 
     // Ensure end date is after start date
