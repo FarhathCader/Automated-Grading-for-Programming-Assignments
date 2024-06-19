@@ -2,41 +2,81 @@ const Image = require('../models/image');
 const User = require('../models/user');
 const cloudinary = require('../utils/cloudinary');
 
+// const uploadImage = async (req, res) => {
+//     const { image, userId } = req.body;
+
+
+//     if (!image || image === "") {
+//         return res.status(403).json({ message: "Please upload a file" });
+//     }
+//     if (!userId || userId === "") {
+//         return res.status(403).json({ message: "Please login to continue" });
+//     }
+
+//     const user = await Image.findOne({userId});
+//     const result = await cloudinary.uploader.upload(image, {
+//         folder: "profiles",
+//         // width: 300,
+//         // crop: "scale"
+//     })
+//     if (!user) {
+//         const image = await Image.create({
+//             image: {
+//                 public_id: result.public_id,
+//                 url: result.secure_url
+//             },
+//             userId
+//         });
+//         return res.status(201).json(image);
+//     }
+//     else{
+//         const image = await updateImage(result,userId,user._id);
+//         return res.status(201).json(image);
+//     }
+
+
+
+// }
+
 const uploadImage = async (req, res) => {
     const { image, userId } = req.body;
 
+    try {
+        if (!image || image === "") {
+            return res.status(403).json({ message: "Please upload a file" });
+        }
+        if (!userId || userId === "") {
+            return res.status(403).json({ message: "Please login to continue" });
+        }
 
-    if (!image || image === "") {
-        return res.status(403).json({ message: "Please upload a file" });
-    }
-    if (!userId || userId === "") {
-        return res.status(403).json({ message: "Please login to continue" });
-    }
+        const user = await Image.findOne({ userId });
 
-    const user = await Image.findOne({userId});
-    const result = await cloudinary.uploader.upload(image, {
-        folder: "profiles",
-        // width: 300,
-        // crop: "scale"
-    })
-    if (!user) {
-        const image = await Image.create({
-            image: {
-                public_id: result.public_id,
-                url: result.secure_url
-            },
-            userId
+        const result = await cloudinary.uploader.upload(image, {
+            folder: "profiles",
+            // width: 300,
+            // crop: "scale"
         });
-        return res.status(201).json(image);
+
+        if (!user) {
+            const createdImage = await Image.create({
+                image: {
+                    public_id: result.public_id,
+                    url: result.secure_url
+                },
+                userId
+            });
+            return res.status(201).json(createdImage);
+        } else {
+            const updatedImage = await updateImage(result, userId, user._id);
+            return res.status(201).json(updatedImage);
+        }
+    } catch (err) {
+        // Handle any errors that occurred during the async operations
+        console.error("Error uploading image:", err);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-    else{
-        const image = await updateImage(result,userId,user._id);
-        return res.status(201).json(image);
-    }
+};
 
-
-
-}
 
 const getImage = async (req, res) => {
     const { userId } = req.params;
