@@ -1,4 +1,4 @@
-import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaPlus, FaEdit, FaTrash,FaEye } from "react-icons/fa";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import Header from "../../Sections/Header";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { backendUrl } from "../../../config";
+import { useSelector } from "react-redux";
 
 const override = {
   display: "block",
@@ -20,7 +21,9 @@ const QuestionBank = () => {
   const [problems, setProblems] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [problemToDelete, setProblemToDelete] = useState(null);
+  const [added,setAdded] = useState("")
   const [loading, setLoading] = useState(true);
+  const user = useSelector(state => state.user)
   const navigate = useNavigate();
   useEffect(() => {
     // Fetch questions from API
@@ -30,7 +33,9 @@ const QuestionBank = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/problems`);
+      console.log(response)
       setProblems(response.data.problems);
+      setAdded(response.data.addedBy)
     } catch (error) {
       console.error("Error fetching questions:", error);
     }finally{
@@ -112,6 +117,7 @@ const addProblem = ()=>{
                   <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
                   <th className="px-6 py-3 text-left text-fuchsia-800">Category</th>
                   <th className="px-6 py-3 text-left text-fuchsia-800">Difficulty</th>
+                  <th className="px-6 py-3 text-left text-fuchsia-800">Added By</th>
                   <th className="px-6 py-3 text-left text-fuchsia-800">Actions</th>
                 </tr>
               </thead>
@@ -124,16 +130,36 @@ const addProblem = ()=>{
                     <td className="px-6 py-4 text-fuchsia-200">{question.name}</td>
                     <td className="px-6 py-4 text-fuchsia-200">{question.category}</td>
                     <td className="px-6 py-4 text-fuchsia-200">{question.difficulty}</td>
-                    <td className="px-6 py-4 flex">
+                    {question.createdBy === user._id ? 
+                     <td className="px-6 py-4 text-fuchsia-200">You</td>
+                    :
+                    <td className="px-6 py-4 text-fuchsia-200">{question.addedBy}</td>                          
+
+                    }
+                  {question.createdBy === user._id ?  <td className="px-6 py-4 flex">
                       <FaEdit
                         className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
                         onClick={() => editProblem(question)}
                       />
                       <FaTrash
-                        className="text-red-500 hover:text-red-600 cursor-pointer"
+                        className="mr-2 text-red-500 hover:text-red-600 cursor-pointer"
                         onClick={() => deleteProblem(question)}
                       />
+                        <FaEye
+                        className="text-red-500 hover:text-red-600 cursor-pointer"
+                        onClick={() => navigate(`/problem/${question._id}`)}
+
+                        
+                      />
                     </td>
+                    :
+                  <td className="px-6 py-4 flex">
+                      <FaEye
+                        className="text-red-500 hover:text-red-600 cursor-pointer"
+                        onClick={() => navigate(`/problem/${question._id}`)}
+                        
+                      />
+                    </td>}
                   </tr>
                 ))}
               </tbody>
