@@ -54,21 +54,24 @@ import SubmissionResult from "./Components/SubmissionResult";
 import Layout from "./Components/Layout";
 import Sidebar from "./Sections/Sidebar";
 import SidebarLecturer from "./Sections/SidebarLecturer";
-import ViewProblem from "./Pages/Lecturer/ViewProblem";
-import SelectProblems from "./Pages/Lecturer/SelectProblems";
+import ErrorComponent from "./Components/ErrorComponent";
 
 
 
 function App() {
-  const isLoggedin = useSelector((state) => state.isLoggedin);
-  const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
 
-  useFetchUser();
+
+  const error = useFetchUser(); // Get error from hook
+
+  if (error) {
+    console.log(error)
+    return <ErrorComponent message="Failed to fetch user data" />; // Conditionally render the error component
+  }
 
   return (
+ <>
 
-    <Routes>
+   <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
       <Route element={<Layout bgColor="blue" />}>
         <Route path="/dashboard_std" element={<StudentDashboard />} />
@@ -94,19 +97,13 @@ function App() {
         <Route path="/qbank" element={<QuestionBank />} />
         <Route path="/profile_lec" element={<LecturerProfile />} />
         <Route path="/contest" element={<Contest />} />
+        <Route path="/addcontest" element={<AddContest />} />
+        <Route path="/editcontest/:id" element={<AddContest />} />
+        <Route path="/contest/:id" element={<ContestDetails />} />
         <Route path="/problem" element={<QuestionBank />} />
+        <Route path="/addproblem" element={<AddProblem />} />
+        <Route path="/editproblem/:id" element={<AddProblem />} />
 </Route>
-<Route path="/addproblem" element={<AddProblem />} />
-<Route path="/editproblem/:id" element={<AddProblem />} />
-<Route path="/addcontest" element={<AddContest />} />
-<Route path="/editcontest/:id" element={<AddContest />} />
-<Route path="/contest/:id" element={<ContestDetails />} />
-<Route path="/problem/:id" element={<ViewProblem />} />
-<Route path="/select" element={<SelectProblems />} />
-
-
-
-
 
       </Route>
 
@@ -133,6 +130,8 @@ function App() {
       </Route>
     </Routes>
 
+ </>
+  
 
   );
 }

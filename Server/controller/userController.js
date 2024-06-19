@@ -152,7 +152,7 @@ const login = async (req, res) => {
             { id: user._id }, 
             process.env.ACCESS_TOKEN,
             {
-                expiresIn: '7d'
+                expiresIn: '1d'
             }
         );
 
@@ -167,7 +167,7 @@ const login = async (req, res) => {
         res.cookie(String(user._id), token, {
             path: '/',
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60*60*24*7),
+            expires: new Date(Date.now() + 1000 * 60 *60*24),
             sameSite: 'lax'
         });
 
@@ -247,8 +247,8 @@ const getUser = async (req, res) => {
 
         return res.status(200).json({ user });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error checks' });
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -278,7 +278,7 @@ const refreshToken = async (req,res,next)=>{
         res.cookie(String(user.id),token,{
             path : '/',
             httpOnly:true,
-            expires : new Date(Date.now() + 1000*20),
+            expires : new Date(Date.now() + 1000*60*60*24*7),
             sameSite : 'lax'
         })
 
