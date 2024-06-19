@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import axios from 'axios';
 import { backendUrl } from '../../config';
+import { useNavigate } from 'react-router-dom';
 
 const override = {
   display: "block",
@@ -33,6 +34,7 @@ export default function Output(props) {
 
 
   const user = useSelector(state => state.user);
+  const navigate = useNavigate();
 
 
   const fetchCreatedTime = async () => {
@@ -236,7 +238,7 @@ export default function Output(props) {
 
   return (
     <div className='flex flex-col space-y-4'>
-      <div className='flex justify-between items-center space-x-4'>
+      <div className='flex justify-around space-x-4 w-full'>
         <button
           className='bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600'
           type='button'
@@ -250,6 +252,14 @@ export default function Output(props) {
           onClick={handleSubmit}
           disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'SUBMIT'}
+        </button>
+
+        <button
+          className='bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600'
+          type='button'
+          onClick={()=>navigate(-1)}
+          disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'CANCEL'}
         </button>
       </div>
       {isLoading && <p className='text-gray-700'>Running...</p>}

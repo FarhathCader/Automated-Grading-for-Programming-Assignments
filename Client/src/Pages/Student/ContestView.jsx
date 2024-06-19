@@ -7,6 +7,7 @@ import CountDown from "./CountDown";
 import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
 import NotFoundPage from "../../Components/NotFoundPage";
+import BackButton from "../../Components/BackButton";
 
 const override = {
   display: "block",
@@ -153,6 +154,7 @@ const ContestView = () => {
 
     notFound === false ?
     <div className="container mx-auto mt-10 ">
+      <BackButton/>
       {shouldRender &&
         <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />}
       

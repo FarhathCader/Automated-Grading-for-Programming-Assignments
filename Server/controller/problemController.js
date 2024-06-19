@@ -7,6 +7,11 @@ const addProblem = async (req,res)=>{
 
         const added = await User.findById(createdBy);
 
+        const existingName = await Problem.findOne({name});
+
+        if(existingName){
+            return res.status(403).json({msg : 'Problem with same name existing'})
+        }
 
         const problem = await Problem.create({
             name,
@@ -36,8 +41,13 @@ const addProblem = async (req,res)=>{
 
 const getProblems = async (req,res)=>{
     try{
-        const problems = await Problem.find()
-        return res.status(200).json({problems})
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+        console.log(skip)
+        const problems = await Problem.find().skip(skip).limit(Number(limit));
+    const total = await Problem.countDocuments();
+
+        return res.status(200).json({problems,total})
     }
     catch(err){
         return res.status(400).json({msg : err.message})
@@ -129,7 +139,7 @@ const getPracticeProblems = async (req,res)=>{
     const skip = (page - 1) * limit;
 
     const problems = await Problem.find({isPractice : true}).skip(skip).limit(Number(limit));
-    const total = await Problem.countDocuments();
+    const total = await Problem.find({isPractice : true}).countDocuments();
 
     return res.status(200).json({ problems, total });
   } catch (err) {

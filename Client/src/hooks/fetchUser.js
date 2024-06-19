@@ -63,8 +63,13 @@ const useFetchUser = () => {
           dispatch(authActions.logout())
 
         }
+        
+      }
+      finally{
+        setLoading(false)
 
       }
+
     };
 
     if(firstRender){

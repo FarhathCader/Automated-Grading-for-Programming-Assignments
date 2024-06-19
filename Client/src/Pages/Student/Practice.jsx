@@ -17,7 +17,7 @@ const Practice = () => {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [problemsPerPage] = useState(5); // Set the number of problems per page
+  const [problemsPerPage] = useState(1); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const navigate = useNavigate();
 
