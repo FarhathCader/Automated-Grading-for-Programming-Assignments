@@ -14,20 +14,14 @@ import BackButton from '../../Components/BackButton';
 
 const AddProblem = (props) => {
   const user = useSelector(state => state.user);
+  const [loading,setLoading] = useState(false);
   const {isContest,onSelection,onClose} = props;
   const [formData, setFormData] = useState({
     name: '',
     difficulty: '',
     category: '',
     description: '',
-    initialCode: [
-      { language: "javascript", code: CODE_SNIPPETS['javascript'] },
-      { language: "python", code: CODE_SNIPPETS['python'] },
-      { language: "java", code: CODE_SNIPPETS['java'] },
-      { language: "cpp", code: CODE_SNIPPETS['cpp'] },
-      { language: "c", code: CODE_SNIPPETS['c'] },
-      { language: "csharp", code: CODE_SNIPPETS['csharp'] },
-    ],
+    initialCode: null,
     testCases: [],
     grade: 0,
     examples: [],
@@ -45,6 +39,7 @@ const AddProblem = (props) => {
 
 
   const handleCancelAction = ()=>{
+    localStorage.clear();
     if(isContest){
       onClose();
     }
@@ -132,6 +127,18 @@ const AddProblem = (props) => {
   useEffect(() => {
     if (id) {
       fetchProblemDetails(id);
+    }else{
+      setFormData({
+        ...formData,
+        initialCode: [
+          { language: "cpp", code: CODE_SNIPPETS['cpp'] },
+          { language: "c", code: CODE_SNIPPETS['c'] },
+          { language: "python", code: CODE_SNIPPETS['python'] },
+          { language: "java", code: CODE_SNIPPETS['java'] },
+          { language: "javascript", code: CODE_SNIPPETS['javascript'] },
+          { language: "csharp", code: CODE_SNIPPETS['csharp'] },
+        ]
+      });
     }
   }, [id]);
 
@@ -156,13 +163,6 @@ const AddProblem = (props) => {
       console.error('Error fetching problem details:', error);
     }
   };
-  useEffect(() => {
-
-    if (localStorage.getItem('codes')) {
-      setFormData({ ...formData, initialCode: JSON.parse(localStorage.getItem('codes')) });
-
-    }
-  }, []);
 
 
   const updateInitialCode = (newInitialCode) => {
@@ -208,6 +208,7 @@ const AddProblem = (props) => {
       toast.error('Test case weight must be greater than zero');
       return;
     }
+    console.log("submitting",formData.initialCode)
 
     const url = id ? `${backendUrl}/api/problems/${id}` : `${backendUrl}/api/problems`;
     const method = id ? 'PUT' : 'POST';
@@ -225,7 +226,7 @@ const AddProblem = (props) => {
         onSelection(response.data.problem);
         onClose();
       }else{
-        navigate('/qbank');
+        navigate(-1);
 
       }
     } catch (error) {
@@ -301,7 +302,7 @@ const AddProblem = (props) => {
     {/* Initial Code Editor */}
     <div className="col-span-2">
       <label className="block mb-1 text-sm font-medium text-gray-700">Initial Code:</label>
-      <CodingEditor onUpdateInitialCode={updateInitialCode} initialCode={formData.initialCode} showOutput={false} />
+      {formData.initialCode && <CodingEditor onUpdateInitialCode={updateInitialCode} initialCode={formData.initialCode} showOutput={false} />}
     </div>
 
     {/* Test Cases Section */}

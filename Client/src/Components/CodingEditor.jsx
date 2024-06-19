@@ -5,8 +5,9 @@ import LanguageSelector from './LanguageSelector'
 import { CODE_SNIPPETS } from '../constant';
 import Output from './Output';
 export default function CodingEditor(props) {
-  const {initialCode,onUpdateInitialCode,showOutput,problem,contestId} = props  
-  const [language,setLanguage] = useState(`javascript`);
+  const {initialCode,onUpdateInitialCode,showOutput,problem,contestId} = props 
+  const [language,setLanguage] = useState(localStorage.getItem('currentLanguage') ||`cpp`);
+  console.log("initial",initialCode)
   const [value,setValue] = useState(``); 
   const onSelect = (language)=> {
     setLanguage(language)
@@ -14,35 +15,39 @@ export default function CodingEditor(props) {
   }
 
 
+  if(localStorage.getItem('problemId') === null || localStorage.getItem('contestId') === null){
+    if(problem !== undefined){
+      localStorage.setItem('problemId',problem._id);
+    }
+    if(contestId){
+      localStorage.setItem('contestId',contestId);
+    }
+
+  }
  
 
+
   useEffect(() => {
-   
-    if(initialCode && initialCode.length > 0) { // If codes array is not present in localStorage
-    // if(localStorage.getItem('codes') === null)localStorage.setItem('codes', JSON.stringify(initialCode));
-    localStorage.setItem('codes', JSON.stringify(initialCode));
+    if(initialCode && initialCode.length > 0){
     const index = initialCode.findIndex(item => item.language === language);
-    setValue(initialCode[index].code);
-    setLanguage(initialCode[index].language);
-
-   // Store updated codes array in localStorage
-    }
-    return 
-  
-  }, [initialCode]);
-
-  useEffect(() => {
     const storedCodes =  JSON.parse(localStorage.getItem('codes'));
     if (storedCodes !== null) {
       const storedCode = storedCodes.find((code) => code.language === language);
       if (storedCode) {
+      console.log("a")
+
         setValue(storedCode.code);
         return;
       }
     }
-    setValue(CODE_SNIPPETS[language] || CODE_SNIPPETS['javascript']);
-    setLanguage(language || 'javascript');
-  }, [language]);
+    else{
+      localStorage.setItem('codes', JSON.stringify(initialCode));
+      console.log("b")
+      setValue(initialCode[index].code);
+      setLanguage(initialCode[index].language);
+    }
+  }
+  }, [language,initialCode]);
   
   const handleCodeChange = (newValue) => {
     setValue(newValue);
@@ -54,7 +59,8 @@ export default function CodingEditor(props) {
     onUpdateInitialCode(updatedCodes); // Store updated codes array in localStorage
   };
   
-  const handleReset = () => {
+  const handleReset = (e) => {
+    e.preventDefault();
     const defaultCode = CODE_SNIPPETS[language];
     setValue(defaultCode);
     // Update the stored code to the default code
