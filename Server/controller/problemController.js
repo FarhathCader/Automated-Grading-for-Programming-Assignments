@@ -146,6 +146,53 @@ const getPracticeProblems = async (req,res)=>{
     return res.status(400).json({ msg: err.message });
   }
 }
+
+// const searchProblems = async (req, res) => {
+//     console.log("search")
+//     try {
+//         const { name } = req.query;
+//         const { page = 1, limit = 10 } = req.query;
+//         const skip = (page - 1) * limit;
+
+//         // Construct query object
+//         const query = {};
+//         if (name) query.name = new RegExp(name, 'i');
+//         console.log(query)
+//         const problems = await Problem.find(query).skip(skip).limit(Number(limit));
+//         const total = await Problem.find(query).countDocuments();
+
+//         return res.status(200).json({problems,total})
+//     } catch (err) {
+//         return res.status(500).json({ error: err.message });
+//     }
+// };
+const searchProblems = async (req, res) => {
+    console.log("search");
+    try {
+        const { name } = req.query;
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+
+        // Construct query object
+        const query = {};
+        if (name) {
+            query.$or = [
+                { name: new RegExp(name, 'i') },
+                { category: new RegExp(name, 'i') },
+                { difficulty: new RegExp(name, 'i') },
+                { addedBy: new RegExp(name, 'i') }
+            ];
+        }
+
+        const problems = await Problem.find(query).skip(skip).limit(Number(limit));
+        const total = await Problem.countDocuments(query);
+
+        return res.status(200).json({ problems, total });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
   
 
-module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems}
+module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems,searchProblems}

@@ -11,6 +11,7 @@ import { backendUrl } from "../../../config";
 import { useSelector } from "react-redux";
 import ViewProblem from "./ViewProblem";
 import NotFoundPage from "../../Components/NotFoundPage";
+import { set } from "lodash";
 
 const override = {
   display: "block",
@@ -30,29 +31,79 @@ const QuestionBank = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(5); // Set the number of problems per page
+  const [problemsPerPage] = useState(3); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
-  const [totalPages,setTotalPages] = useState(0)
-  const [notFound,setNotFound] = useState(false)
+  const [totalPages, setTotalPages] = useState(0)
+  const [notFound, setNotFound] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const [showProblem, setShowProblem] = useState(true)
+  const [name, setName] = useState('')
 
-  useEffect(()=>{
-    const total = Math.ceil(totalProblems / problemsPerPage)
-    if(total === 0)return
-    setTotalPages(total);
-    if(  total > 1)setShowBtn(true)
-    if(currentPage > total)setNotFound(true)
-  },[totalProblems,showBtn])
 
   useEffect(() => {
-    // Fetch questions from API
-    console.log("current page", currentPage)
-    fetchQuestions(currentPage);
-  }, [currentPage]);
+    const total = Math.ceil(totalProblems / problemsPerPage)
+    console.log("total", totalProblems, problemsPerPage, "total pages", total)
 
-  useEffect(()=>{
+    if (total === 0) return
+    setTotalPages(total);
+    if (total > 1) {
+      setShowBtn(true)
+    }
+    else {
+      setShowBtn(false)
+    }
+    if (currentPage > total) setNotFound(true)
+  }, [totalProblems, showBtn])
+
+  useEffect(() => {
+
+    if (showProblem) {
+      fetchQuestions(currentPage)
+      return
+    }
+    if (showSearch) {
+      fetchSearchedQuestions(currentPage)
+      return
+    }
+  }, [showSearch, currentPage, showProblem]);
+
+  useEffect(() => {
+    console.log("show", showSearch)
+    if (name !== "") return
+    setShowProblem(true)
+    setShowSearch(false)
+  }, [name])
+
+  const fetchSearchedQuestions = async (page) => {
+    setLoading(true);
+    if (name === "") return
+    try {
+      const response = await axios.get(`${backendUrl}/api/problems/search`, {
+        params: {
+          name,
+          page: page,
+          limit: problemsPerPage,
+        }
+      });
+      setProblems(response.data.problems);
+      setTotalProblems(response.data.total);
+      setSearchParams({ page: page });
+    } catch (error) {
+      console.log("Error fetching questions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+
+
+
+  useEffect(() => {
     localStorage.clear();
-  },[])
+  }, [])
 
 
   const fetchQuestions = async (page) => {
@@ -66,7 +117,6 @@ const QuestionBank = () => {
           },
         }
       );
-      console.log(response.data.total)
       setProblems(response.data.problems);
       setTotalProblems(response.data.total);
       setSearchParams({ page: page });
@@ -96,6 +146,8 @@ const QuestionBank = () => {
     setProblemToDelete(null);
     setShowConfirmation(false);
   };
+
+
 
   const handleConfirmDelete = async () => {
     if (problemToDelete) {
@@ -141,14 +193,25 @@ const QuestionBank = () => {
     setShow(false)
   }
 
+  const handleChange = (e) => {
+    setName(e.target.value)
+  }
+
+  const handleClick = () => {
+    if (name === "") return
+    setShowSearch(true)
+    fetchSearchedQuestions(currentPage)
+    setShowProblem(false)
+  }
+
   if (show) {
 
     return <ViewProblem onClose={cancelView} id={activeID} />
 
   }
 
-  if(notFound){
-    return <NotFoundPage/>
+  if (notFound) {
+    return <NotFoundPage />
   }
 
 
@@ -160,28 +223,39 @@ const QuestionBank = () => {
       {!loading ? (
         <section className="w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
           {/* <Header bgColor="fuchsia" /> */}
-          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
+          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20 mb-5">
             <div className="flex items-center justify-between w-full mb-4">
               <div className="relative flex-grow mr-4">
                 <input
                   type="text"
                   placeholder="Search Question.."
                   className="pl-10 pr-4 py-2 w-full border rounded-md"
+                  value={name}
+                  onChange={handleChange}
+                  disabled={loading}
                 />
                 <FaSearch className="absolute top-3 left-3 text-gray-400" />
               </div>
               <div>
                 <button
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-                  onClick={addProblem}
+                  onClick={handleClick}
                 >
-                  <FaPlus className="mr-2" />
-                  Add Question
+                  <FaSearch className="mr-2" />
+                  Search
                 </button>
               </div>
             </div>
           </div>
-
+          <div>
+            <button
+              className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+              onClick={addProblem}
+            >
+              <FaPlus className="mr-2" />
+              Add Question
+            </button>
+          </div>
           {/* Display questions or no completed contests message */}
           {problems && problems.length > 0 ? (
             <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
@@ -205,12 +279,9 @@ const QuestionBank = () => {
                       <td className="px-6 py-4 text-fuchsia-200">{question.name}</td>
                       <td className="px-6 py-4 text-fuchsia-200">{question.category}</td>
                       <td className="px-6 py-4 text-fuchsia-200">{question.difficulty}</td>
-                      {question.createdBy === user._id ?
-                        <td className="px-6 py-4 text-fuchsia-200">You</td>
-                        :
-                        <td className="px-6 py-4 text-fuchsia-200">{question.addedBy}</td>
 
-                      }
+                      <td className="px-6 py-4 text-fuchsia-200">{question.addedBy}</td>
+
                       {question.createdBy === user._id ? <td className="px-6 py-4 flex">
                         <FaEdit
                           className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
@@ -239,7 +310,7 @@ const QuestionBank = () => {
                   ))}
                 </tbody>
               </table>
-             {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
+              {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
                 <button
                   onClick={handlePrev}
                   className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -262,9 +333,9 @@ const QuestionBank = () => {
           ) : (
             <div className="w-full flex justify-center items-center mt-5">
               <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
-                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">Question Bank is Empty</h1>
+                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No Questions Found</h1>
                 <p className="text-lg text-fuchsia-700 text-center">
-                  There are no questions in the Question Bank yet. Start by adding questions to build your collection.
+                  There are no questions in the Question Bank as your request. Start by adding questions to build your collection.
                 </p>
               </div>
             </div>
