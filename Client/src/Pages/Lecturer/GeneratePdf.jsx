@@ -91,7 +91,7 @@ const GeneratePdf = ({ contest }) => {
 
   return (
     loading ?  (
-        <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
+        <div className="fixed inset-0 bg-gray-100 opacity-50 flex justify-center items-center">
         <SyncLoader color="red" loading={true} size={120} css={override} />
       </div>
      

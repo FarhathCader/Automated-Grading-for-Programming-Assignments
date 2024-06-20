@@ -25,10 +25,13 @@ const Contest = () => {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [currentPage, setCurrentPage] = useState(1);
-  const [contestsPerPage] = useState(5); // Set the number of problems per page
+  const [contestsPerPage] = useState(2); // Set the number of problems per page
   const [totalContests, setTotalContests] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
+  const [showSearch, setShowSearch] = useState(false)
+  const [showContest, setShowContest] = useState(true)
+  const [name, setName] = useState('')
 
   useEffect(()=>{
     const total = Math.ceil(totalContests / contestsPerPage)
@@ -38,13 +41,61 @@ const Contest = () => {
   },[totalContests,showBtn])
 
   useEffect(() => {
-    console.log("current page", currentPage)
+    fetchData(currentPage);
+  }, [user,showCompleted]);
+
+  const fetchData = (page)=>{
     if(showCompleted){
-      fetchCompletedContests(currentPage)
+      fetchCompletedContests(page)
     }else{
-      fetchAvailableContests(currentPage)
+      fetchAvailableContests(page)
     }
-  }, [user,currentPage,showCompleted]);
+    setName('')
+  }
+
+  useEffect(() => {
+
+    if (showContest) {
+      fetchData(currentPage)
+      return
+    }
+    if (showSearch) {
+      fetchSearchedQuestions(currentPage)
+      return
+    }
+  }, [showSearch, showContest,currentPage]);
+
+  useEffect(() => {
+    if (name !== "") return
+    setShowContest(true)
+    setShowSearch(false)
+  }, [name])
+
+  const fetchSearchedQuestions = async (page) => {
+    setLoading(true);
+    console.log("fetching search")
+    if (name === "") return
+    try {
+      const response = await axios.get(`${backendUrl}/api/contest/search`, {
+        params: {
+          name,
+          page: page,
+          limit: contestsPerPage,
+        }
+      });
+      setContests(response.data.contests);
+      setTotalContests(response.data.total);
+    } catch (error) {
+      console.log("Error fetching contests:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    localStorage.clear();
+  }, [])
+
 
 
   // const fetchContests = async () => {
@@ -68,6 +119,8 @@ const Contest = () => {
   // };
 
   const fetchCompletedContests = async (page) => {
+    console.log("fetching completed")
+
     setLoading(true)
     try {
       if(user._id === undefined)return
@@ -80,7 +133,6 @@ const Contest = () => {
         }
       );
       setContests(response.data.completedContests);
-      console.log("complete",response.data.completedContests)
       setTotalContests(response.data.total);
     } catch (error) {
       console.error("Error fetching contests:", error);
@@ -92,6 +144,7 @@ const Contest = () => {
 
 
   const fetchAvailableContests = async (page) => {
+    console.log("fetching available")
     setLoading(true)
     try {
       if(user._id === undefined)return
@@ -105,7 +158,6 @@ const Contest = () => {
         }
       );
       setContests(response.data.availableContests);
-      console.log("available",response.data.availableContests)
       setTotalContests(response.data.total);
     } catch (error) {
       console.error("Error fetching contests:", error);
@@ -192,6 +244,7 @@ const Contest = () => {
 
   const handleShowCompletedClick = () => {
     setShowCompleted((prevShowCompleted) => !prevShowCompleted);
+    setCurrentPage(1)
   };
 
 
@@ -206,6 +259,20 @@ const Contest = () => {
       setCurrentPage((prev) => prev - 1)
 
     }
+
+   
+  }
+
+  const handleChange = (e) => {
+    setName(e.target.value)
+  }
+
+  const handleClick = () => {
+    console.log("fetching")
+    if (name === "") return
+    setShowSearch(true)
+    fetchSearchedQuestions(currentPage)
+    setShowContest(false)
   }
 
 return (
@@ -231,30 +298,50 @@ return (
                     type="text"
                     placeholder="Search Contest.."
                     className="pl-10 pr-4 py-2 w-full border rounded-md"
+                    value={name}
+                  onChange={handleChange}
                   />
                   <FaSearch className="absolute top-3 left-3 text-gray-400" />
                 </div>
                 <div>
                   <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-                    onClick={handleAddContestClick}>
-                    <FaPlus className="mr-2" /> Add Contest
+                    onClick={handleClick}
+                    >
+                    <FaSearch className="mr-2" /> Search
                   </button>
                 </div>
               </div>
 
               </div>
+              <div className="flex gap-10 items-center mt-4">
 
               <button
-                className="mt-4 bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
+                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
                 onClick={handleShowCompletedClick}
               >
+                
                 {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
               </button>
+
+                  <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                    onClick={handleAddContestClick}>
+                    <FaPlus className="mr-2" /> Add Contest
+                  </button>
+                </div>
              
 
          {   contests && contests.length > 0 ?
             <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
-
+              {showCompleted ? (
+                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+                  Completed Contests
+                </h1>
+              ) : (
+                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+                  Active Contests
+                </h1>
+              )  
+              }
            <table className="w-full">
                 <thead>
                   <tr className="bg-fuchsia-200">

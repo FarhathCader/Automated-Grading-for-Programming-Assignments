@@ -212,7 +212,26 @@ const getAvilabalContests = async (req, res) => {
   }
 };
 
+const searchContests = async (req, res) => {
+    try {
+        const { name } = req.query;
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+        console.log("name",name)
+        // Construct query object
+        const query = {};
+        if (name) query.name = new RegExp(name, 'i');
+        console.log(query)
+        const contests = await Contest.find(query).skip(skip).limit(Number(limit));
+        const total = await Contest.find(query).countDocuments();
+        console.log(contests)
+        return res.status(200).json({contests,total})
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
 
   
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests}
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests,searchContests}
