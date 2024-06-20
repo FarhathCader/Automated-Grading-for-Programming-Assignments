@@ -147,25 +147,7 @@ const getPracticeProblems = async (req,res)=>{
   }
 }
 
-// const searchProblems = async (req, res) => {
-//     console.log("search")
-//     try {
-//         const { name } = req.query;
-//         const { page = 1, limit = 10 } = req.query;
-//         const skip = (page - 1) * limit;
 
-//         // Construct query object
-//         const query = {};
-//         if (name) query.name = new RegExp(name, 'i');
-//         console.log(query)
-//         const problems = await Problem.find(query).skip(skip).limit(Number(limit));
-//         const total = await Problem.find(query).countDocuments();
-
-//         return res.status(200).json({problems,total})
-//     } catch (err) {
-//         return res.status(500).json({ error: err.message });
-//     }
-// };
 const searchProblems = async (req, res) => {
     console.log("search");
     try {
