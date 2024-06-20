@@ -264,6 +264,8 @@ export default function SelectProblems(props) {
                     Search
                 </button>
             </div>
+           {problemsList && problemsList.length > 0 ?
+           <>
             <div className="text-2xl font-bold mb-4">Problems</div>
             <div className="overflow-x-auto max-w-full max-h-96 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -309,6 +311,19 @@ export default function SelectProblems(props) {
 
             </div>
 
+            </>
+            :
+            <div className="w-full flex justify-center items-center mt-10">
+            <div className="w-full max-w-xl p-6 bg-blue-100 rounded-lg shadow-md flex flex-col items-center">
+              <h1 className="text-3xl font-bold text-blue-800 mb-4">No Questions Found</h1>
+              <p className="text-lg text-fuchsia-700 text-center">
+                There are no questions in the Question Bank as your request
+              </p>
+            </div>
+          </div>
+
+
+}
             {/* Pagination Controls */}
             {showBtn && <div className="flex justify-center items-center mb-4 space-x-4">
                 <button
@@ -329,6 +344,8 @@ export default function SelectProblems(props) {
                 </button>
             </div>
             }
+           {problemsList && problemsList.length > 0 &&
+           <>
             <div className="text-2xl font-bold mt-8 mb-4">Selected Problems</div>
             <div className="overflow-x-auto max-w-full max-h-96 mb-4">
                 {selectedProblems.length === 0 ? (
@@ -349,7 +366,8 @@ export default function SelectProblems(props) {
                     </div>
                 )}
             </div>
-
+            </>
+}
             {/* Additional space to ensure Save and Cancel buttons are not overlapped */}
             <div className="mb-8"></div>
         </div>
