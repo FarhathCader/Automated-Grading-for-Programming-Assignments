@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import ViewProblem from "./ViewProblem";
 import NotFoundPage from "../../Components/NotFoundPage";
 import { set } from "lodash";
+import { FaA, FaArrowLeft } from "react-icons/fa6";
 
 const override = {
   display: "block",
@@ -53,7 +54,9 @@ const QuestionBank = () => {
     else {
       setShowBtn(false)
     }
-    if (currentPage > total) setNotFound(true)
+    if(currentPage > total){
+      setCurrentPage(1)
+    }
   }, [totalProblems, showBtn])
 
   useEffect(() => {
@@ -210,9 +213,6 @@ const QuestionBank = () => {
 
   }
 
-  if (notFound) {
-    return <NotFoundPage />
-  }
 
 
   return (
