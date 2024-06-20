@@ -1,18 +1,10 @@
 import "./App.css";
-//import Contact from "./Components/Contact";
 import Home from "./Pages/Home";
-//import Footer from "./Components/Footer";
-//import Front from "./Components/Front";
 import Login from "./Components/Login";
-
 import { Routes, Route } from "react-router-dom";
-//import FrontSignup from "./Components/FrontSignup";
 import MainSignup from "./Pages/Auth/MainSignup";
 import ContactUs from "./Pages/ContactUs";
-//import Sample from "./Pages/Sample";
-//import Nav from "./Components/Nav";
 import Register from "./Components/Register";
-
 import Reset from "./Pages/Auth/Reset";
 import Forgot from "./Pages/Auth/Forgot";
 import LecturerDashBoard from "./Pages/Lecturer/LecturerDashBoard";
@@ -20,17 +12,11 @@ import StudentDashboard from "./Pages/Student/StudentDashboard";
 import AdminDashBoard from "./Pages/Admin/AdminDashBoard";
 import AvailableContest from "./Pages/Student/AvailableContest";
 import CompletedContest from "./Pages/Student/CompletedContest";
-
 import StudentProfile from "./Pages/Student/StudentProfile";
 import Practice from "./Pages/Student/Practice";
-//import SidebarLecturer from "./Sections/SidebarLecturer";
 import LecturerProfile from "./Pages/Lecturer/LecturerProfile";
 import QuestionBank from "./Pages/Lecturer/QuestionBank";
-//import Sidebar from "./Sections/Sidebar";
-import { useDispatch, useSelector } from "react-redux";
 import RequireAuth from "./Components/RequireAuth";
-import { useEffect, useState } from "react";
-import { authActions } from "./store";
 import EditStudentProfile from "./Pages/Student/EditStudentProfile";
 import ManageLecturers from "./Pages/Admin/ManageLecturers";
 import Mycomponent from "./Components/Mycomponent";
@@ -38,25 +24,19 @@ import axios from "axios";
 import useFetchUser from "./hooks/fetchUser";
 axios.defaults.withCredentials = true;
 import Contest from "./Pages/Lecturer/Contest";
-import EditLectureProfile from "./Pages/Lecturer/EditLecturerProfile";
 import ManageStudents from "./Pages/Admin/ManageStudents";
 import AdminProfile from "./Pages/Admin/AdminProfile";
-import Header from "./Sections/Header";
 import AddContest from "./Pages/Lecturer/AddContest";
 import ContestDetails from "./Pages/Lecturer/ContestDetails";
 import AddProblem from "./Pages/Lecturer/AddProblem";
 import CodingEditor from "./Components/CodingEditor";
 import CodeEditor from "./Components/CodeEditor";
 import ContestView from "./Pages/Student/ContestView";
-import Sample from "./Components/Sample";
-import SubmissionResult from "./Components/SubmissionResult";
-// import NavbarSubmission from "./Components/NavbarSubmission";
 import Layout from "./Components/Layout";
-import Sidebar from "./Sections/Sidebar";
-import SidebarLecturer from "./Sections/SidebarLecturer";
 import ErrorComponent from "./Components/ErrorComponent";
 
 import Loading from './Components/Loading'
+import SearchProblems from "./Components/SearchProblems";
 
 function App() {
 
@@ -75,6 +55,12 @@ function App() {
 
   return (
  <>
+
+ {/* <SearchProblems/> */}
+ {/* <Routes>
+  <Route path="/" element={<SearchProblems />} />
+      <Route path='/problems/:problemId' element={<CodeEditor />} />
+ </Routes> */}
 
    <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
