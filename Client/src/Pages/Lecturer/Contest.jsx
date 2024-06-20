@@ -9,6 +9,7 @@ import GeneratePdf from "./GeneratePdf";
 import { backendUrl } from "../../../config";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import ViewProgress from "./ViewProgress";
 
 const override = {
   display: "block",
@@ -31,6 +32,8 @@ const Contest = () => {
   const [totalPages,setTotalPages] = useState(0)
   const [showSearch, setShowSearch] = useState(false)
   const [showContest, setShowContest] = useState(true)
+  const [showViewProgress, setShowViewProgress] = useState(false)
+  const [activeContest, setActiveContest] = useState(null)
   const [name, setName] = useState('')
 
   useEffect(()=>{
@@ -117,6 +120,9 @@ const Contest = () => {
   //     setLoading(false);
   //   }
   // };
+
+
+
 
   const fetchCompletedContests = async (page) => {
     console.log("fetching completed")
@@ -275,6 +281,19 @@ const Contest = () => {
     setShowContest(false)
   }
 
+  const onClose = () => {
+    setShowViewProgress(false)
+  }
+
+  const handleViewProgress = (contest) => {
+    setActiveContest(contest)
+    setShowViewProgress(true)
+  }
+
+  if(showViewProgress){
+    return <ViewProgress contest={activeContest} onClose={onClose}/>
+  }
+
 return (
     <main className="w-full h-screen flex justify-between items-start">
       {/* <SidebarLecturer /> */}
@@ -377,7 +396,18 @@ return (
                       </td>
                       <td className="px-6 py-4 flex items-center gap-4">
                         {showCompleted ? (
-                          <GeneratePdf contest={contest} />
+                          <>
+                                         <button
+                              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                              onClick={() => handleViewProgress(contest)}
+                            >
+                              View Progress
+                            </button>
+
+                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
+                          onClick={() => handleDeleteConfirmation(contest._id)}
+                        />
+                          </>
                         ) : (
                           <>
                             <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl"
@@ -385,14 +415,17 @@ return (
                             />
                             <button
                               className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                              onClick={() => handleViewProgress(contest)}
                             >
                               View Progress
                             </button>
-                          </>
-                        )}
-                        <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
+
+                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
                           onClick={() => handleDeleteConfirmation(contest._id)}
                         />
+                          </>
+                        )}
+
                       </td>
                     </tr>
                   ))}
