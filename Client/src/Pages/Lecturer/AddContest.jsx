@@ -277,7 +277,7 @@ const AddContest = ({ onAdd }) => {
           <div className="flex justify-between space-x-4">
               <button
                 type="button"
-                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center"
+                className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center"
                 onClick={() => navigate('/contest')}
               >
                 Cancel
@@ -285,9 +285,9 @@ const AddContest = ({ onAdd }) => {
               <button
                 disabled={disabled_btn}
                 type="submit"
-                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
               >
-                <FaPlus className="mr-2" /> {id ? "Save Changes" : "Add Contest"}
+                 {id ? "Save Changes" : "Add Contest"}
               </button>
             </div>
             <div className="mb-4">
@@ -380,7 +380,7 @@ const AddContest = ({ onAdd }) => {
               {selectedProblems.map((problem, index) => (
                 <div key={index} className="w-full bg-white border border-fuchsia-500 rounded-md p-4 mb-2 flex justify-between items-center">
                   <div className="flex flex-col">
-                    <h1 className="text-2xl font-bold text-fuchsia-800">Problem {problem.name}</h1>
+                    <h1 className="text-2xl font-bold text-fuchsia-800"> {problem.name}</h1>
                     <div className="text-sm text-gray-500 mt-1">
                       <p>Difficulty: {problem.difficulty}</p>
                       <p>Grade: {problem.grade}</p>
