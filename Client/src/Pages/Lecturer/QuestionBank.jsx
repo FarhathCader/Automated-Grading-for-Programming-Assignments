@@ -216,7 +216,7 @@ const QuestionBank = () => {
 
 
   return (
-    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start">
+    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start text-xs md:text-base">
       {/* SidebarLecturer component */}
       {/* <SidebarLecturer /> */}
 
@@ -249,7 +249,7 @@ const QuestionBank = () => {
           </div>
           <div className="w-full flex justify-center mb-5">
             <button
-              className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+              className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center justify-center "
               onClick={addProblem}
             >
               <FaPlus className="mr-2" />
@@ -271,7 +271,7 @@ const QuestionBank = () => {
       <tbody>
         {problems.map((question, index) => (
           <tr key={index} className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}>
-            <td className="px-2 md:px-6 py-4 text-fuchsia-200">{question.name}</td>
+            <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
             <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
             <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.difficulty}</td>
             <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.addedBy}</td>
@@ -279,21 +279,21 @@ const QuestionBank = () => {
               {question.createdBy === user._id ? (
                         <td className="px-2 md:px-6 py-4 flex">
                         <FaEdit
-                          className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
+                          className="mr-2 text-green-500 hover:text-green-600 cursor-pointer text-xs md:text-base"
                           onClick={() => editProblem(question)}
                         />
                         <FaTrash
-                          className="mr-2 text-red-500 hover:text-red-600 cursor-pointer"
+                          className="mr-2 text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
                           onClick={() => deleteProblem(question)}
                         />
                         <FaEye
-                          className="text-red-500 hover:text-red-600 cursor-pointer"
+                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
                           onClick={() => handleViewProblem(question)}
                         />
                       </td>
               ):(<td>
                    <FaEye
-                          className="text-red-500 hover:text-red-600 cursor-pointer"
+                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
                           onClick={() => handleViewProblem(question)}
                         />
               </td>)}

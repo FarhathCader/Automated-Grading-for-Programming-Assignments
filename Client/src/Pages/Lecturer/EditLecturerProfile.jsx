@@ -133,73 +133,67 @@ const EditLectureProfile = (props) => {
 
 
   return (
-    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
+    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl text-sm md:text-base">
     <div className="px-6">
       <div className="flex-grow flex flex-col items-center justify-start">
-      <div className="flex-column mt-4" >
-            <div className="relative overflow-hidden">
-              <input onChange={handleImage} type="file" id="formupload" name="image" style={{ display: 'none' }} />
-              <label htmlFor="formupload">
-                <img
-                  src={image}
-                  alt="hello"
-                  className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32 cursor-pointer"
-                />
-              </label>
-
-            </div>
-
-            <div className="flex mt-4 justify-between">
-              <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl" onClick={handleUploadButtonClick} />
-              <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl" onClick={handleDeleteButtonClick} />
-            </div>
+        <div className="flex flex-col items-center mt-4">
+          <div className="relative overflow-hidden">
+            <input onChange={handleImage} type="file" id="formupload" name="image" style={{ display: 'none' }} />
+            <label htmlFor="formupload">
+              <img
+                src={image}
+                alt="Profile"
+                className="shadow-xl rounded-full align-middle border-none object-cover w-32 h-32 cursor-pointer"
+              />
+            </label>
           </div>
+          <div className="flex mt-4 justify-between w-full max-w-xs">
+            <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl" onClick={handleUploadButtonClick} />
+            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl" onClick={handleDeleteButtonClick} />
+          </div>
+        </div>
         <div className="w-full text-center mt-10">
-          <div className="flex justify-center lg:pt-4  pb-0">
+          <div className="flex justify-center lg:pt-4 pb-0">
             <div className="w-full text-center mt-2">
               <div className="flex justify-center lg:pt-4 pb-0">
                 <div className="w-full lg:w-1/2">
-                  <div className="bg-slate-100 p-8 rounded-lg mb-20 shadow-fuchsia-700">
-                    <h2 className="text-2xl font-bold text-fuchsia-800 mb-6">
+                  <div className="bg-slate-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-fuchsia-700">
+                    <h2 className="text-xl md:text-2xl font-bold text-fuchsia-800 mb-4 md:mb-6">
                       Your Profile
                     </h2>
-                    <div className="flex items-center mb-4">
+                    <div className="flex flex-col items-start mb-4">
                       <label
-                        className="block text-fuchsia-700 text-sm font-bold mr-2"
+                        className="block text-fuchsia-700 text-sm font-bold mb-1"
                         htmlFor="name"
                       >
                         Name:
                       </label>
                       <input
                         type="text"
-                        className="border-b border-fuchsia-500 rounded text-fuchsia-800 text-lg focus:outline-none px-2 py-1"
-                        // defaultValue="John Doe"
+                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                       />
                     </div>
-                    <div className="flex items-center mb-6">
+                    <div className="flex flex-col items-start mb-6">
                       <label
-                        className="block text-fuchsia-700 text-sm font-bold mr-2"
+                        className="block text-fuchsia-700 text-sm font-bold mb-1"
                         htmlFor="email"
                       >
                         Email:
                       </label>
                       <input
                         type="email"
-                        className="border-b border-fuchsia-500 rounded text-fuchsia-800 text-lg focus:outline-none px-2 py-1"
-                        // defaultValue="johndoe@example.com"
+                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
                         value={email}
-
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
-
                     <div className="flex justify-center text-center">
-                      <button onClick={props.cancel} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-10 mr-5">
+                      <button onClick={props.cancel} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-2">
                         Cancel
                       </button>
-                      <button  onClick={save} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-5">
+                      <button onClick={save} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-2">
                         Save
                       </button>
                     </div>
@@ -217,18 +211,19 @@ const EditLectureProfile = (props) => {
       )}
     </div>
     <ToastContainer
-            position="top-right"
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+      position="top-right"
+      autoClose={1000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
   </div>
+  
   );
 };
 

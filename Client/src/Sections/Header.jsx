@@ -78,7 +78,7 @@ const Header = ({ bgColor }) => {
         />
       </div>
       <div className="flex-grow flex justify-end items-center gap-4">
-        <h1 className="text-lg font-semibold text-blue-900">
+        <h1 className="text:sm md:text-base font-semibold text-blue-900">
           {user ? user.username : <ClipLoader color="blue" loading={true} size={150} css={override} />}
         </h1>
         <div className="w-12 h-12 rounded-full overflow-hidden">
