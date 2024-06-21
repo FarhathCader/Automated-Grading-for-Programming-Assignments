@@ -363,29 +363,29 @@ return (
                         {showCompleted ? (
                           <>
                             <button
-                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 w-full md:w-auto text-center text-xs md:text-base"
+                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 w-full md:w-auto text-center text-sm md:text-md"
                               onClick={() => handleViewProgress(contest)}
                             >
                               View Progress
                             </button>
 
-                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
+                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer md:text-md"
                               onClick={() => handleDeleteConfirmation(contest._id)}
                             />
                           </>
                         ) : (
                           <>
-                            <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer text-xl"
+                            <FaEdit className="text-green-500 hover:text-green-600 cursor-pointer md:text-md "
                               onClick={() => handleEditContestClick(contest._id)}
                             />
                             <button
-                              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 md:text-md "
                               onClick={() => handleViewProgress(contest)}
                             >
                               View Progress
                             </button>
 
-                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
+                            <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text:sm md:text-md "
                               onClick={() => handleDeleteConfirmation(contest._id)}
                             />
                           </>

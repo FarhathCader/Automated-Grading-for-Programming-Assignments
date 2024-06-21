@@ -44,36 +44,40 @@ const ViewProblem = (props) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="w-full max-w-3xl lg:max-w-full mx-auto p-8 bg-white rounded-xl shadow-xl">
+    <div className="w-full max-w-3xl lg:max-w-full mx-auto p-8 bg-white rounded-xl shadow-xl text-xs md:text-sm lg:text-base">
       <button
         onClick={onClose}
-        className="flex items-center text-lg font-semibold mb-6 bg-gray-200 rounded-md px-4 py-2 hover:bg-gray-300 focus:bg-gray-300 focus:outline-none border border-gray-300 transition-all duration-300"
+        className="flex items-center font-semibold mb-6 bg-gray-200 rounded-md px-4 py-2 hover:bg-gray-300 focus:bg-gray-300 focus:outline-none border border-gray-300 transition-all duration-300 text-md md:text-lg lg:text-xl"
       >
-        <FaArrowLeft className="mr-2" /> Back
+        <FaArrowLeft className="mr-2 text-md md:text-lg lg:text-xl" /> Back
       </button>
 
-      <h2 className="text-3xl font-extrabold mb-8 text-center text-gray-800">{problem.name}</h2>
+      <h2 className="text-xl md:text-2xl l:text-3xl font-extrabold mb-8 text-center text-gray-800">{problem.name}</h2>
 
       <div className="mb-8">
-        <p className="text-lg mb-2"><strong>Difficulty:</strong> {problem.difficulty}</p>
-        <p className="text-lg mb-2"><strong>Category:</strong> {problem.category}</p>
-        <p className="text-lg mb-2"><strong>Description:</strong> {problem.description}</p>
-        <p className="text-lg mb-2"><strong>Added By:</strong> {problem.addedBy}</p>
+        <p className=" mb-2"><strong>Difficulty:</strong> {problem.difficulty}</p>
+        <p className=" mb-2"><strong>Category:</strong> {problem.category}</p>
+        <p className=" mb-2"><strong>Description:</strong> {problem.description}</p>
+        <p className=" mb-2"><strong>Added By:</strong> {problem.addedBy}</p>
       </div>
 
       <div className="mb-8">
-        <h3 className="text-2xl font-semibold mb-4">Initial Code:</h3>
+        <h3 className="text-2xl font-semibold mb-4">Initial Codes:</h3>
         {problem.initialCode.map((code, index) => (
           <div key={index} className="bg-gray-50 rounded-md p-4 my-2 border border-gray-200">
             <h4 className="font-medium mb-2">Language: {code.language}</h4>
+            {code.code ? <> <h4 className="font-medium mb-2 text-center">Code</h4>
             <pre className="bg-gray-100 rounded-md p-2 overflow-auto">{code.code}</pre>
+            </>:
+            <p className="mb-1">No initial codes</p>
+            }
           </div>
         ))}
       </div>
 
       {problem.testCases && problem.testCases.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Test Cases:</h3>
+          <h3 className="text-xl md:text-2xl l:text-3xl font-semibold mb-4">Test Cases:</h3>
           {problem.testCases.map((testCase, index) => (
             <div key={index} className="bg-gray-50 rounded-md p-4 my-2 border border-gray-200">
               <h4 className="font-medium mb-2">Test Case {index + 1}:</h4>
@@ -88,7 +92,7 @@ const ViewProblem = (props) => {
 
       {problem.examples && problem.examples.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Examples:</h3>
+          <h3 className="text-xl md:text-2xl l:text-3xl font-semibold mb-4">Examples:</h3>
           {problem.examples.map((example, index) => (
             <div key={index} className="bg-gray-50 rounded-md p-4 my-2 border border-gray-200">
               <h4 className="font-medium mb-2">Example {index + 1}:</h4>
@@ -100,7 +104,7 @@ const ViewProblem = (props) => {
         </div>
       )}
 
-      <div className="mt-8 text-lg">
+      <div className="mt-8 text-md md:text-lg lg:text-xl">
         <p><strong>Grade:</strong> {problem.grade}</p>
       </div>
     </div>
