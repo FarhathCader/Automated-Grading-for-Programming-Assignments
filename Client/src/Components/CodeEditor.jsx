@@ -59,7 +59,13 @@ export default function CodeEditor() {
 
     useEffect(()=>{
       if(shouldFetch){
-        fetchDraft(problemId,user._id,contestId)
+        if(user._id === undefined)return;
+        if(contestId === undefined){
+        fetchDraft(problemId,user._id,null)
+        }
+        else{
+          fetchDraft(problemId,user._id,contestId)
+        }
       }
     },[shouldFetch])
 
@@ -67,6 +73,7 @@ export default function CodeEditor() {
       setLoading(true)
       try{
         const response = await axios.get(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
+        console.log(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
         console.log("response",response)
         if(response.data.draftCodes === null){
           console.log(problem.initialCode)
