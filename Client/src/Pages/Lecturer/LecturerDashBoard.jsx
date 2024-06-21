@@ -70,7 +70,7 @@ const LecturerDashBoard = () => {
 
 
   return (
-    <main className="w-full h-screen flex justify-between items-start">
+    <main className="w-full h-screen flex justify-between items-start text-xs md:text-base">
      {/* {isApproved ?  <SidebarLecturer  /> : null} */}
      { 
      !loading ? 

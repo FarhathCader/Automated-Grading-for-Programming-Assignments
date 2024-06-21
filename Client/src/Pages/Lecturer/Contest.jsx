@@ -271,7 +271,7 @@ const Contest = () => {
   }
 
 return (
-    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start">
+    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start text-xs md:text-base">
   {/* <SidebarLecturer /> */}
   {
     loading ? (
@@ -349,11 +349,11 @@ return (
                         index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
                       }
                     >
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300 text-xs md:text-base"
                         onClick={() => handleContestDetailsClick(contest._id)}>
                         {contest.name}
                       </td>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell text-xs md:text-base">
                         {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                       </td>
                       <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">
@@ -363,7 +363,7 @@ return (
                         {showCompleted ? (
                           <>
                             <button
-                              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 w-full md:w-auto text-center text-xs md:text-base"
                               onClick={() => handleViewProgress(contest)}
                             >
                               View Progress
