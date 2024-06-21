@@ -107,6 +107,7 @@ export default function Output(props) {
 
   const deleteDraft = async (problemId, userId, contestId) => {
     setIsLoading(true)
+    if(contestId === undefined) contestId = null;
     try {
         const response = await axios.delete(`${backendUrl}/api/draft/${problemId}/${userId}/${contestId}`);
         console.log('Draft deleted:', response.data);

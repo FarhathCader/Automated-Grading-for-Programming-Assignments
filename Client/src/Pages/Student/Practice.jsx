@@ -7,6 +7,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import { backendUrl } from "../../../config";
 import NotFoundPage from "../../Components/NotFoundPage";
+import { useSelector } from "react-redux";
 
 const override = {
   display: "block",
@@ -25,6 +26,7 @@ const Practice = () => {
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
   const [notFound,setNotFound] = useState(false)
+  const user = useSelector(state => state.user);
 
   useEffect(()=>{
     const total = Math.ceil(totalProblems / problemsPerPage)
@@ -62,6 +64,33 @@ const Practice = () => {
     const page = parseInt(searchParams.get("page")) || 1;
     setCurrentPage(page);
   }, [searchParams]);
+
+  useEffect(() => {
+    if(user._id === undefined)return
+    console.log("Sending data")
+    const pid = localStorage.getItem('problemId');
+    const cid = localStorage.getItem('contestId');
+    const codes = JSON.parse(localStorage.getItem('codes'))
+    const uid = user._id
+    if(pid !== null && uid !== null){
+      sendDraft(pid,uid,cid,codes)
+      localStorage.clear();
+    }
+
+  }, [])
+  const sendDraft = async (pid,uid,cid,codes) => {
+    setLoading(true);
+    try {
+      const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
+        codes
+      });
+      console.log('Draft saved:', response.data);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+    } finally {
+      setLoading(false)
+    }
+  }
 
   
 
