@@ -230,7 +230,7 @@ export default function SelectProblems(props) {
         </div>
     
         {/* Save and Cancel buttons moved to the top */}
-        <div className="flex justify-between items-center flex-wrap m-6">
+        <div className="flex justify-around items-center flex-wrap m-6">
             <button
                 onClick={handleCancel}
                 className="bg-gray-500 text-white px-4 py-2 rounded  hover:bg-gray-600 mb-2 md:mb-0"
