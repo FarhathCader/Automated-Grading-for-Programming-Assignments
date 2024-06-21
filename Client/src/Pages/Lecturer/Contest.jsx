@@ -100,30 +100,6 @@ const Contest = () => {
   }, [])
 
 
-
-  // const fetchContests = async () => {
-  //   try {
-  //     setLoading(true)
-  //     if(user._id === undefined)return
-  //     const response = await fetch(`${backendUrl}/api/contest/all/${user._id}`);
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch contests");
-  //     }
-  //     const data = await response.json();
-  //     setContests(data.contests);
-  //     setAvailableContests(data.availableContests);
-  //     setCompletedContests(data.completedContests);
-  //   } catch (error) {
-  //     console.error("Error fetching contests:", error);
-  //   } finally {
-  //     if(user._id !== undefined)
-  //     setLoading(false);
-  //   }
-  // };
-
-
-
-
   const fetchCompletedContests = async (page) => {
     console.log("fetching completed")
 
@@ -295,85 +271,74 @@ const Contest = () => {
   }
 
 return (
-    <main className="w-full h-screen flex justify-between items-start">
-      {/* <SidebarLecturer /> */}
-      {
-        loading ? (
-          <div className="w-full flex justify-center items-center h-screen">
-            <ClipLoader
-              color="red"
-              loading={true}
-              size={150}
-              css={override}
-            />
-          </div>
-        ) : (
-          <section className="w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
-            {/* <Header bgColor="fuchsia" /> */}
-            <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
-              <div className="flex items-center justify-between w-full mb-4">
-                <div className="relative flex-grow mr-4">
-                  <input
-                    type="text"
-                    placeholder="Search Contest.."
-                    className="pl-10 pr-4 py-2 w-full border rounded-md"
-                    value={name}
-                  onChange={handleChange}
-                  />
-                  <FaSearch className="absolute top-3 left-3 text-gray-400" />
-                </div>
-                <div>
-                  <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-                    onClick={handleClick}
-                    >
-                    <FaSearch className="mr-2" /> Search
-                  </button>
-                </div>
-              </div>
-
-              </div>
-              <div className="flex gap-10 items-center mt-4">
-
-              <button
-                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
-                onClick={handleShowCompletedClick}
+    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start">
+  {/* <SidebarLecturer /> */}
+  {
+    loading ? (
+      <div className="w-full flex justify-center items-center h-screen">
+        <ClipLoader
+          color="red"
+          loading={true}
+          size={150}
+          css={override}
+        />
+      </div>
+    ) : (
+      <section className="w-full md:w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
+        {/* <Header bgColor="fuchsia" /> */}
+        <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
+          <div className="flex flex-col md:flex-row items-center justify-between w-full mb-4">
+            <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 md:mr-4">
+              <input
+                type="text"
+                placeholder="Search Contest.."
+                className="pl-10 pr-4 py-2 w-full border rounded-md"
+                value={name}
+                onChange={handleChange}
+              />
+              <FaSearch className="absolute top-3 left-3 text-gray-400" />
+            </div>
+            <div>
+              <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                onClick={handleClick}
               >
-                
-                {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
+                <FaSearch className="mr-2" /> Search
               </button>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
+          <button
+            className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
+            onClick={handleShowCompletedClick}
+          >
+            {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
+          </button>
+          <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+            onClick={handleAddContestClick}>
+            <FaPlus className="mr-2" /> Add Contest
+          </button>
+        </div>
 
-                  <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-                    onClick={handleAddContestClick}>
-                    <FaPlus className="mr-2" /> Add Contest
-                  </button>
-                </div>
-             
-
-         {   contests && contests.length > 0 ?
-            <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
-              {showCompleted ? (
-                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
-                  Completed Contests
-                </h1>
-              ) : (
-                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
-                  Active Contests
-                </h1>
-              )  
-              }
-           <table className="w-full">
+        {contests && contests.length > 0 ?
+          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+            {showCompleted ? (
+              <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+                Completed Contests
+              </h1>
+            ) : (
+              <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+                Active Contests
+              </h1>
+            )}
+            <div className="overflow-x-auto w-full">
+              <table className="w-full">
                 <thead>
                   <tr className="bg-fuchsia-200">
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">
-                      Deadline
-                    </th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">
-                      Duration
-                    </th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">
-                      Actions
-                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Name</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Deadline</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Duration</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -384,20 +349,20 @@ return (
                         index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
                       }
                     >
-                      <td className="px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300"
                         onClick={() => handleContestDetailsClick(contest._id)}>
                         {contest.name}
                       </td>
-                      <td className="px-6 py-4 text-fuchsia-200">
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">
                         {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                       </td>
-                      <td className="px-6 py-4 text-fuchsia-200">
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">
                         {formatDuration(contest.duration)}
                       </td>
-                      <td className="px-6 py-4 flex items-center gap-4">
+                      <td className="px-2 md:px-6 py-4 flex items-center gap-4">
                         {showCompleted ? (
                           <>
-                                         <button
+                            <button
                               className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                               onClick={() => handleViewProgress(contest)}
                             >
@@ -405,8 +370,8 @@ return (
                             </button>
 
                             <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
-                          onClick={() => handleDeleteConfirmation(contest._id)}
-                        />
+                              onClick={() => handleDeleteConfirmation(contest._id)}
+                            />
                           </>
                         ) : (
                           <>
@@ -421,8 +386,8 @@ return (
                             </button>
 
                             <FaTrash className="text-red-500 hover:text-red-600 cursor-pointer text-xl"
-                          onClick={() => handleDeleteConfirmation(contest._id)}
-                        />
+                              onClick={() => handleDeleteConfirmation(contest._id)}
+                            />
                           </>
                         )}
 
@@ -431,61 +396,60 @@ return (
                   ))}
                 </tbody>
               </table>
-             {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
-                <button
-                  onClick={handlePrev}
-                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                >
-                  Prev
-                </button>
-                <span className="text-fuchsia-800 font-semibold">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={handleNext}
-                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-              </div>}
-              </div>
-              :
-              <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
-              <div className="w-full flex justify-center items-center mt-5">
-          <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
-            <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
-            <p className="text-lg text-fuchsia-700 text-center">
-              There are no {!showCompleted ? 'active' : 'completed'} contests. Start by adding a contest.
-            </p>
+            </div>
+            {showBtn && <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
+              <button
+                onClick={handlePrev}
+                className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={handleNext}
+                className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>}
           </div>
-        </div>
-        </div>
-              }
+          :
+          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+            <div className="w-full flex justify-center items-center mt-5">
+              <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
+                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
+                <p className="text-lg text-fuchsia-700 text-center">
+                  There are no {!showCompleted ? 'active' : 'completed'} contests. Start by adding a contest.
+                </p>
+              </div>
+            </div>
+          </div>
+        }
 
-        
-         
-              {showConfirmation && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                  <div className="bg-white p-4 rounded shadow">
-                    <p className="mb-4">Are you sure you want to delete this contest? You cannot undo this action.</p>
-                    <div className="flex justify-end">
-                      <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={ handleConfirmDelete}>
-                        Delete
-                      </button>
-                      <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelAction}>
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            
-          </section>
-        )
-      }
-    </main>
+        {showConfirmation && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-4 rounded shadow">
+              <p className="mb-4">Are you sure you want to delete this contest? You cannot undo this action.</p>
+              <div className="flex justify-end">
+                <button className="bg-red-500 text-white px-4 py-2 mr-2 rounded" onClick={handleConfirmDelete}>
+                  Delete
+                </button>
+                <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded" onClick={handleCancelAction}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+    )
+  }
+</main>
+
   );
 };
 
