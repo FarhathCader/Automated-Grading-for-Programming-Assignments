@@ -323,11 +323,11 @@ return (
         {contests && contests.length > 0 ?
           <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
             {showCompleted ? (
-              <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+              <h1 className="text-xl md:text-3xl font-bold text-fuchsia-800 mb-4">
                 Completed Contests
               </h1>
             ) : (
-              <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">
+              <h1 className="text-xl md:text-3xl font-bold text-fuchsia-800 mb-4">
                 Active Contests
               </h1>
             )}
