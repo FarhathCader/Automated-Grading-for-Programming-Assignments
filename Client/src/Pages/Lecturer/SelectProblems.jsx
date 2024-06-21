@@ -293,7 +293,7 @@ export default function SelectProblems(props) {
                                     </div>
                                 </div>
                                 {/* Actions */}
-                                <div className="flex justify-around items-center px-4 py-3 bg-gray-100">
+                                <div className="flex justify-around items-center px-4 py-3 gap-2 bg-gray-100">
                                     {/* Select Button */}
                                     <button
                                         onClick={() => handleSelectProblem(problem)}
@@ -303,7 +303,7 @@ export default function SelectProblems(props) {
                                     </button>
                                     {/* View Button */}
                                     <FaEye
-                                        className="text-blue-500 cursor-pointer hover:text-blue-600"
+                                        className="text-blue-500 cursor-pointer hover:text-blue-600 text-xl"
                                         onClick={() => handleViewProblem(problem)}
                                     />
                                 </div>
