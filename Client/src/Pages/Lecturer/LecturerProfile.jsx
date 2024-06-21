@@ -76,7 +76,7 @@ const LecturerProfile = () => {
   };
 
   return (
-    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start">
+    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start text-sm md:text-base">
     {/* <LecturerSidebar /> */}
   
     {
@@ -117,34 +117,34 @@ const LecturerProfile = () => {
       <div className="flex justify-center lg:pt-4 pb-0">
         <div className="w-full lg:w-1/2">
           <div className="bg-fuchsia-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-fuchsia-700">
-            <h2 className="text-xl md:text-2xl font-bold text-fuchsia-800 mb-4 md:mb-6">
+            <h2 className="text-lg md:text-base font-bold text-fuchsia-800 mb-4 md:mb-6">
               Your Profile
             </h2>
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-4 text-sm md:text-base">
               <label
-                className="block text-fuchsia-700 text-sm font-bold mr-2"
+                className="block text-fuchsia-700 font-bold mr-2"
                 htmlFor="name"
               >
                 Name:
               </label>
               {lecturer && 
-              <p className="text-fuchsia-800 text-base md:text-lg break-words max-w-full">{lecturer.username}</p>
+              <p className="text-fuchsia-800  break-words max-w-full">{lecturer.username}</p>
               }
             </div>
             <div className="flex items-center mb-6">
               <label
-                className="block text-fuchsia-700 text-sm font-bold mr-2"
+                className="block text-fuchsia-700 font-bold mr-2"
                 htmlFor="email"
               >
                 Email:
               </label>
               {lecturer && 
-              <p className="text-fuchsia-800 text-base md:text-lg break-words max-w-full">
+              <p className="text-fuchsia-800  break-words max-w-full">
                 {lecturer.email}
               </p>}
             </div>
-            <div className="text-center">
-              <button onClick={handleProfile} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded">
+            <div className="text-center text-sm md:text-base">
+              <button onClick={handleProfile} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded text-sm md:text-base">
                 Edit Profile
               </button>
             </div>

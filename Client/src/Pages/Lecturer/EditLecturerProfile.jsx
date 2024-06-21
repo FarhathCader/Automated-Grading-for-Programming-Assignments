@@ -133,7 +133,7 @@ const EditLectureProfile = (props) => {
 
 
   return (
-    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
+    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl text-sm md:text-base">
     <div className="px-6">
       <div className="flex-grow flex flex-col items-center justify-start">
         <div className="flex flex-col items-center mt-4">
@@ -170,7 +170,7 @@ const EditLectureProfile = (props) => {
                       </label>
                       <input
                         type="text"
-                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 text-lg focus:outline-none px-2 py-1"
+                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                       />
@@ -184,7 +184,7 @@ const EditLectureProfile = (props) => {
                       </label>
                       <input
                         type="email"
-                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 text-lg focus:outline-none px-2 py-1"
+                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
