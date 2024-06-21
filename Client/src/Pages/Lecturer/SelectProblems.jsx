@@ -212,120 +212,120 @@ export default function SelectProblems(props) {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            {/* ToastContainer (assuming it's a notification component) */}
-            <div className="absolute top-4 right-4 z-50">
-                <ToastContainer
-                    position="top-right"
-                    autoClose={1000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
+        <div className="container mx-auto p-4 text-xs md:text-base">
+        {/* ToastContainer (assuming it's a notification component) */}
+        <div className="absolute top-4 right-4 z-50">
+            <ToastContainer
+                position="top-right"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+        </div>
+    
+        {/* Save and Cancel buttons moved to the top */}
+        <div className="flex justify-around items-center flex-wrap m-6">
+            <button
+                onClick={handleCancel}
+                className="bg-gray-500 text-white px-4 py-2 rounded  hover:bg-gray-600 mb-2 md:mb-0"
+            >
+                Cancel
+            </button>
+            <button
+                onClick={handleSave}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-2 md:mb-0"
+            >
+                Save
+            </button>
+        </div>
+    
+        <div className="flex flex-col md:flex-row items-center justify-between mx-auto w-full md:w-1/2 mb-4">
+            <div className="relative flex-grow mb-4 md:mb-0 md:mr-4">
+                <input
+                    type="text"
+                    placeholder="Search Question.."
+                    className="pl-10 pr-4 py-2 w-full border rounded-md"
+                    value={name}
+                    onChange={handleChange}
+                    disabled={loading}
                 />
             </div>
-
-            {/* Save and Cancel buttons moved to the top */}
-
-            <div className="flex justify-center space-x-10 m-6">
-                <button
-                    onClick={handleCancel}
-                    className="bg-gray-500 text-white px-4 py-2 rounded w-1/6 hover:bg-gray-600"
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={handleSave}
-                    className="bg-green-500 text-white px-4 py-2 w-1/6 rounded hover:bg-green-600"
-                >
-                    Save
-                </button>
-            </div>
-            <div className="flex items-center justify-between mx-auto w-1/2 mb-4">
-                <div className="relative flex-grow mr-4">
-                    <input
-                        type="text"
-                        placeholder="Search Question.."
-                        className="pl-10 pr-4 py-2 w-full border rounded-md"
-                        value={name}
-                        onChange={handleChange}
-                        disabled={loading}
-                    />
+            <button
+                className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                onClick={handleClick}
+            >
+                <FaSearch className="mr-2" />
+                Search
+            </button>
+        </div>
+    
+        {/* Problems list or no questions found message */}
+        {problemsList && problemsList.length > 0 ? (
+            <>
+                <div className="text-xl md:text-2xl font-bold mb-4">Problems</div>
+                <div className="overflow-x-auto max-w-full mb-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        {problemsList.map((problem, index) => (
+                            <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
+                                {/* Problem Name */}
+                                <div className="px-4 py-3 bg-gray-200">
+                                    <h2 className="text-sm md:text-lg font-semibold text-gray-800">{problem.name}</h2>
+                                </div>
+                                {/* Problem Details */}
+                                <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 hidden md:grid">
+                                    <div className="mb-3 flex items-center">
+                                        <span className="text-xs md:text-sm text-gray-600">Category:</span>
+                                        <span className="ml-1 text-xs md:text-sm  text-gray-900">{problem.category}</span>
+                                    </div>
+                                    <div className="mb-3 flex items-center">
+                                        <span className="text-xs md:text-sm text-gray-600">Difficulty:</span>
+                                        <span className="ml-1 text-xs md:text-sm text-gray-900">{problem.difficulty}</span>
+                                    </div>
+                                    <div className="mb-3 flex items-center">
+                                        <span className="text-xs md:text-sm  text-gray-600">Grade:</span>
+                                        <span className="ml-1 text-xs md:text-sm text-gray-900">{problem.grade}</span>
+                                    </div>
+                                </div>
+                                {/* Actions */}
+                                <div className="flex justify-around items-center px-4 py-3 bg-gray-100">
+                                    {/* Select Button */}
+                                    <button
+                                        onClick={() => handleSelectProblem(problem)}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    >
+                                        Select
+                                    </button>
+                                    {/* View Button */}
+                                    <FaEye
+                                        className="text-blue-500 cursor-pointer hover:text-blue-600"
+                                        onClick={() => handleViewProblem(problem)}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <button
-                    className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
-                    onClick={handleClick}
-                >
-                    <FaSearch className="mr-2" />
-                    Search
-                </button>
-            </div>
-           {problemsList && problemsList.length > 0 ?
-           <>
-            <div className="text-2xl font-bold mb-4">Problems</div>
-            <div className="overflow-x-auto max-w-full max-h-96 mb-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {problemsList.map((problem, index) => (
-                        <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
-                            {/* Problem Name */}
-                            <div className="px-4 py-3 bg-gray-200">
-                                <h2 className="text-lg font-semibold text-gray-800">{problem.name}</h2>
-                            </div>
-                            {/* Problem Details */}
-                            <div className="p-4 flex justify-around">
-                                <div className="mb-3 flex items-center">
-                                    <span className="text-sm text-gray-600">Category:</span>
-                                    <span className="ml-2 text-sm text-gray-900">{problem.category}</span>
-                                </div>
-                                <div className="mb-3 flex items-center">
-                                    <span className="text-sm text-gray-600">Difficulty:</span>
-                                    <span className="ml-2 text-sm text-gray-900">{problem.difficulty}</span>
-                                </div>
-                                <div className="mb-3 flex items-center">
-                                    <span className="text-sm text-gray-600">Grade:</span>
-                                    <span className="ml-2 text-sm text-gray-900">{problem.grade}</span>
-                                </div>
-                            </div>
-                            {/* Actions */}
-                            <div className="flex justify-between px-4 py-3 bg-gray-100">
-                                {/* Select Button */}
-                                <button
-                                    onClick={() => handleSelectProblem(problem)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                                >
-                                    Select
-                                </button>
-                                {/* View Button */}
-                                <FaEye
-                                    className="text-blue-500 cursor-pointer hover:text-blue-600"
-                                    onClick={() => handleViewProblem(problem)}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-            </div>
-
             </>
-            :
+        ) : (
             <div className="w-full flex justify-center items-center mt-10">
-            <div className="w-full max-w-xl p-6 bg-blue-100 rounded-lg shadow-md flex flex-col items-center">
-              <h1 className="text-3xl font-bold text-blue-800 mb-4">No Questions Found</h1>
-              <p className="text-lg text-fuchsia-700 text-center">
-                There are no questions in the Question Bank as your request
-              </p>
+                <div className="w-full max-w-xl p-6 bg-blue-100 rounded-lg shadow-md flex flex-col items-center">
+                    <h1 className="text-3xl font-bold text-blue-800 mb-4">No Questions Found</h1>
+                    <p className="text-lg text-fuchsia-700 text-center">
+                        There are no questions in the Question Bank as per your request.
+                    </p>
+                </div>
             </div>
-          </div>
-
-
-}
-            {/* Pagination Controls */}
-            {showBtn && <div className="flex justify-center items-center mb-4 space-x-4">
+        )}
+    
+        {/* Pagination Controls */}
+        {showBtn && (
+            <div className="flex justify-center items-center mb-4 space-x-4">
                 <button
                     onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage)}
                     disabled={currentPage === 1}
@@ -334,7 +334,6 @@ export default function SelectProblems(props) {
                     Prev
                 </button>
                 <div>Page {currentPage} of {totalPages}</div>
-
                 <button
                     onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : currentPage)}
                     disabled={currentPage === totalPages}
@@ -343,35 +342,38 @@ export default function SelectProblems(props) {
                     Next
                 </button>
             </div>
-            }
-           {problemsList && problemsList.length > 0 &&
-           <>
-            <div className="text-2xl font-bold mt-8 mb-4">Selected Problems</div>
-            <div className="overflow-x-auto max-w-full max-h-96 mb-4">
-                {selectedProblems.length === 0 ? (
-                    <div className="text-center">No problems selected.</div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {selectedProblems.map((problem, index) => (
-                            <div key={index} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
-                                <span className="text-lg">{problem.name}</span>
-                                <button
-                                    onClick={() => handleRemoveProblem(problem)}
-                                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                >
-                                    Remove
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+        )}
+    
+        {/* Selected Problems */}
+        {problemsList && problemsList.length > 0 && (
+            <>
+                <div className="text-xl md:text-2xl font-bold mt-8 mb-4">Selected Problems</div>
+                <div className="max-w-full mb-4 text-xs md:text-sm lg:text-base">
+                    {selectedProblems.length === 0 ? (
+                        <div className="text-center">No problems selected.</div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {selectedProblems.map((problem, index) => (
+                                <div key={index} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                                    <span className="text-md md:text-lg lg:text-base">{problem.name}</span>
+                                    <button
+                                        onClick={() => handleRemoveProblem(problem)}
+                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </>
-}
-            {/* Additional space to ensure Save and Cancel buttons are not overlapped */}
-            <div className="mb-8"></div>
-        </div>
-
+        )}
+    
+        {/* Additional space to ensure Save and Cancel buttons are not overlapped */}
+        <div className="mb-8"></div>
+    </div>
+    
 
     );
 }

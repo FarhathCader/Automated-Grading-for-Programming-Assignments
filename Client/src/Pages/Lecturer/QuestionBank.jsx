@@ -54,7 +54,7 @@ const QuestionBank = () => {
     else {
       setShowBtn(false)
     }
-    if(currentPage > total){
+    if (currentPage > total) {
       setCurrentPage(1)
     }
   }, [totalProblems, showBtn])
@@ -216,16 +216,16 @@ const QuestionBank = () => {
 
 
   return (
-    <main className="w-full h-screen flex justify-between items-start">
+    <main className="w-full h-screen flex flex-col md:flex-row justify-between items-start text-xs md:text-base">
       {/* SidebarLecturer component */}
       {/* <SidebarLecturer /> */}
 
       {!loading ? (
-        <section className="w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
+        <section className="w-full md:w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
           {/* <Header bgColor="fuchsia" /> */}
-          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20 mb-5">
-            <div className="flex items-center justify-between w-full mb-4">
-              <div className="relative flex-grow mr-4">
+          <div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-10 md:mt-20 mb-5">
+            <div className="flex flex-col md:flex-row items-center justify-between w-full mb-4">
+              <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 mr-0 md:mr-4">
                 <input
                   type="text"
                   placeholder="Search Question.."
@@ -238,7 +238,7 @@ const QuestionBank = () => {
               </div>
               <div>
                 <button
-                  className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                  className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
                   onClick={handleClick}
                 >
                   <FaSearch className="mr-2" />
@@ -247,99 +247,93 @@ const QuestionBank = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="w-full flex justify-center mb-5">
             <button
-              className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+              className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center justify-center "
               onClick={addProblem}
             >
               <FaPlus className="mr-2" />
               Add Question
             </button>
           </div>
-          {/* Display questions or no completed contests message */}
-          {problems && problems.length > 0 ? (
-            <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
-
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-fuchsia-200">
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Name</th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Category</th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Difficulty</th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Added By</th>
-                    <th className="px-6 py-3 text-left text-fuchsia-800">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {problems.map((question, index) => (
-                    <tr
-                      key={index}
-                      className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}
-                    >
-                      <td className="px-6 py-4 text-fuchsia-200">{question.name}</td>
-                      <td className="px-6 py-4 text-fuchsia-200">{question.category}</td>
-                      <td className="px-6 py-4 text-fuchsia-200">{question.difficulty}</td>
-
-                      <td className="px-6 py-4 text-fuchsia-200">{question.addedBy}</td>
-
-                      {question.createdBy === user._id ? <td className="px-6 py-4 flex">
+          {problems && problems.length > 0 ? (<div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+  <div className="overflow-x-auto w-full">
+    <table className="w-full">
+      <thead>
+        <tr className="bg-fuchsia-200">
+          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Name</th>
+          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Category</th>
+          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Difficulty</th>
+          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Added By</th>
+          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {problems.map((question, index) => (
+          <tr key={index} className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}>
+            <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
+            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
+            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.difficulty}</td>
+            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.addedBy}</td>
+           
+              {question.createdBy === user._id ? (
+                        <td className="px-2 md:px-6 py-4 flex">
                         <FaEdit
-                          className="mr-2 text-green-500 hover:text-green-600 cursor-pointer"
+                          className="mr-2 text-green-500 hover:text-green-600 cursor-pointer text-xs md:text-base"
                           onClick={() => editProblem(question)}
                         />
                         <FaTrash
-                          className="mr-2 text-red-500 hover:text-red-600 cursor-pointer"
+                          className="mr-2 text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
                           onClick={() => deleteProblem(question)}
                         />
                         <FaEye
-                          className="text-red-500 hover:text-red-600 cursor-pointer"
+                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
                           onClick={() => handleViewProblem(question)}
-
-
                         />
                       </td>
-                        :
-                        <td className="px-6 py-4 flex">
-                          <FaEye
-                            className="text-red-500 hover:text-red-600 cursor-pointer"
-                            onClick={() => handleViewProblem(question)}
-
-                          />
-                        </td>}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {showBtn && <div className="w-full flex justify-center gap-6 items-center mt-4">
-                <button
-                  onClick={handlePrev}
-                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                >
-                  Prev
-                </button>
-                <span className="text-fuchsia-800 font-semibold">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={handleNext}
-                  className="px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-              </div>}
-            </div>
-          ) : (
+              ):(<td>
+                   <FaEye
+                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
+                          onClick={() => handleViewProblem(question)}
+                        />
+              </td>)}
+       
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {showBtn && (
+    <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
+      <button
+        onClick={handlePrev}
+        className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={currentPage === 1}
+      >
+        Prev
+      </button>
+      <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
+        Page {currentPage} of {totalPages}
+      </span>
+      <button
+        onClick={handleNext}
+        className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  )}
+</div>
+): (
             <div className="w-full flex justify-center items-center mt-5">
-              <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
+              <div className="w-full max-w-xl p-4 md:p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No Questions Found</h1>
                 <p className="text-lg text-fuchsia-700 text-center">
                   There are no questions in the Question Bank as your request. Start by adding questions to build your collection.
                 </p>
               </div>
             </div>
-
           )}
         </section>
       ) : (
@@ -371,6 +365,7 @@ const QuestionBank = () => {
         </div>
       )}
     </main>
+
   );
 };
 

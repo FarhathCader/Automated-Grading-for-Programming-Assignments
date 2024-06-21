@@ -100,7 +100,7 @@ const AddContest = ({ onAdd }) => {
       return;
     }
 
-    if(selectedProblems.length === 0){
+    if (selectedProblems.length === 0) {
       toast.error("Please add problems");
       setTimeout(() => {
         setDisabled_btn(false)
@@ -259,7 +259,7 @@ const AddContest = ({ onAdd }) => {
   }
 
   return (
-    <main className="w-full h-screen flex justify-between items-start bg-white">
+    <main className="w-full h-screen flex justify-between items-start bg-white text-xs md:text-base">
       <ToastContainer
         position="top-right"
         autoClose={1000}
@@ -274,7 +274,7 @@ const AddContest = ({ onAdd }) => {
       <section className="w-full lg:w-4/5 bg-white  flex-grow flex flex-col justify-start items-center p-4">
         <div className="w-full lg:max-w-full mx-auto p-6 rounded-xl flex flex-col items-center mt-20">
           <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
-          <div className="flex justify-between space-x-4">
+            <div className="flex justify-between space-x-4">
               <button
                 type="button"
                 className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center"
@@ -287,7 +287,7 @@ const AddContest = ({ onAdd }) => {
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
               >
-                 {id ? "Save Changes" : "Add Contest"}
+                {id ? "Save Changes" : "Add Contest"}
               </button>
             </div>
             <div className="mb-4">
@@ -358,24 +358,25 @@ const AddContest = ({ onAdd }) => {
             </div>
             <div className="mb-6">
               <h3 className="block text-fuchsia-800 mb-2 font-semibold">Problems</h3>
-              <div className="flex justify-center space-x-4 mb-4">
-
+              <div className="flex flex-col md:flex-row justify-center items-center  gap-4 mb-4 text-sm">
                 <button
                   type="button"
-                  className="w-full px-4 py-2 border border-dashed border-gray-400 rounded-md text-gray-700 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                  className="w-full px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-md shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-500 hover:bg-fuchsia-600"
                   onClick={handleShowSelection}
                 >
                   Select from Question Bank
                 </button>
-                <span className="text-gray-700">Or</span>
+                <span className="text-center text-fuchsia-800 font-semibold">Or</span>
+
 
                 <button
                   type="button"
-                  className="w-full px-4 py-2 border border-dashed border-gray-400 rounded-md text-gray-700 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                  className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-600"
                   onClick={handleAddProblem}
                 >
                   <FaPlus className="mr-2" /> Add Manually
                 </button>
+
               </div>
               {selectedProblems.map((problem, index) => (
                 <div key={index} className="w-full bg-white border border-fuchsia-500 rounded-md p-4 mb-2 flex justify-between items-center">
@@ -407,7 +408,7 @@ const AddContest = ({ onAdd }) => {
               ))}
             </div>
 
-          
+
           </form>
         </div>
       </section>
