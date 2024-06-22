@@ -46,6 +46,7 @@ const formatDuration = (minutes) => {
       setStudents(data.studentsWithGrades);
       setTotalPages(data.totalPages);
       setCurrentPage(data.currentPage);
+      console.log(data);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -105,7 +106,7 @@ const formatDuration = (minutes) => {
           </p>
         </div>
         <p className="text-sm md:text-md lg:text-lg text-center my-10">
-          {currentTimestamp >= new Date(contest.startDate).getTime() && currentTimestamp <= new Date(contest.endDate).getTime() ? (
+          { currentTimestamp <= new Date(contest.endDate).getTime() ? (
             <span className="text-green-600">Contest is live</span>
           ) : (
             <span className="text-red-600">Contest has ended</span>
@@ -140,7 +141,7 @@ const formatDuration = (minutes) => {
         <button
           className={`px-4 py-2 mx-1 ${currentPage === totalPages ? 'bg-gray-300' : 'bg-blue-500 hover:bg-blue-600'} text-white font-semibold rounded focus:outline-none`}
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={currentPage >= totalPages}
         >
           Next
         </button>

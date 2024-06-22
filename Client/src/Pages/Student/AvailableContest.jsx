@@ -7,6 +7,7 @@ import { backendUrl } from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BackButton from "../../Components/BackButton";
+import { FaSearch } from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -15,7 +16,8 @@ const override = {
 };
 
 const AvailableContest = () => {
-  const [contests, setContests] = useState(null);
+  const [contests, setContests] = useState([]);
+  const [filteredContests, setFilteredContests] = useState([]); // State for filtered contests
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(5); // Number of contests per page
@@ -24,7 +26,9 @@ const AvailableContest = () => {
   const [activeContest, setActiveContest] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState("");
   const [student, setStudent] = useState(null);
-  const [showBtn,setShowBtn] = useState(false);
+  const [showBtn, setShowBtn] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
 
@@ -79,23 +83,30 @@ const AvailableContest = () => {
         throw new Error("Failed to fetch contests");
       }
       const allContests = response.data.availableContests_;
+      setContests(allContests);
+      setFilteredContests(allContests); // Initialize filtered contests
       const totalContests = allContests.length;
-      const total = Math.ceil(totalContests / perPage)
+      if (totalContests > 0) setShowSearch(true);
+      const total = Math.ceil(totalContests / perPage);
       setTotalPages(total);
-      if(total > 1)setShowBtn(true)
-
-      // Calculate the current page contests to display
-      const startIndex = (currentPage - 1) * perPage;
-      const endIndex = startIndex + perPage;
-      const contestsForPage = allContests.slice(startIndex, endIndex);
-
-      setContests(contestsForPage);
+      if (total > 1) setShowBtn(true);
     } catch (error) {
       console.error("Error fetching contests:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    firstSearch();
+  }, [currentPage, contests]);
+
+  const firstSearch = () => {
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    setFilteredContests(contests.slice(startIndex, endIndex));
+  };
+
 
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / (24 * 60));
@@ -119,18 +130,15 @@ const AvailableContest = () => {
     return durationString.trim();
   };
 
-    const handleContestDetailsClick = async (contestId) => {
-   try{
-    const response  = await axios.post(`${backendUrl}/api/enrollment/`, {studentId: student._id, contestId});
-   }
-   catch(error){
-     toast.error("Error creating enrollment:");
-   }
-   finally{
-    navigate(`/contestview/${contestId}`);
-   }
+  const handleContestDetailsClick = async (contestId) => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/enrollment/`, { studentId: student._id, contestId });
+    } catch (error) {
+      toast.error("Error creating enrollment:");
+    } finally {
+      navigate(`/contestview/${contestId}`);
+    }
   }
-
 
   const handleClick = async (contest) => {
     try {
@@ -162,14 +170,29 @@ const AvailableContest = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value !== "") setShowBtn(false);
+    else {
+      setShowBtn(true);
+      firstSearch();
+      return;
+    }
+
+    const searchResults = contests.filter(contest =>
+      contest.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFilteredContests(searchResults);
+  };
+
   return (
     enterContest ? (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
-        <BackButton/>
+        <BackButton />
         <div className="w-96 p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
           <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
-          <button 
+          <button
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => handleContestDetailsClick(activeContest._id)}
           >
@@ -190,7 +213,18 @@ const AvailableContest = () => {
           </div>
         ) : (
           <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-            {contests && contests.length > 0 ? (
+            {showSearch && <div className="w-full mt-4 mb-4 border border-blue-300 rounded-lg relative">
+              <FaSearch className="text-gray-400 absolute top-1/2 transform -translate-y-1/2 left-3" />
+              <input
+                type="text"
+                placeholder="Search Contest.."
+                className="pl-10 pr-4 py-2 w-full border rounded-md"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            }
+            {filteredContests && filteredContests.length > 0 ? (
               <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
                 <h2 className="text-xl font-semibold mb-4 text-blue-950">
                   Available Contests
@@ -205,7 +239,7 @@ const AvailableContest = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {contests.map((contest, index) => (
+                    {filteredContests.map((contest, index) => (
                       <tr
                         key={index}
                         className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"}
@@ -223,7 +257,7 @@ const AvailableContest = () => {
                     ))}
                   </tbody>
                 </table>
-              {showBtn &&  <div className="flex justify-center items-center mt-4">
+                {showBtn && <div className="flex justify-center items-center mt-4">
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     onClick={handlePrevPage}
@@ -253,17 +287,17 @@ const AvailableContest = () => {
             )}
           </section>
         )}
-             <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light" />
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light" />
       </main>
     )
   );
