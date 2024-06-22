@@ -15,6 +15,11 @@ const override = {
     margin: "0 auto",
     borderColor: "red",
 };
+const difficultyOrder = {
+    1 : 'Easy',
+    2 : 'Medium',
+    3 : 'Hard'
+  };
 
 export default function SelectProblems(props) {
     const { onClose, addSelection } = props;
@@ -278,7 +283,7 @@ export default function SelectProblems(props) {
                                         </div>
                                         <div className="mb-3 flex items-center">
                                             <span className="text-xs md:text-sm text-gray-600">Difficulty:</span>
-                                            <span className="ml-1 text-xs md:text-sm text-gray-900">{problem.difficulty}</span>
+                                            <span className="ml-1 text-xs md:text-sm text-gray-900">{difficultyOrder[problem.difficulty]}</span>
                                         </div>
                                         <div className="mb-3 flex items-center">
                                             <span className="text-xs md:text-sm  text-gray-600">Grade:</span>

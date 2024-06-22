@@ -1,23 +1,30 @@
 const Problem = require('../models/problems')
 const User = require('../models/user')
 
-const addProblem = async (req,res)=>{
-    try{
-        const{name,category,description,difficulty,testCases,grade,initialCode,programmingLanguage,examples,isPractice,createdBy} = req.body;
+const difficultyOrder = {
+    'easy': 1,
+    'medium': 2,
+    'hard': 3
+};
+
+
+const addProblem = async (req, res) => {
+    try {
+        const { name, category, description, difficulty, testCases, grade, initialCode, programmingLanguage, examples, isPractice, createdBy } = req.body;
 
         const added = await User.findById(createdBy);
 
-        const existingName = await Problem.findOne({name});
+        const existingName = await Problem.findOne({ name });
 
-        if(existingName){
-            return res.status(403).json({msg : 'Problem with same name existing'})
+        if (existingName) {
+            return res.status(403).json({ msg: 'Problem with same name existing' })
         }
 
         const problem = await Problem.create({
             name,
             category,
             description,
-            difficulty,
+            difficulty : difficultyOrder[difficulty.toLowerCase()],
             testCases,
             grade,
             initialCode,
@@ -25,62 +32,77 @@ const addProblem = async (req,res)=>{
             examples,
             isPractice,
             createdBy,
-            addedBy : added.username
+            addedBy: added.username
         })
 
-        return res.status(201).json({problem})
+        return res.status(201).json({ problem })
 
 
     }
 
-    catch(err){
-        return res.status(400).json({msg : 'Error Occured',error : err.message})
+    catch (err) {
+        return res.status(400).json({ msg: 'Error Occured', error: err.message })
     }
 
 }
 
-const getProblems = async (req,res)=>{
-    try{
-        const { page = 1, limit = 10 } = req.query;
-        const skip = (page - 1) * limit;
-        console.log(skip)
-        const problems = await Problem.find().skip(skip).limit(Number(limit));
-    const total = await Problem.countDocuments();
+const getProblems = async (req, res) => {
+    // try{
+    //     const { page = 1, limit = 10 } = req.query;
+    //     const skip = (page - 1) * limit;
+    //     console.log(skip)
+    //     const problems = await Problem.find().skip(skip).limit(Number(limit));
+    // const total = await Problem.countDocuments();
 
-        return res.status(200).json({problems,total})
-    }
-    catch(err){
-        return res.status(400).json({msg : err.message})
+    //     return res.status(200).json({problems,total})
+    // }
+    // catch(err){
+    //     return res.status(400).json({msg : err.message})
+    // }
+    try {
+        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+        console.log(sortOptions)
+        const problems = await Problem.find()
+        .collation({ locale: 'en', strength: 2 })
+          .sort(sortOptions)
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit));
+        const total = await Problem.countDocuments();
+        res.json({ problems, total });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching problems', error });
     }
 }
 
-const deleteProblem = async (req,res)=>{
-    try{
+const deleteProblem = async (req, res) => {
+    try {
         const problem = await Problem.findById(req.params.id);
-        if(!problem)return res.status(400).json({error : "problem not found"})
+        if (!problem) return res.status(400).json({ error: "problem not found" })
         await Problem.findByIdAndDelete(req.params.id);
-        return res.status(200).json({msg : "problem deleted successfully"})
+        return res.status(200).json({ msg: "problem deleted successfully" })
     }
-    catch(err){
+    catch (err) {
 
-        return res.status(400).json({error : err.message})
+        return res.status(400).json({ error: err.message })
 
     }
 }
 
-const getProblem = async (req,res)=>{
-    try{
+const getProblem = async (req, res) => {
+    try {
         const problem = await Problem.findById(req.params.id.toString());
 
-        return res.status(200).json({problem})
+        return res.status(200).json({ problem })
     }
-    catch(err){
-        return res.status(400).json({msg : err.message})
+    catch (err) {
+        return res.status(400).json({ msg: err.message })
     }
 }
 
 const updateInitialCode = async (req, res) => {
-    
+
     try {
         // Find the problem by ID
         const problem = await Problem.findById(req.params.id);
@@ -111,40 +133,40 @@ const updateInitialCode = async (req, res) => {
 
 const updateProblem = async (req, res) => {
     try {
-      const { name, category, description, difficulty, testCases, grade, initialCode,examples} = req.body;
-      const updatedProblem = await Problem.findByIdAndUpdate(
-        req.params.id,
-        {
-          name,
-          category,
-          description,
-          difficulty,
-          testCases,
-          grade,
-          initialCode,
-          examples,
-        },
-        { new: true, runValidators: true }
-      );
-      if (!updatedProblem) return res.status(404).json({ msg: "Problem not found" });
-      return res.status(200).json({ problem: updatedProblem });
+        const { name, category, description, difficulty, testCases, grade, initialCode, examples } = req.body;
+        const updatedProblem = await Problem.findByIdAndUpdate(
+            req.params.id,
+            {
+                name,
+                category,
+                description,
+                difficulty,
+                testCases,
+                grade,
+                initialCode,
+                examples,
+            },
+            { new: true, runValidators: true }
+        );
+        if (!updatedProblem) return res.status(404).json({ msg: "Problem not found" });
+        return res.status(200).json({ problem: updatedProblem });
     } catch (err) {
-      return res.status(400).json({ msg: err.message });
+        return res.status(400).json({ msg: err.message });
     }
-  };
+};
 
-const getPracticeProblems = async (req,res)=>{
-  try {
-    const { page = 1, limit = 10 } = req.query;
-    const skip = (page - 1) * limit;
+const getPracticeProblems = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
 
-    const problems = await Problem.find({isPractice : true}).skip(skip).limit(Number(limit));
-    const total = await Problem.find({isPractice : true}).countDocuments();
+        const problems = await Problem.find({ isPractice: true }).skip(skip).limit(Number(limit));
+        const total = await Problem.find({ isPractice: true }).countDocuments();
 
-    return res.status(200).json({ problems, total });
-  } catch (err) {
-    return res.status(400).json({ msg: err.message });
-  }
+        return res.status(200).json({ problems, total });
+    } catch (err) {
+        return res.status(400).json({ msg: err.message });
+    }
 }
 
 
@@ -152,8 +174,9 @@ const searchProblems = async (req, res) => {
     console.log("search");
     try {
         const { name } = req.query;
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
         const skip = (page - 1) * limit;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
 
         // Construct query object
         const query = {};
@@ -161,12 +184,14 @@ const searchProblems = async (req, res) => {
             query.$or = [
                 { name: new RegExp(name, 'i') },
                 { category: new RegExp(name, 'i') },
-                { difficulty: new RegExp(name, 'i') },
                 { addedBy: new RegExp(name, 'i') }
             ];
         }
 
-        const problems = await Problem.find(query).skip(skip).limit(Number(limit));
+        const problems = await Problem.find(query)
+        .collation({ locale: 'en', strength: 2 })
+            .sort(sortOptions)
+            .skip(skip).limit(Number(limit));
         const total = await Problem.countDocuments(query);
 
         return res.status(200).json({ problems, total });
@@ -198,6 +223,6 @@ const searchPracticeProblems = async (req, res) => {
     }
 };
 
-  
 
-module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems,searchProblems,searchPracticeProblems}
+
+module.exports = { addProblem, getProblems, getProblem, updateInitialCode, deleteProblem, updateProblem, getPracticeProblems, searchProblems, searchPracticeProblems }
