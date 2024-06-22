@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BackButton from "../../Components/BackButton";
 import { FaSearch } from "react-icons/fa";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -29,6 +30,8 @@ const AvailableContest = () => {
   const [showBtn, setShowBtn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [sortField, setSortField] = useState(name); // State for sorting field
+  const [sortDirection, setSortDirection] = useState("asc");
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
 
@@ -185,6 +188,32 @@ const AvailableContest = () => {
     setFilteredContests(searchResults);
   };
 
+  const handleSort = (field) => {
+    let direction = "asc";
+    if (field === sortField && sortDirection === "asc") {
+      direction = "desc";
+    }
+    setSortField(field);
+    setSortDirection(direction);
+
+    const sortedContests = [...filteredContests].sort((a, b) => {
+      const aValue = a[field];
+      const bValue = b[field];
+
+      if (direction === "asc") {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+      } else {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+        return 0;
+      }
+    });
+
+    setFilteredContests(sortedContests);
+  };
+
   return (
     enterContest ? (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
@@ -232,10 +261,91 @@ const AvailableContest = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-blue-200">
-                      <th className="px-6 py-3 text-left text-blue-800">Name</th>
-                      <th className="px-6 py-3 text-left text-blue-800">End Date</th>
-                      <th className="px-6 py-3 text-left text-blue-800">Duration</th>
-                      <th className="px-6 py-3 text-left text-blue-800">Problems</th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('name')}
+                        >
+                          Name
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'name' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'name' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('startDate')}
+                        >
+                          Start Date
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'startDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'startDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('endDate')}
+                        >
+                          End Date
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'endDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'endDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('duration')}
+                        >
+                          Duration
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'duration' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'duration' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('problems')}
+                        >
+                          Total Problems
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'problems' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'problems' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -246,6 +356,9 @@ const AvailableContest = () => {
                         onClick={() => handleClick(contest)}
                       >
                         <td className="px-6 py-4 text-blue-200">{contest.name}</td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {new Date(contest.startDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        </td>
                         <td className="px-6 py-4 text-blue-200">
                           {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                         </td>
