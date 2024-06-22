@@ -20,7 +20,7 @@ const AvailableContest = () => {
   const [filteredContests, setFilteredContests] = useState([]); // State for filtered contests
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(1); // Number of contests per page
+  const [perPage] = useState(5); // Number of contests per page
   const [totalPages, setTotalPages] = useState(0);
   const [enterContest, setEnterContest] = useState(false);
   const [activeContest, setActiveContest] = useState(null);

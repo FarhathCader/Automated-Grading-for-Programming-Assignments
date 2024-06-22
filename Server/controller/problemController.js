@@ -175,6 +175,29 @@ const searchProblems = async (req, res) => {
     }
 };
 
+const searchPracticeProblems = async (req, res) => {
+    try {
+        const { name } = req.query;
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+        const query = { isPractice: true };
+        if (name) {
+            query.$or = [
+                { name: new RegExp(name, 'i') },
+                { category: new RegExp(name, 'i') },
+                { difficulty: new RegExp(name, 'i') },
+            ];
+        }
+
+        const problems = await Problem.find(query).skip(skip).limit(Number(limit));
+        const total = await Problem.countDocuments(query);
+
+        return res.status(200).json({ problems, total });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+};
+
   
 
-module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems,searchProblems}
+module.exports = {addProblem,getProblems,getProblem,updateInitialCode,deleteProblem,updateProblem,getPracticeProblems,searchProblems,searchPracticeProblems}
