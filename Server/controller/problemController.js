@@ -1,5 +1,6 @@
 const Problem = require('../models/problems')
 const User = require('../models/user')
+const Submission = require('../models/submission')
 
 const difficultyOrder = {
     'easy': 1,
@@ -81,6 +82,8 @@ const deleteProblem = async (req, res) => {
         const problem = await Problem.findById(req.params.id);
         if (!problem) return res.status(400).json({ error: "problem not found" })
         await Problem.findByIdAndDelete(req.params.id);
+        await Submission.deleteMany({ problemId: req.params.id });
+
         return res.status(200).json({ msg: "problem deleted successfully" })
     }
     catch (err) {
