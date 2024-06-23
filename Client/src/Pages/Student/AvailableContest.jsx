@@ -30,10 +30,11 @@ const AvailableContest = () => {
   const [showBtn, setShowBtn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [sortField, setSortField] = useState(name); // State for sorting field
+  const [sortField, setSortField] = useState(null); // State for sorting field
   const [sortDirection, setSortDirection] = useState("asc");
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
+  const [sortedContests, setSortedContests] = useState([]);
 
   useEffect(() => {
     fetchStudent();
@@ -87,7 +88,8 @@ const AvailableContest = () => {
       }
       const allContests = response.data.availableContests_;
       setContests(allContests);
-      setFilteredContests(allContests); // Initialize filtered contests
+      setSortedContests([...allContests]); // Store all contests initially in sortedContests
+      setFilteredContests([...allContests]); // Initialize filtered contests
       const totalContests = allContests.length;
       if (totalContests > 0) setShowSearch(true);
       const total = Math.ceil(totalContests / perPage);
@@ -101,15 +103,18 @@ const AvailableContest = () => {
   };
 
   useEffect(() => {
+    sortContests();
+  }, [contests, sortField, sortDirection]);
+
+  useEffect(() => {
     firstSearch();
-  }, [currentPage, contests]);
+  }, [currentPage, sortedContests]);
 
   const firstSearch = () => {
     const startIndex = (currentPage - 1) * perPage;
     const endIndex = startIndex + perPage;
-    setFilteredContests(contests.slice(startIndex, endIndex));
+    setFilteredContests(sortedContests.slice(startIndex, endIndex));
   };
-
 
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / (24 * 60));
@@ -182,37 +187,44 @@ const AvailableContest = () => {
       return;
     }
 
-    const searchResults = contests.filter(contest =>
+    const searchResults = sortedContests.filter(contest =>
       contest.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFilteredContests(searchResults);
   };
-
+  const sortContests = () => {
+    if (sortField) {
+      const sorted = [...contests].sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        if (sortField === 'duration') {
+          // Numeric sort for duration (assuming it's in minutes)
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        } else if (sortField === 'problems') {
+          // Numeric sort for problems count
+          return sortDirection === 'asc' ? aValue.length - bValue.length : bValue.length - aValue.length;
+        } else {
+          // Default to string comparison (if needed for other fields)
+          const compareResult = aValue.localeCompare(bValue, undefined, { sensitivity: 'accent' });
+          return sortDirection === 'asc' ? compareResult : -compareResult;
+        }
+      });
+      setSortedContests(sorted);
+    } else {
+      setSortedContests([...contests]);
+    }
+  };
+  
   const handleSort = (field) => {
+    console.log(field);
     let direction = "asc";
     if (field === sortField && sortDirection === "asc") {
       direction = "desc";
     }
     setSortField(field);
     setSortDirection(direction);
-
-    const sortedContests = [...filteredContests].sort((a, b) => {
-      const aValue = a[field];
-      const bValue = b[field];
-
-      if (direction === "asc") {
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-        return 0;
-      } else {
-        if (aValue > bValue) return -1;
-        if (aValue < bValue) return 1;
-        return 0;
-      }
-    });
-
-    setFilteredContests(sortedContests);
   };
+
 
   return (
     enterContest ? (

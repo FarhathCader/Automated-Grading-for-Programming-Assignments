@@ -68,7 +68,6 @@ const ContestView = () => {
       if (user._id === undefined || contest._id === undefined) return;
       const res = await axios.get(`${backendUrl}/api/enrollment/time/${user._id}/${contest._id}`);
       const data = res.data;
-      console.log("data", data);
       if (data) {
         setEnr(data.createdAt);
         setDuration(data.duration);
@@ -81,12 +80,11 @@ const ContestView = () => {
     }
   }
 
-  const fetchProblems = async (problemIds) => {
+  const fetchProblemsDetails = async (selectedProblems) => {
     setLoading(true);
+    console.log("fethicing Problems")
     try {
-      const response = await axios.get(`${backendUrl}/api/problems`);
-      const problemsData = response.data.problems;
-      const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));
+      console.log(selectedProblems)
 
       // Fetch solved status for each problem
       const solvedStatuses = await Promise.all(
@@ -116,14 +114,15 @@ const ContestView = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/contest/${id}`);
-      const data = response.data.contest;
-      setContest(data);
+      console.log(response.data)
+      const data = response.data;
+      setContest(data.contest);
+      fetchProblemsDetails(data.problems);
     } catch (error) {
       console.error("Error fetching contest:", error);
       setNotFound(true);
     } finally {
       setLoading(false);
-      console.log("data", contest);
     }
   };
 
@@ -172,11 +171,7 @@ const ContestView = () => {
     }
   }, [user, contest]);
 
-  useEffect(() => {
-    if (contest && contest.problems) {
-      fetchProblems(contest.problems);
-    }
-  }, [contest]);
+
 
   return (
 

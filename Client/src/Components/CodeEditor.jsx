@@ -74,15 +74,16 @@ export default function CodeEditor() {
       try{
         const response = await axios.get(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
         console.log(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
-        console.log("response",response)
         if(response.data.draftCodes === null){
-          console.log(problem.initialCode)
           setCodes(problem.initialCode)
         }else{
-          setCodes(response.data.draftCodes.codes);
+          if(response.data.draftCodes.codes !== null){
+            setCodes(response.data.draftCodes.codes);
+          }else{
+            setCodes(problem.initialCode)
+          }
 
         }
-        console.log("response codes",response.data.draftCodes);
       }
       catch(err){
         console.log(err)

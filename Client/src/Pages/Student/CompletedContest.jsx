@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from "../../Sections/Sidebar";
-import Header from "../../Sections/Header";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { backendUrl } from '../../../config';
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-import { FaSearch} from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import { FaSortUp, FaSortDown } from 'react-icons/fa';
 
 const override = {
@@ -19,10 +16,11 @@ const override = {
 
 const CompletedContest = () => {
   const [contests, setContests] = useState([]);
+  const [sortedContests, setSortedContests] = useState([]);
   const [filteredContests, setFilteredContests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(5); // Number of contests per page
+  const [perPage] = useState(10); // Number of contests per page
   const [totalPages, setTotalPages] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,13 +37,17 @@ const CompletedContest = () => {
   }, [user, currentPage]);
 
   useEffect(() => {
+    sortContests();
+  }, [contests, sortField, sortDirection]);
+
+  useEffect(() => {
     firstSearch();
-  }, [currentPage, contests]);
+  }, [currentPage, sortedContests]);
 
   const firstSearch = () => {
     const startIndex = (currentPage - 1) * perPage;
     const endIndex = startIndex + perPage;
-    setFilteredContests(contests.slice(startIndex, endIndex));
+    setFilteredContests(sortedContests.slice(startIndex, endIndex));
   };
 
   const fetchEnrolledContests = async () => {
@@ -55,51 +57,70 @@ const CompletedContest = () => {
       const response = await axios.get(`${backendUrl}/api/enrollment/contest/${user._id}/enrolled-contests`);
       const allContests = response.data.contests;
       setContests(allContests);
-      setFilteredContests(allContests); 
+      setSortedContests([...allContests]); // Store all contests initially in sortedContests
+      setFilteredContests([...allContests]); // Initialize filtered contests
       const totalContests = allContests.length;
-      if(totalContests > 0) setShowSearch(true)
-      const total = Math.ceil(totalContests / perPage)
+      if (totalContests > 0) setShowSearch(true);
+      const total = Math.ceil(totalContests / perPage);
       setTotalPages(total);
-      if (total > 1) setShowBtn(true)
+      if (total > 1) setShowBtn(true);
     } catch (error) {
       toast.error("Error fetching enrolled contests:", error);
-      console.log(error)
     } finally {
       setLoading(false);
     }
   };
 
+  const sortContests = () => {
+    if (sortField) {
+      const sorted = [...contests].sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        if (sortField === 'duration') {
+          // Numeric sort for duration (assuming it's in minutes)
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        } else if (sortField === 'problems') {
+          // Numeric sort for problems count
+          return sortDirection === 'asc' ? aValue.length - bValue.length : bValue.length - aValue.length;
+        } else {
+          // Default to string comparison (if needed for other fields)
+          const compareResult = aValue.localeCompare(bValue, undefined, { sensitivity: 'accent' });
+          return sortDirection === 'asc' ? compareResult : -compareResult;
+        }
+      });
+      setSortedContests(sorted);
+    } else {
+      setSortedContests([...contests]);
+    }
+  };
+  
+
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / (24 * 60));
     const hours = Math.floor((minutes % (24 * 60)) / 60);
     const mins = minutes % 60;
-
     let durationString = '';
-
     if (days > 0) {
       durationString += `${days}d `;
     }
-
     if (hours > 0 || days > 0) {
       durationString += `${hours}h `;
     }
-
     if (mins > 0 || (hours === 0 && days === 0)) {
       durationString += `${mins}m`;
     }
-
     return durationString.trim();
   };
 
   const handleContestDetailsClick = (contestId) => {
     navigate(`/contestview/${contestId}`);
   };
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
-
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -109,19 +130,18 @@ const CompletedContest = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    if (e.target.value !== "") setShowBtn(false);
-    else {
+    if (e.target.value !== "") {
+      setShowBtn(false);
+    } else {
       setShowBtn(true);
       firstSearch();
       return;
     }
-
-    const searchResults = contests.filter(contest =>
+    const searchResults = sortedContests.filter(contest =>
       contest.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFilteredContests(searchResults);
   };
-
 
   const handleSort = (field) => {
     let direction = "asc";
@@ -130,25 +150,7 @@ const CompletedContest = () => {
     }
     setSortField(field);
     setSortDirection(direction);
-
-    const sortedContests = [...filteredContests].sort((a, b) => {
-      const aValue = a[field];
-      const bValue = b[field];
-
-      if (direction === "asc") {
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-        return 0;
-      } else {
-        if (aValue > bValue) return -1;
-        if (aValue < bValue) return 1;
-        return 0;
-      }
-    });
-
-    setFilteredContests(sortedContests);
   };
-
 
   return (
     <main className="w-full h-screen flex justify-between items-start">
