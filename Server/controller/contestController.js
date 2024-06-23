@@ -231,7 +231,19 @@ const searchContests = async (req, res) => {
     }
 };
 
+const getUpcomingContests = async (req, res) => {
+  try {
+    const currentTimestamp = new Date().getTime();
+    const upcomingContests = await Contest.find({
+      startDate: { $gt: currentTimestamp }
+    })
+    return res.status(200).json({ upcomingContests});
+  } catch (err) {
+    return res.status(400).json({ msg: err.message });
+  }
+};
+
 
   
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests,searchContests}
+module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests,searchContests,getUpcomingContests}

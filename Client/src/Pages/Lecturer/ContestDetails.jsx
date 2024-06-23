@@ -11,6 +11,11 @@ const override = {
   margin: "0 auto",
   borderColor: "red",
 };
+const difficultyOrder = {
+  1 : 'Easy',
+  2 : 'Medium',
+  3 : 'Hard'
+};
 
 
 const ContestDetails = () => {
@@ -133,7 +138,7 @@ const ContestDetails = () => {
                 {problems.map((problem) => (
                   <tr key={problem._id} className="text-gray-800">
                     <td className="py-4 px-6">{problem.name}</td>
-                    <td className="py-4 px-6">{problem.difficulty}</td>
+                    <td className="py-4 px-6">{difficultyOrder[problem.difficulty]}</td>
                     <td className="py-4 px-6">{problem.grade}</td>
                     <td className="py-4 px-6">{problem.category}</td>
                   </tr>

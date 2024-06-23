@@ -189,7 +189,7 @@ const getEnrollmentTime = async (req, res) => {
     const enrollment = await Enrollment.findOne({ studentId, contestId });
 
     if (!enrollment) {
-      return res.status(404).json({ error: 'Enrollment not found' });
+      return res.status(301).json({ error: 'Enrollment not found' });
     }
 
     const contest = await Contest.findById(contestId);

@@ -7,6 +7,8 @@ import { backendUrl } from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BackButton from "../../Components/BackButton";
+import { FaSearch } from "react-icons/fa";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -15,7 +17,8 @@ const override = {
 };
 
 const AvailableContest = () => {
-  const [contests, setContests] = useState(null);
+  const [contests, setContests] = useState([]);
+  const [filteredContests, setFilteredContests] = useState([]); // State for filtered contests
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(5); // Number of contests per page
@@ -24,9 +27,14 @@ const AvailableContest = () => {
   const [activeContest, setActiveContest] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState("");
   const [student, setStudent] = useState(null);
-  const [showBtn,setShowBtn] = useState(false);
+  const [showBtn, setShowBtn] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [sortField, setSortField] = useState(null); // State for sorting field
+  const [sortDirection, setSortDirection] = useState("asc");
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
+  const [sortedContests, setSortedContests] = useState([]);
 
   useEffect(() => {
     fetchStudent();
@@ -79,22 +87,33 @@ const AvailableContest = () => {
         throw new Error("Failed to fetch contests");
       }
       const allContests = response.data.availableContests_;
+      setContests(allContests);
+      setSortedContests([...allContests]); // Store all contests initially in sortedContests
+      setFilteredContests([...allContests]); // Initialize filtered contests
       const totalContests = allContests.length;
-      const total = Math.ceil(totalContests / perPage)
+      if (totalContests > 0) setShowSearch(true);
+      const total = Math.ceil(totalContests / perPage);
       setTotalPages(total);
-      if(total > 1)setShowBtn(true)
-
-      // Calculate the current page contests to display
-      const startIndex = (currentPage - 1) * perPage;
-      const endIndex = startIndex + perPage;
-      const contestsForPage = allContests.slice(startIndex, endIndex);
-
-      setContests(contestsForPage);
+      if (total > 1) setShowBtn(true);
     } catch (error) {
       console.error("Error fetching contests:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    sortContests();
+  }, [contests, sortField, sortDirection]);
+
+  useEffect(() => {
+    firstSearch();
+  }, [currentPage, sortedContests]);
+
+  const firstSearch = () => {
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    setFilteredContests(sortedContests.slice(startIndex, endIndex));
   };
 
   const formatDuration = (minutes) => {
@@ -119,18 +138,15 @@ const AvailableContest = () => {
     return durationString.trim();
   };
 
-    const handleContestDetailsClick = async (contestId) => {
-   try{
-    const response  = await axios.post(`${backendUrl}/api/enrollment/`, {studentId: student._id, contestId});
-   }
-   catch(error){
-     toast.error("Error creating enrollment:");
-   }
-   finally{
-    navigate(`/contestview/${contestId}`);
-   }
+  const handleContestDetailsClick = async (contestId) => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/enrollment/`, { studentId: student._id, contestId });
+    } catch (error) {
+      toast.error("Error creating enrollment:");
+    } finally {
+      navigate(`/contestview/${contestId}`);
+    }
   }
-
 
   const handleClick = async (contest) => {
     try {
@@ -162,14 +178,62 @@ const AvailableContest = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value !== "") setShowBtn(false);
+    else {
+      setShowBtn(true);
+      firstSearch();
+      return;
+    }
+
+    const searchResults = sortedContests.filter(contest =>
+      contest.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFilteredContests(searchResults);
+  };
+  const sortContests = () => {
+    if (sortField) {
+      const sorted = [...contests].sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        if (sortField === 'duration') {
+          // Numeric sort for duration (assuming it's in minutes)
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        } else if (sortField === 'problems') {
+          // Numeric sort for problems count
+          return sortDirection === 'asc' ? aValue.length - bValue.length : bValue.length - aValue.length;
+        } else {
+          // Default to string comparison (if needed for other fields)
+          const compareResult = aValue.localeCompare(bValue, undefined, { sensitivity: 'accent' });
+          return sortDirection === 'asc' ? compareResult : -compareResult;
+        }
+      });
+      setSortedContests(sorted);
+    } else {
+      setSortedContests([...contests]);
+    }
+  };
+  
+  const handleSort = (field) => {
+    console.log(field);
+    let direction = "asc";
+    if (field === sortField && sortDirection === "asc") {
+      direction = "desc";
+    }
+    setSortField(field);
+    setSortDirection(direction);
+  };
+
+
   return (
     enterContest ? (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
-        <BackButton/>
+        <BackButton />
         <div className="w-96 p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
           <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
-          <button 
+          <button
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => handleContestDetailsClick(activeContest._id)}
           >
@@ -190,7 +254,18 @@ const AvailableContest = () => {
           </div>
         ) : (
           <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-            {contests && contests.length > 0 ? (
+            {showSearch && <div className="w-full mt-4 mb-4 border border-blue-300 rounded-lg relative">
+              <FaSearch className="text-gray-400 absolute top-1/2 transform -translate-y-1/2 left-3" />
+              <input
+                type="text"
+                placeholder="Search Contest.."
+                className="pl-10 pr-4 py-2 w-full border rounded-md"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
+            }
+            {filteredContests && filteredContests.length > 0 ? (
               <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
                 <h2 className="text-xl font-semibold mb-4 text-blue-950">
                   Available Contests
@@ -198,20 +273,104 @@ const AvailableContest = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-blue-200">
-                      <th className="px-6 py-3 text-left text-blue-800">Name</th>
-                      <th className="px-6 py-3 text-left text-blue-800">End Date</th>
-                      <th className="px-6 py-3 text-left text-blue-800">Duration</th>
-                      <th className="px-6 py-3 text-left text-blue-800">Problems</th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('name')}
+                        >
+                          Name
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'name' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'name' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('startDate')}
+                        >
+                          Start Date
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'startDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'startDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('endDate')}
+                        >
+                          End Date
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'endDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'endDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('duration')}
+                        >
+                          Duration
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'duration' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'duration' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('problems')}
+                        >
+                          Total Problems
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'problems' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'problems' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {contests.map((contest, index) => (
+                    {filteredContests.map((contest, index) => (
                       <tr
                         key={index}
                         className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"}
                         onClick={() => handleClick(contest)}
                       >
                         <td className="px-6 py-4 text-blue-200">{contest.name}</td>
+                        <td className="px-6 py-4 text-blue-200">
+                          {new Date(contest.startDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        </td>
                         <td className="px-6 py-4 text-blue-200">
                           {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                         </td>
@@ -223,7 +382,7 @@ const AvailableContest = () => {
                     ))}
                   </tbody>
                 </table>
-              {showBtn &&  <div className="flex justify-center items-center mt-4">
+                {showBtn && <div className="flex justify-center items-center mt-4">
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     onClick={handlePrevPage}
@@ -253,17 +412,17 @@ const AvailableContest = () => {
             )}
           </section>
         )}
-             <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light" />
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light" />
       </main>
     )
   );

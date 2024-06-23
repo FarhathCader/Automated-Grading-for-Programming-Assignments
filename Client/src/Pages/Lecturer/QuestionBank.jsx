@@ -1,24 +1,25 @@
-import { FaSearch, FaPlus, FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import SidebarLecturer from "../../Sections/SidebarLecturer";
-import Header from "../../Sections/Header";
+import { FaSearch, FaPlus, FaEdit, FaTrash, FaEye, FaSortUp, FaSortDown } from "react-icons/fa";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
-import { CSSProperties } from "react";
 import { backendUrl } from "../../../config";
 import { useSelector } from "react-redux";
 import ViewProblem from "./ViewProblem";
-import NotFoundPage from "../../Components/NotFoundPage";
-import { set } from "lodash";
-import { FaA, FaArrowLeft } from "react-icons/fa6";
 
 const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
 };
+
+const difficultyOrder = {
+  1 : 'Easy',
+  2 : 'Medium',
+  3 : 'Hard'
+};
+
 
 const QuestionBank = () => {
 
@@ -32,7 +33,7 @@ const QuestionBank = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(3); // Set the number of problems per page
+  const [problemsPerPage] = useState(4); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages, setTotalPages] = useState(0)
@@ -40,6 +41,8 @@ const QuestionBank = () => {
   const [showSearch, setShowSearch] = useState(false)
   const [showProblem, setShowProblem] = useState(true)
   const [name, setName] = useState('')
+  const [sortField, setSortField] = useState('name'); // Sorting field
+  const [sortOrder, setSortOrder] = useState('asc'); // Sorting order
 
 
   useEffect(() => {
@@ -56,20 +59,32 @@ const QuestionBank = () => {
     }
     if (currentPage > total) {
       setCurrentPage(1)
+      setSearchParams({ page: 1 })
     }
-  }, [totalProblems, showBtn])
+  }, [totalProblems, showBtn, currentPage])
 
+  // useEffect(() => {
+
+  //   if (showProblem) {
+  //     fetchQuestions(currentPage)
+  //     return
+  //   }
+  //   if (showSearch) {
+  //     fetchSearchedQuestions(currentPage)
+  //     return
+  //   }
+  // }, [showSearch, currentPage, showProblem]);
   useEffect(() => {
 
     if (showProblem) {
-      fetchQuestions(currentPage)
+      fetchQuestions(currentPage, sortField, sortOrder)
       return
     }
     if (showSearch) {
-      fetchSearchedQuestions(currentPage)
+      fetchSearchedQuestions(currentPage, sortField, sortOrder)
       return
     }
-  }, [showSearch, currentPage, showProblem]);
+  }, [showSearch, currentPage, showProblem, sortField, sortOrder]);
 
   useEffect(() => {
     console.log("show", showSearch)
@@ -78,7 +93,28 @@ const QuestionBank = () => {
     setShowSearch(false)
   }, [name])
 
-  const fetchSearchedQuestions = async (page) => {
+  // const fetchSearchedQuestions = async (page) => {
+  //   setLoading(true);
+  //   if (name === "") return
+  //   try {
+  //     const response = await axios.get(`${backendUrl}/api/problems/search`, {
+  //       params: {
+  //         name,
+  //         page: page,
+  //         limit: problemsPerPage,
+  //       }
+  //     });
+  //     setProblems(response.data.problems);
+  //     setTotalProblems(response.data.total);
+  //     setSearchParams({ page: page });
+  //   } catch (error) {
+  //     console.log("Error fetching questions:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchSearchedQuestions = async (page, sortField, sortOrder) => {
     setLoading(true);
     if (name === "") return
     try {
@@ -87,6 +123,8 @@ const QuestionBank = () => {
           name,
           page: page,
           limit: problemsPerPage,
+          sortField,
+          sortOrder
         }
       });
       setProblems(response.data.problems);
@@ -103,13 +141,32 @@ const QuestionBank = () => {
 
 
 
-
   useEffect(() => {
     localStorage.clear();
   }, [])
 
 
-  const fetchQuestions = async (page) => {
+  // const fetchQuestions = async (page) => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(`${backendUrl}/api/problems`,
+  //       {
+  //         params: {
+  //           page: page,
+  //           limit: problemsPerPage,
+  //         },
+  //       }
+  //     );
+  //     setProblems(response.data.problems);
+  //     setTotalProblems(response.data.total);
+  //     setSearchParams({ page: page });
+  //   } catch (error) {
+  //     console.log("Error fetching questions:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const fetchQuestions = async (page, sortField, sortOrder) => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/problems`,
@@ -117,6 +174,8 @@ const QuestionBank = () => {
           params: {
             page: page,
             limit: problemsPerPage,
+            sortField,
+            sortOrder
           },
         }
       );
@@ -130,10 +189,7 @@ const QuestionBank = () => {
     }
   };
 
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    setCurrentPage(page);
-  }, [searchParams]);
+
 
   const editProblem = (problem, e) => {
 
@@ -172,8 +228,6 @@ const QuestionBank = () => {
     navigate('/addproblem')
   }
 
-
-
   const handleNext = () => {
     if (currentPage !== totalPages) {
       setCurrentPage((prev) => prev + 1)
@@ -206,6 +260,17 @@ const QuestionBank = () => {
     fetchSearchedQuestions(currentPage)
     setShowProblem(false)
   }
+
+
+  const handleSort = (field) => {
+    const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortField(field);
+    setSortOrder(order);
+  }
+
+
+
+
 
   if (show) {
 
@@ -257,75 +322,142 @@ const QuestionBank = () => {
             </button>
           </div>
           {problems && problems.length > 0 ? (<div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
-  <div className="overflow-x-auto w-full">
-    <table className="w-full">
-      <thead>
-        <tr className="bg-fuchsia-200">
-          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Name</th>
-          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Category</th>
-          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Difficulty</th>
-          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Added By</th>
-          <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {problems.map((question, index) => (
-          <tr key={index} className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}>
-            <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
-            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
-            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.difficulty}</td>
-            <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.addedBy}</td>
-           
-              {question.createdBy === user._id ? (
+            <div className="overflow-x-auto w-full">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-fuchsia-200">
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('name')}
+                        >
+                          Name
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'name' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'name' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+
+
+                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('category')}
+                        >
+                          Category
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'category' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'category' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('difficulty')}
+                        >
+                          Difficulty
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'difficulty' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'difficulty' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div></th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden lg:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('addedBy')}
+                        >
+                          AddedBy
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'addedBy' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'addedBy' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {problems.map((question, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}>
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{difficultyOrder[question.difficulty]}</td>
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden lg:table-cell">{question.addedBy}</td>
+
+                      {question.createdBy === user._id ? (
                         <td className="px-2 md:px-6 py-4 flex">
-                        <FaEdit
-                          className="mr-2 text-green-500 hover:text-green-600 cursor-pointer text-xs md:text-base"
-                          onClick={() => editProblem(question)}
-                        />
-                        <FaTrash
-                          className="mr-2 text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
-                          onClick={() => deleteProblem(question)}
-                        />
-                        <FaEye
-                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
-                          onClick={() => handleViewProblem(question)}
-                        />
-                      </td>
-              ):(<td>
-                   <FaEye
-                          className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
-                          onClick={() => handleViewProblem(question)}
-                        />
-              </td>)}
-       
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  {showBtn && (
-    <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
-      <button
-        onClick={handlePrev}
-        className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={currentPage === 1}
-      >
-        Prev
-      </button>
-      <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
-        Page {currentPage} of {totalPages}
-      </span>
-      <button
-        onClick={handleNext}
-        className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </button>
-    </div>
-  )}
-</div>
-): (
+                          <FaEdit
+                            className="mr-2 text-green-500 hover:text-green-600 cursor-pointer text-xs md:text-base"
+                            onClick={() => editProblem(question)}
+                          />
+                          <FaEye
+                            className="mr-2 text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
+                            onClick={() => handleViewProblem(question)}
+                          />
+                          <FaTrash
+                            className="text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
+                            onClick={() => deleteProblem(question)}
+                          />
+
+                        </td>
+                      ) : (
+                        <td className="px-2 md:px-6 py-4 flex ml-5">
+                          <FaEye
+                            className="text-red-500 text-center hover:text-red-600 cursor-pointer text-xs md:text-base"
+                            onClick={() => handleViewProblem(question)}
+                          />
+                        </td>)}
+
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {showBtn && (
+              <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
+                <button
+                  onClick={handlePrev}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === 1}
+                >
+                  Prev
+                </button>
+                <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNext}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+          ) : (
             <div className="w-full flex justify-center items-center mt-5">
               <div className="w-full max-w-xl p-4 md:p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
                 <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No Questions Found</h1>

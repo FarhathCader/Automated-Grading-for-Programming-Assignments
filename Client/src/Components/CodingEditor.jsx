@@ -7,7 +7,6 @@ import Output from './Output';
 export default function CodingEditor(props) {
   const {initialCode,onUpdateInitialCode,showOutput,problem,contestId} = props 
   const [language,setLanguage] = useState(localStorage.getItem('currentLanguage') ||`cpp`);
-  console.log("initial",initialCode)
   const [value,setValue] = useState(``); 
   const onSelect = (language)=> {
     setLanguage(language)
@@ -34,7 +33,6 @@ export default function CodingEditor(props) {
     if (storedCodes !== null) {
       const storedCode = storedCodes.find((code) => code.language === language);
       if (storedCode) {
-      console.log("a")
 
         setValue(storedCode.code);
         return;
