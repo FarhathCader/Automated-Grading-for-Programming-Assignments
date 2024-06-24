@@ -140,7 +140,7 @@ export default function Output(props) {
         output = output.slice(0, -1);
       }
 
-      const result = expectedOutput === output ? '✅' : '❌';
+      const result = expectedOutput.trimEnd() === output.trimEnd() ? '✅' : '❌';
       setResults(prevResults => [
         ...prevResults,
         { input, expectedOutput, output, result, weight }
@@ -264,14 +264,14 @@ const handleCancel = ()=>{
           className='bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600'
           type='button'
           onClick={runAllCodeWithInterval}
-          disabled={isRunning}>
+          disabled={isRunning || isSubmitting}>
           {isRunning ? 'Running...' : 'RUN'}
         </button>
         <button
           className='bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600'
           type='button'
           onClick={handleSubmit}
-          disabled={isSubmitting}>
+          disabled={isSubmitting || isRunning}>
           {isSubmitting ? 'Submitting...' : 'SUBMIT'}
         </button>
 
@@ -279,7 +279,7 @@ const handleCancel = ()=>{
           className='bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600'
           type='button'
           onClick={handleCancel}
-          disabled={isSubmitting}>
+          disabled={isSubmitting || isRunning}>
           {isSubmitting ? 'Submitting...' : 'CANCEL'}
         </button>
       </div>
@@ -323,7 +323,7 @@ const handleCancel = ()=>{
         </div>
       )}
       <ToastContainer position="top-right" autoClose={1000} />
-      {isSubmitting && (
+      {isSubmitting || isRunning && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />
         </div>

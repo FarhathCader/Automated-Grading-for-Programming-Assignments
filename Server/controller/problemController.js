@@ -160,10 +160,16 @@ const updateProblem = async (req, res) => {
 
 const getPracticeProblems = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc'  } = req.query;
+        console.log(req.query)
+
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const skip = (page - 1) * limit;
 
-        const problems = await Problem.find({ isPractice: true }).skip(skip).limit(Number(limit));
+        const problems = await Problem.find({ isPractice: true })
+        .collation({ locale: 'en', strength: 2 })
+          .sort(sortOptions)
+        .skip(skip).limit(Number(limit));
         const total = await Problem.find({ isPractice: true }).countDocuments();
 
         return res.status(200).json({ problems, total });
@@ -206,18 +212,22 @@ const searchProblems = async (req, res) => {
 const searchPracticeProblems = async (req, res) => {
     try {
         const { name } = req.query;
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10 , sortField = 'name', sortOrder = 'asc'} = req.query;
+        console.log(req.query);
         const skip = (page - 1) * limit;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const query = { isPractice: true };
         if (name) {
             query.$or = [
                 { name: new RegExp(name, 'i') },
                 { category: new RegExp(name, 'i') },
-                { difficulty: new RegExp(name, 'i') },
             ];
         }
 
-        const problems = await Problem.find(query).skip(skip).limit(Number(limit));
+        const problems = await Problem.find(query)
+        .collation({ locale: 'en', strength: 2 })
+            .sort(sortOptions)
+        .skip(skip).limit(Number(limit));
         const total = await Problem.countDocuments(query);
 
         return res.status(200).json({ problems, total });

@@ -40,7 +40,6 @@ export default function CodingEditor(props) {
     }
     else{
       localStorage.setItem('codes', JSON.stringify(initialCode));
-      console.log("b")
       setValue(initialCode[index].code);
       setLanguage(initialCode[index].language);
     }
