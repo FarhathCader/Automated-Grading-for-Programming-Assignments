@@ -56,11 +56,6 @@ function App() {
   return (
  <>
 
- {/* <SearchProblems/> */}
- {/* <Routes>
-  <Route path="/" element={<SearchProblems />} />
-      <Route path='/problems/:problemId' element={<CodeEditor />} />
- </Routes> */}
 
    <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
