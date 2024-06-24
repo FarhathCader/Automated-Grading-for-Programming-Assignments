@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BackButton from "../../Components/BackButton";
 import { FaSearch } from "react-icons/fa";
-import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSortUp, FaSortDown ,FaArrowLeft} from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -139,16 +139,21 @@ const AvailableContest = () => {
   };
 
   const handleContestDetailsClick = async (contestId) => {
+    console.log("clicked")
+    setLoading(true)
     try {
       const response = await axios.post(`${backendUrl}/api/enrollment/`, { studentId: student._id, contestId });
     } catch (error) {
       toast.error("Error creating enrollment:");
     } finally {
+      setLoading(false)
       navigate(`/contestview/${contestId}`);
     }
   }
 
+
   const handleClick = async (contest) => {
+    setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/enrollment/${student._id}/${contest._id}`);
       if (response.data.enrollment) {
@@ -159,6 +164,8 @@ const AvailableContest = () => {
       setActiveContest(contest);
     } catch (error) {
       console.error('Error checking enrollment:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -229,7 +236,12 @@ const AvailableContest = () => {
   return (
     enterContest ? (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
-        <BackButton />
+         <button
+      onClick={() => setEnterContest(false)}
+      className="bg-blue-500 flex items-center hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-6 text-sm md:text-md lg:text-lg"
+    >
+      <FaArrowLeft className="mr-2" /> Back
+    </button>
         <div className="w-96 p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
           <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
