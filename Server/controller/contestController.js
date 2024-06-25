@@ -24,7 +24,6 @@ async function addContest(req, res) {
 
         res.status(201).json({ message: 'Contest created successfully', contest });
     } catch (error) {
-        console.error('Error adding contest:', error);
         res.status(500).json({ error: err.message });
     }
 }
@@ -105,7 +104,6 @@ async function deleteContest(req, res) {
 
         res.json({ message: 'Contest deleted successfully' });
     } catch (error) {
-        console.error('Error deleting contest:', error);
         res.status(500).json({ error: 'Failed to delete contest' });
     }
 }
@@ -119,10 +117,8 @@ const getContest = async (req, res) => {
       }
       const problems = await Contest.findById(id).populate('problems');
       const problems_ = problems.problems;
-      console.log(problems_);
       res.status(200).json({ contest,problems : problems_});
     } catch (error) {
-      console.error('Error fetching contest:', error);
       res.status(500).json({ error: 'Failed to fetch contest' });
     }
   };
@@ -207,7 +203,6 @@ const getAvilabalContests = async (req, res) => {
 
     res.status(200).json({ availableContests_ });
   } catch (error) {
-    console.error('Error fetching available contests:', error);
     res.status(500).json({ error: 'Failed to fetch available contests' });
   }
 };
@@ -217,14 +212,11 @@ const searchContests = async (req, res) => {
         const { name } = req.query;
         const { page = 1, limit = 10 } = req.query;
         const skip = (page - 1) * limit;
-        console.log("name",name)
         // Construct query object
         const query = {};
         if (name) query.name = new RegExp(name, 'i');
-        console.log(query)
         const contests = await Contest.find(query).skip(skip).limit(Number(limit));
         const total = await Contest.find(query).countDocuments();
-        console.log(contests)
         return res.status(200).json({contests,total})
     } catch (err) {
         return res.status(500).json({ error: err.message });

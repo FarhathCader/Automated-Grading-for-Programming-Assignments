@@ -63,7 +63,6 @@ const getProblems = async (req, res) => {
     try {
         const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
-        console.log(sortOptions)
         const problems = await Problem.find()
         .collation({ locale: 'en', strength: 2 })
           .sort(sortOptions)
@@ -161,7 +160,6 @@ const updateProblem = async (req, res) => {
 const getPracticeProblems = async (req, res) => {
     try {
         const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc'  } = req.query;
-        console.log(req.query)
 
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const skip = (page - 1) * limit;
@@ -180,7 +178,6 @@ const getPracticeProblems = async (req, res) => {
 
 
 const searchProblems = async (req, res) => {
-    console.log("search");
     try {
         const { name } = req.query;
         const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
@@ -213,7 +210,6 @@ const searchPracticeProblems = async (req, res) => {
     try {
         const { name } = req.query;
         const { page = 1, limit = 10 , sortField = 'name', sortOrder = 'asc'} = req.query;
-        console.log(req.query);
         const skip = (page - 1) * limit;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const query = { isPractice: true };

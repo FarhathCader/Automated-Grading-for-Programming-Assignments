@@ -116,7 +116,6 @@ const getEnrolledStudentsWithGrades = async (req, res) => {
       currentPage: Number(page),
     });
   } catch (error) {
-    console.error('Error fetching enrolled students with grades:', error);
     res.status(500).json({ error: 'Failed to fetch enrolled students with grades' });
   }
 };
@@ -153,7 +152,6 @@ const createEnrollment = async (req, res) => {
 
     res.status(201).json({ enrollment });
   } catch (error) {
-    console.error('Error creating enrollment:', error);
     res.status(500).json({ error: 'Failed to create enrollment' });
   }
 };
@@ -167,7 +165,6 @@ const getEnrolledStudent = async (req, res) => {
     res.status(200).json({ enrollment });
   }
   catch (error) {
-    console.error('Error fetching enrolled student:', error);
     res.status(500).json({ error: 'Failed to fetch enrolled student' });
   }
 }
@@ -226,7 +223,6 @@ const getEnrolledContests = async (req, res) => {
 
     res.status(200).json({ contests : availableContests });
   } catch (error) {
-    console.error('Error fetching enrolled contests:', error);
     res.status(500).json({ error: 'Failed to fetch enrolled contests' });
   }
 };
