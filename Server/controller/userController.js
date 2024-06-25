@@ -155,6 +155,8 @@ const google = async (req, res) => {
 }
 
 
+
+
 const signup = async (req, res) => {
 
     try {
@@ -200,6 +202,58 @@ const login = async (req, res) => {
         const user = await User.findOne({ email: email.toLowerCase() });
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(400).json({ error: "Invalid email or password" });
+        }
+
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.ACCESS_TOKEN,
+            {
+                expiresIn: '1d'
+            }
+        );
+
+
+        if (req.cookies[`${user._id}`]) {
+            req.cookies[`${user._id}`] = '';
+        }
+
+
+
+        // Set the new cookie
+        res.cookie(String(user._id), token, {
+            path: '/',
+            httpOnly: true,
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            sameSite: 'lax'
+        });
+
+        req.cookies.remo
+        req.cookies[`${user._id}`] = token;
+
+        let userType = '';
+        if (user.usertype === 'lecturer') {
+            userType = 'lecturer';
+        } else if (user.usertype === 'student') {
+            userType = 'student';
+        } else {
+            userType = 'admin';
+        }
+
+        return res.status(200).json({ msg: userType, user });
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+const googlelogin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) {
+            return res.status(400).json({ error: "Please Signup First" });
         }
 
         const token = jwt.sign(
@@ -468,5 +522,6 @@ module.exports = {
     sendOtp,
     logout,
     refreshToken,
-    google
+    google,
+    googlelogin
 }
