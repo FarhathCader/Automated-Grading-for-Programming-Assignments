@@ -52,7 +52,8 @@ const RegForm = () => {
           password,
           usertype: state.usertype,
           registrationNumber: state.usertype === 'student' ? registrationNumber : undefined,
-        });
+        },
+        {withCredentials: true, credentials: 'include'});
         const data = response.data;
         toast(data.msg);
         dispatch(authActions.login({ userType: `${state.usertype}`,user : data.user}));
