@@ -6,8 +6,7 @@ import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BackButton from "../../Components/BackButton";
-import { FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown, FaArrowLeft } from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -243,11 +242,11 @@ const AvailableContest = () => {
       >
         <FaArrowLeft className="mr-2" /> Back
       </button>
-      <div className="w-full max-w-md p-4 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl sm:text-3xl font-semibold mb-4 text-center">
+      <div className="w-full max-w-md p-4 bg-blue-100 rounded-lg shadow-md">
+        <h1 className="text-2xl text-violet-600 sm:text-3xl font-semibold mb-4 text-center">
           {activeContest.name}
         </h1>
-        <p className="text-lg mb-6 text-center">
+        <p className="text-lg text-red-500 mb-6 text-center">
           Contest ends in: {timeRemaining}
         </p>
         <button
@@ -500,8 +499,8 @@ const AvailableContest = () => {
               )}
             </div>
           ) : (
-            <div className="w-full h-screen flex justify-center items-center">
-              <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+            <div className="w-full bg-white h-screen flex justify-center items-center">
+              <div className="w-5/6 bg-blue-200 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
                 <h1 className="text-4xl font-bold text-blue-900 mb-4">
                   No available Contests
                 </h1>
