@@ -13,6 +13,10 @@ axios.defaults.withCredentials = true;
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { backendUrl } from "../../config";
+import Oauth from "./Oauth";
+
+
+
 
 const override = {
   display: "block",
@@ -151,6 +155,7 @@ const Login = () => {
                 css={override}
               /> : "Sign In"}
             </button>
+            <Oauth isLogin = {true}/>
           </form>
           <ToastContainer
             position="top-right"
