@@ -37,6 +37,7 @@ import ErrorComponent from "./Components/ErrorComponent";
 
 import Loading from './Components/Loading'
 import SearchProblems from "./Components/SearchProblems";
+import RegForm from "./Components/RegForm";
 
 function App() {
 
@@ -110,6 +111,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/reset/:token" element={<Reset />} />
         <Route path="/forgotpassword" element={<Forgot />} />
+        <Route path = "/googleauth" element = {<RegForm/>}/>
 
         <Route path="/user" element={<Mycomponent />} />
 
