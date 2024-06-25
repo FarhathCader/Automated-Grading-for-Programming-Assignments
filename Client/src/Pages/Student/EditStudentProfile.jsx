@@ -87,9 +87,8 @@ const EditStudentProfile = (props) => {
     try {
       const res = await axios.post(url, { image, userId });
       const data = await res.data;
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      toast.error("erros in uploading image");
     }
     finally {
       setUploading(false);
@@ -122,7 +121,7 @@ const EditStudentProfile = (props) => {
         toast.success('Image Deleted Successfully');
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Error in deleting image");
     }
     finally {
       setUploading(false);

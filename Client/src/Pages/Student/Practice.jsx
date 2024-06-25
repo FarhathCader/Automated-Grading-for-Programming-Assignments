@@ -8,12 +8,17 @@ import { CSSProperties } from "react";
 import { backendUrl } from "../../../config";
 import NotFoundPage from "../../Components/NotFoundPage";
 import { useSelector } from "react-redux";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch,FaSortUp,FaSortDown } from "react-icons/fa";
 
 const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "red",
+};
+const difficultyOrder = {
+  1 : 'Easy',
+  2 : 'Medium',
+  3 : 'Hard'
 };
 
 const Practice = () => {
@@ -30,6 +35,8 @@ const Practice = () => {
   const [showSearch, setShowSearch] = useState(false)
   const [showProblem, setShowProblem] = useState(true)
   const [name, setName] = useState("");
+  const [sortField, setSortField] = useState('name'); // Sorting field
+  const [sortOrder, setSortOrder] = useState('asc'); // Sorting order
   const user = useSelector(state => state.user);
 
   useEffect(()=>{
@@ -39,56 +46,52 @@ const Practice = () => {
     if(  total > 1)setShowBtn(true)
     else setShowBtn(false)
     if (currentPage > total) {
-      console.log("setting page to 1")
       setSearchParams({ page: 1 });
       setCurrentPage(1);
     }
   },[totalProblems,showBtn,currentPage])
 
   useEffect(() => {
-    console.log("uese effect show search, show problem,current page",showSearch,showProblem,currentPage)
     if (showProblem) {
-      fetchQuestions(currentPage)
+      fetchQuestions(currentPage,sortField,sortOrder)
       return
     }
     if (showSearch) {
-      fetchSearchedQuestions(currentPage)
+      fetchSearchedQuestions(currentPage,sortField,sortOrder)
       return
     }
-  }, [showSearch, currentPage, showProblem]);
+  }, [showSearch, currentPage, showProblem,sortField,sortOrder]);
 
 
 
   useEffect(() => {
-    console.log("show", showSearch)
     if (name !== "") return
     setShowProblem(true)
     setShowSearch(false)
   }, [name])
 
-  const fetchQuestions = async (page) => {
-    console.log("fetching questions for page",page)
+  const fetchQuestions = async (page,sortField,sortOrder) => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/problems/practice`, {
         params: {
           page: page,
           limit: problemsPerPage,
+          sortField,
+          sortOrder
         },
       });
       setProblems(response.data.problems);
-      console.log("Response",response.data)
       setTotalProblems(response.data.total); // Assuming the backend sends total number of problems
       setSearchParams({ page: page });
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      toast.error("Error fetching questions:");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchSearchedQuestions = async (page) => {
-    console.log("fetching seacrh questions")
+  const fetchSearchedQuestions = async (page,sortField,sortOrder) => {
     setLoading(true);
     if (name === "") return
     try {
@@ -97,13 +100,15 @@ const Practice = () => {
           name,
           page: page,
           limit: problemsPerPage,
+          sortField,
+          sortOrder
         }
       });
       setProblems(response.data.problems);
       setTotalProblems(response.data.total);
       setSearchParams({ page: page });
     } catch (error) {
-      console.log("Error fetching questions:", error);
+      toast.error("Error fetching questions:");
     } finally {
       setLoading(false);
     }
@@ -118,7 +123,6 @@ const Practice = () => {
     const codes = JSON.parse(localStorage.getItem('codes'))
     const uid = user._id
     if(pid !== null && uid !== null){
-    console.log("Sending data")
 
       sendDraft(pid,uid,cid,codes)
       localStorage.clear();
@@ -126,15 +130,22 @@ const Practice = () => {
 
   }, [])
 
+  
+  const handleSort = (field) => {
+    const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortField(field);
+    setSortOrder(order);
+  }
+
+
   const sendDraft = async (pid,uid,cid,codes) => {
     setLoading(true);
     try {
       const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
         codes
       });
-      console.log('Draft saved:', response.data);
     } catch (error) {
-      console.error('Error saving draft:', error);
+      toast.error('Error saving draft:', error);
     } finally {
       setLoading(false)
     }
@@ -168,70 +179,6 @@ const Practice = () => {
 
 
   return (
-    // <main className="w-full h-screen flex justify-between items-start">
-    //   <Sidebar />
-    //   {loading ? (
-    //     <div className="w-full flex justify-center items-center h-screen">
-    //       <ClipLoader color="blue" loading={true} size={150} css={override} />
-    //     </div>
-    //   ) : (
-    //     <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-    //       <Header bgColor="blue" />
-    //       <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
-    //         <h2 className="text-xl italic font-semibold mb-4 text-blue-950 bg-blue-200 p-4 rounded">
-    //           Practice Makes Perfect
-    //         </h2>
-    //         {problems && (
-    //           <table className="w-3/5">
-    //             <thead>
-    //               <tr className="bg-blue-200">
-    //                 <th className="px-6 py-3 text-left text-blue-800">Problem Name</th>
-    //                 <th className="px-6 py-3 text-left text-blue-800">Difficulty</th>
-    //                 <th className="px-6 py-3 text-left text-blue-800">Grade</th>
-    //               </tr>
-    //             </thead>
-    //             <tbody>
-    //               {problems.map((problem, index) => (
-    //                 <tr
-    //                   key={index}
-    //                   className={
-    //                     index % 2 === 0
-    //                       ? "bg-blue-800 cursor-pointer hover:scale-105"
-    //                       : "bg-blue-700 cursor-pointer hover:scale-105"
-    //                   }
-    //                   onClick={() => navigate(`/problems/${problem._id}`)}
-    //                 >
-    //                   <td className="px-6 py-4 text-blue-200">{problem.name}</td>
-    //                   <td className="px-6 py-4 text-blue-200">{problem.difficulty}</td>
-    //                   <td className="px-6 py-4 text-blue-200">{problem.grade}</td>
-    //                 </tr>
-    //               ))}
-    //             </tbody>
-    //           </table>
-    //         )}
-    //         <div className="flex justify-between mt-4">
-    //           <button
-    //             onClick={handlePreviousPage}
-    //             disabled={currentPage === 1}
-    //             className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
-    //           >
-    //             Previous
-    //           </button>
-    //           <span className="px-4 py-2">
-    //             Page {currentPage} of {totalPages}
-    //           </span>
-    //           <button
-    //             onClick={handleNextPage}
-    //             disabled={currentPage === totalPages}
-    //             className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
-    //           >
-    //             Next
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </section>
-    //   )}
-    // </main>
     <main className="w-full h-screen flex justify-between items-start">
     {/* <Sidebar /> */}
     {loading ? (
@@ -266,7 +213,7 @@ const Practice = () => {
               </div>
               <div>
                 <button
-                  className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                  className="w-full md:w-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center"
                   onClick={handleClick}
                 >
                   <FaSearch className="mr-2" />
@@ -279,12 +226,85 @@ const Practice = () => {
           </h2>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-blue-200">
+              <tr className="bg-blue-200">
+                    <th className="px-2 md:px-6 py-3 text-left text-blue-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('name')}
+                        >
+                          Name
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'name' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'name' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+
+
+                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('difficulty')}
+                        >
+                          Difficulty
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'difficulty' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'difficulty' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                    </th>
+                    <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('category')}
+                        >
+                          Category
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'category' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'category' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+                      <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('grade')}
+                        >
+                          Grade
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'grade' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'grade' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+                      </th>
+
+                  </tr>
+                {/* <tr className="bg-blue-200">
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Problem Name</th>
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Difficulty</th>
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Category</th>
                   <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Grade</th>
-                </tr>
+                </tr> */}
               </thead>
               <tbody>
                 {problems.map((problem, index) => (
@@ -296,7 +316,7 @@ const Practice = () => {
                     onClick={() => navigate(`/problems/${problem._id}`)}
                   >
                     <td className="px-6 py-4 text-blue-200">{problem.name}</td>
-                    <td className="px-6 py-4 text-blue-200">{problem.difficulty}</td>
+                    <td className="px-6 py-4 text-blue-200">{difficultyOrder[problem.difficulty]}</td>
                     <td className="px-6 py-4 text-blue-200">{problem.category}</td>
                     <td className="px-6 py-4 text-blue-200">{problem.grade}</td>
                   </tr>

@@ -50,7 +50,6 @@ const ContestView = () => {
   const [duration, setDuration] = useState(0);
   const [shouldRender, setShouldRender] = useState(false);
 
-
   const fetchTotalGrade = async () => {
     try {
       if (user._id === undefined || id === undefined) return;
@@ -58,7 +57,7 @@ const ContestView = () => {
       const data = response.data.totalGrade;
       setTotalGrade(data);
     } catch (error) {
-      console.error("Error fetching total grade:", error);
+      toast.error("Error fetching total grade:");
     }
   };
 
@@ -74,7 +73,7 @@ const ContestView = () => {
         setShouldRender(true);
       }
     } catch (err) {
-      console.log("Error fetching enrollment:", err.message);
+      toast.error("Error fetching enrollment:");
     } finally {
       setLoading(false);
     }
@@ -82,9 +81,7 @@ const ContestView = () => {
 
   const fetchProblemsDetails = async (selectedProblems) => {
     setLoading(true);
-    console.log("fethicing Problems")
     try {
-      console.log(selectedProblems)
 
       // Fetch solved status for each problem
       const solvedStatuses = await Promise.all(
@@ -103,23 +100,21 @@ const ContestView = () => {
 
       setProblems(problemsWithStatus);
     } catch (error) {
-      console.error("Error fetching problems:", error);
+      toast.error("Error fetching problems:");
     } finally {
       setLoading(false);
     }
   };
 
-
   const fetchContest = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/contest/${id}`);
-      console.log(response.data)
       const data = response.data;
       setContest(data.contest);
       fetchProblemsDetails(data.problems);
     } catch (error) {
-      console.error("Error fetching contest:", error);
+      toast.error("Error fetching contest:");
       setNotFound(true);
     } finally {
       setLoading(false);
@@ -127,8 +122,13 @@ const ContestView = () => {
   };
 
   useEffect(() => {
+    if (id) {
+      fetchContest();
+    }
+  }, [id]);
+
+  useEffect(() => {
     if(user._id === undefined)return
-    console.log("Sending data")
     const pid = localStorage.getItem('problemId');
     const cid = localStorage.getItem('contestId');
     const codes = JSON.parse(localStorage.getItem('codes'))
@@ -147,21 +147,12 @@ const ContestView = () => {
       const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
         codes
       });
-      console.log('Draft saved:', response.data);
     } catch (error) {
-      console.error('Error saving draft:', error);
+      toast.error('Error saving draft:');
     } finally {
       setLoading(false)
     }
   }
-
-
-  useEffect(() => {
-    if (id) {
-      fetchContest();
-    }
-  }, [id]); // Dependency: id (contest ID)
-
 
 
   useEffect(() => {
@@ -171,27 +162,27 @@ const ContestView = () => {
     }
   }, [user, contest]);
 
-
-
   return (
-
     notFound === false ?
       <div className="container mx-auto mt-10 ">
         <BackButton />
-        {shouldRender &&
-          <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />}
+        {shouldRender && (
+          <div className="flex justify-center">
+            <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />
+          </div>
+        )}
 
         {loading ? (
-          <div className="flex justify-center bg-white p-8 rounded-lg shadow-xl">
+          <div className="flex justify-center bg-blue-100 p-8 rounded-lg shadow-xl">
             <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
           </div>
         ) : (
-          <div className="bg-white p-8 rounded-lg shadow-xl">
-            <h2 className="text-3xl font-bold mb-6">{contest.name}</h2>
-            <div className="flex justify-between items-center mb-6">
+          <div className="bg-blue-200 p-8 rounded-lg shadow-xl mt-10 ml-3 mr-3">
+            <h2 className="text-3xl text-violet-800 font-bold mb-6">{contest.name}</h2>
+            <div className="flex bg-blue-50 justify-between items-center mb-6">
               <div>
-                <p className="text-gray-600">Deadline:</p>
-                <p className="text-gray-800">
+                <p className="text-red-800 p-2">Deadline:</p>
+                <p className="text-red-500 p-2">
                   {new Date(contest.endDate).toLocaleString([], {
                     month: 'short',
                     day: 'numeric',
@@ -203,12 +194,12 @@ const ContestView = () => {
                 </p>
               </div>
               <div>
-                <p className="text-gray-600">Duration:</p>
-                <p className="text-gray-800">{formatDuration(contest.duration)}</p>
+                <p className="text-blue-600 p-2">Duration:</p>
+                <p className="text-blue-800 p-2">{formatDuration(contest.duration)}</p>
               </div>
               <div>
-                <p className="text-gray-600">Total Grade:</p>
-                <p className="text-gray-800">{parseFloat(totalGrade).toFixed(2)}</p>
+                <p className="text-blue-600 p-2">Total Grade:</p>
+                <p className="text-blue-800 p-2">{parseFloat(totalGrade).toFixed(2)}</p>
               </div>
             </div>
 
@@ -220,13 +211,13 @@ const ContestView = () => {
                   onClick={() => navigate(`/contests/${id}/problems/${problem._id}`)}
                 >
                   <header className="mb-4">
-                    <h4 className="text-lg font-semibold">{problem.name}</h4>
+                    <h4 className="text-lg font-semibold text-violet-600">{problem.name}</h4>
                   </header>
                   <div className="text-gray-700 mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">{problem.difficulty}</span>
-                      <span className="text-sm text-gray-600">Category: {problem.category}</span>
-                      <span className="text-sm text-gray-600">Max Grade: {problem.grade}</span>
+                      <span className="text-sm text-blue-600">{problem.difficulty}</span>
+                      <span className="text-sm text-blue-600">Category: {problem.category}</span>
+                      <span className="text-sm text-blue-600">Max Grade: {problem.grade}</span>
                     </div>
                   </div>
                   <div className="flex justify-end">

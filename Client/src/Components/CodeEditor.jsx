@@ -11,6 +11,7 @@ import MoonLoader from 'react-spinners/MoonLoader';
 import { backendUrl } from '../../config';
 import BackButton from './BackButton';
 import Loading from './Loading';
+import { toast } from 'react-toastify';
 const override = {
   display: "block",
   margin: "0 auto",
@@ -20,7 +21,7 @@ const override = {
 export default function CodeEditor() {
 
   const { contestId, problemId } = useParams();
-    const [problem,setProblem] = useState({});
+    const [problem,setProblem] = useState(null);
     const [sampleTestCases,setSampleTestCases] = useState([]);
     const [allTestCases,setAllTestCases] = useState([]);
     const [viewSubmission, setViewSubmission] = useState(false);
@@ -40,6 +41,8 @@ export default function CodeEditor() {
           const data = response.data;
           setProblem(data.problem);
           setShouldFetch(true)
+
+          if(!data.problem)return;
           
           // Filter sample test cases and store them in sampleTestCases state
           if (data.problem.testCases) {
@@ -48,7 +51,7 @@ export default function CodeEditor() {
             setAllTestCases(data.problem.testCases);
           }
         } catch (error) {
-          console.error('Error fetching problem details:', error);
+          toast.error(error.message);
         }
         finally {
           setLoading(false);
@@ -73,7 +76,6 @@ export default function CodeEditor() {
       setLoading(true)
       try{
         const response = await axios.get(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
-        console.log(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`)
         if(response.data.draftCodes === null){
           setCodes(problem.initialCode)
         }else{
@@ -86,7 +88,7 @@ export default function CodeEditor() {
         }
       }
       catch(err){
-        console.log(err)
+       toast.error(err.message);
       }
       finally{
         setLoading(false)
@@ -110,6 +112,10 @@ export default function CodeEditor() {
 
     if(loading){
       return <Loading/>
+    }
+
+    if(!problem){
+      return null
     }
 
 

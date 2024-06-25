@@ -24,7 +24,6 @@ const SubmissionResult = (props) => {
 
   useEffect(() => {
     fetchSubmissions(userId, problemId, contestId);
-    console.log("fetching submissions",userId, problemId, contestId);
   }, [userId, problemId, contestId]);
 
   useEffect(() => {

@@ -54,7 +54,7 @@ const Header = ({ bgColor }) => {
         setClient(data.image.url);
       }
     } catch (error) {
-      console.log("error", error.message);
+      console.log(error);
     }finally{
       setLoading(false);
     }

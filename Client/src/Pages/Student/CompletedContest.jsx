@@ -317,8 +317,8 @@ const CompletedContest = () => {
 
             </div>
           ) : (
-            <div className="w-full h-screen flex justify-center items-center">
-              <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+            <div className="w-full bg-white h-screen flex justify-center items-center">
+              <div className="w-5/6 bg-blue-200 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
                 <h1 className="text-4xl font-bold text-blue-900 mb-4">No Completed Contests Found</h1>
                 <p className="text-lg text-blue-950 text-center">Participate in a contest to see it here!!</p>
               </div>

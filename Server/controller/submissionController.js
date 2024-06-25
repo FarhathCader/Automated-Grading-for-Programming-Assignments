@@ -73,7 +73,6 @@ const getTotalGradeForContest = async (req, res) => {
   
       res.status(200).json({ totalGrade });
     } catch (error) {
-      console.error('Error fetching total grade for contest:', error);
       res.status(500).json({ error: 'Failed to fetch total grade for contest' });
     }
   };

@@ -1,20 +1,3 @@
-// import React from 'react'
-// import { Outlet, Navigate } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-
-
-// export default function RequireAuth() {
-
-
-//     let auth = useSelector(state => state.isLoggedin);
-//     console.log(auth)
-
-//   return (
- 
-//       auth ? <Outlet/> : <Navigate to= '/login'/>
-    
-//   )
-// }
 
 // RequireAuth.js
 import React from 'react';
@@ -24,8 +7,6 @@ import { useSelector } from 'react-redux';
 const RequireAuth = ({ allowedRoles, redirectTo }) => {
   const isAuthenticated = useSelector(state => state.isLoggedin);
   const userType = useSelector(state => state.userType);
-  console.log(isAuthenticated, userType);
-  console.log("allowed roles",allowedRoles,"redirect to",redirectTo);
 
 
 

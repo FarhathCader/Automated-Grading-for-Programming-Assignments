@@ -9,7 +9,6 @@ export default function StudentDashboard() {
   const isLoggedin = useSelector(state => state.isLoggedin);
   const userType = useSelector(state => state.userType);
   const navigate = useNavigate();
-  console.log(isLoggedin, userType)
 
 
 

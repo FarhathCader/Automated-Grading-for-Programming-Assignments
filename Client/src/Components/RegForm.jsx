@@ -11,7 +11,8 @@ import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
 import { CSSProperties } from "react";
 import { backendUrl } from "../../config";
-import Oauth from "./Oauth";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store";
 
 const override = {
   display: "block",
@@ -19,48 +20,57 @@ const override = {
   borderColor: "white",
 };
 
-const Signup = () => {
+const RegForm = () => {
+  const { state } = useLocation();
+
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState(state.username || "");
   const [password, setPassword] = useState('');
   const [cpassword, setCpassword] = useState('');
   const [registrationNumber, setRegistrationNumber] = useState('');
-  const [showOtpInput, setShowOtpInput] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [OTP, setOTP] = useState('');
-  const { state } = useLocation();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!state) navigate('/signup');
-    setShowOtpInput(false);
-  }, []);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isRegistering) return;
     setIsRegistering(true);
 
-    if (username === '' || email === '' || password === '' || cpassword === '' || (state.usertype === 'student' && registrationNumber === '')) {
+    if (username === '' || password === '' || cpassword === '' || (state.usertype === 'student' && registrationNumber === '')) {
       toast.error('All fields are required');
     } else if (cpassword !== password) {
       toast.error('Passwords do not match');
     } else {
       try {
-        const response = await axios.post(`${backendUrl}/api/user/send`, {
+        const response = await axios.post(`${backendUrl}/api/user/google`, {
           username,
-          email,
+          email : state.email,
           password,
           usertype: state.usertype,
           registrationNumber: state.usertype === 'student' ? registrationNumber : undefined,
-        });
-        const json = response.data;
-        toast(json.msg);
-        setShowOtpInput(true);
+        },
+        {withCredentials: true, credentials: 'include'});
+        const data = response.data;
+        toast(data.msg);
+        dispatch(authActions.login({ userType: `${state.usertype}`,user : data.user}));
+        if(state.usertype === 'student'){
+          setTimeout(() => {
+            navigate('/dashboard_std');
+          }, 1000);
+        }else if(state.usertype === 'lecturer'){
+          setTimeout(() => {
+            navigate('/dashboard_lec');
+          }, 1000);
+        }else{
+          setTimeout(() => {
+            navigate('/admin');
+          }, 1000);
+        }
       } catch (error) {
-        const err = error.response.data;
-        toast.error(err.error);
+        toast.error(error.message);
       }
     }
     setTimeout(() => {
@@ -68,34 +78,6 @@ const Signup = () => {
     }, 1800);
   };
 
-  const handleOTPSubmit = async (e) => {
-    e.preventDefault();
-    if (isVerifying) return;
-    setIsVerifying(true);
-
-    try {
-      const response = await axios.post(`${backendUrl}/api/user/signup`, {
-        username,
-        email,
-        password,
-        OTP,
-        usertype: state.usertype,
-        registrationNumber: state.usertype === 'student' ? registrationNumber : undefined,
-      });
-      const json = response.data;
-      toast.success('OTP Verified');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-    } catch (error) {
-      const err = error.response.data;
-      toast.error(err.error);
-    } finally {
-      setTimeout(() => {
-        setIsVerifying(false);
-      }, 1800);
-    }
-  };
 
   const handleBack = () => {
     navigate('/');
@@ -121,7 +103,7 @@ const Signup = () => {
             Create your account. It's free and only takes a minute.
           </p>
 
-          <form action="" className="space-y-6 text-white" onSubmit={handleSubmit} disabled={showOtpInput}>
+          <form action="" className="space-y-6 text-white" onSubmit={handleSubmit}>
             <div className="relative">
               <div className="absolute top-1 left-1 bg-white bg-opacity-40 rounded-full p-2 flex items-center justify-center text-blue-300">
                 <FaUser />
@@ -132,7 +114,6 @@ const Signup = () => {
                 onChange={(e) => { setUsername(e.target.value) }}
                 placeholder="Username"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-                disabled={showOtpInput}
               />
             </div>
             <div className="relative">
@@ -140,12 +121,9 @@ const Signup = () => {
                 <FaEnvelopeOpen />
               </div>
               <input
-                value={email}
-                onChange={(e) => { setEmail(e.target.value) }}
-                type="email"
-                placeholder="Email Address"
+                readOnly
+                value={state.email}
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-                disabled={showOtpInput}
               />
             </div>
             {state.usertype === 'student' && (
@@ -159,7 +137,6 @@ const Signup = () => {
                   onChange={(e) => setRegistrationNumber(e.target.value)}
                   placeholder="Registration Number"
                   className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-                  disabled={showOtpInput}
                 />
               </div>
             )}
@@ -174,7 +151,6 @@ const Signup = () => {
                 type="password"
                 placeholder="Password"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-                disabled={showOtpInput}
               />
             </div>
             <div className="relative">
@@ -188,30 +164,13 @@ const Signup = () => {
                 type="password"
                 placeholder="Confirm Password"
                 className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-                disabled={showOtpInput}
               />
             </div>
-        
-            <button className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2" disabled={showOtpInput}>
+          
+            <button className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2" >
               {isRegistering ? <ClipLoader color="cyan" loading={true} size={20} css={override} /> : "Register Now"}
             </button>
-            <Oauth usertype = {state.usertype} />
           </form>
-
-          {showOtpInput && (
-            <form className="space-y-6 text-white" onSubmit={handleOTPSubmit}>
-              <input
-                type="text"
-                value={OTP}
-                onChange={(e) => setOTP(e.target.value)}
-                placeholder="Enter OTP"
-                className="w-80 bg-white bg-opacity-30 py-2 px-12 rounded-full focus:bg-black focus:bg-opacity-50 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:drop-shadow-lg"
-              />
-              <button type="submit" className="bg-gradient-to-r from-blue-400 to-cyan-200 w-80 font-semibold rounded-full py-2">
-                {isVerifying ? <ClipLoader color="cyan" loading={true} size={20} css={override} /> : "Verify OTP"}
-              </button>
-            </form>
-          )}
           <ToastContainer
             data-testid='toast'
             position="top-right"
@@ -239,4 +198,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default RegForm;

@@ -29,7 +29,6 @@ const Reset = () => {
       e.preventDefault()
       if(isRegistering)return;
       setIsRegistering(true);
-      console.log("passed",token)
 
       if(password !== cpassword){
         toast('Passwords do not match',{type: "error"})

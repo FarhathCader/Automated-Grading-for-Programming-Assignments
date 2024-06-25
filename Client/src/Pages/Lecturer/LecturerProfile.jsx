@@ -41,7 +41,7 @@ const LecturerProfile = () => {
       if (data) setLecturer(data);
     }
     catch(err){
-      console.log("error",err.message)
+      toast.error("error",err.message)
     }
     finally{
       setLoading(false);
@@ -50,7 +50,6 @@ const LecturerProfile = () => {
   };
 
   const fecthImage = async () => {
-    console.log("fecthingImage")
     setLoading(true);
     try {
       if(user._id === undefined) return;
@@ -60,7 +59,7 @@ const LecturerProfile = () => {
         setClient(data.image.url);
       }
     } catch (error) {
-      console.log("error", error.message);
+      toast.error("error", error.message);
     }finally{
       setLoading(false);
     }

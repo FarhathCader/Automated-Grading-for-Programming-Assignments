@@ -46,7 +46,6 @@ const formatDuration = (minutes) => {
       setStudents(data.studentsWithGrades);
       setTotalPages(data.totalPages);
       setCurrentPage(data.currentPage);
-      console.log(data);
       setLoading(false);
     } catch (error) {
       setError(error.message);

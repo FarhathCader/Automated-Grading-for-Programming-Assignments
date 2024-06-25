@@ -88,9 +88,8 @@ const EditLectureProfile = (props) => {
     try {
       const res = await axios.post(url, { image, userId });
       const data = await res.data;
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      toast("error uploading image",error);
     }
     finally {
       setUploading(false);

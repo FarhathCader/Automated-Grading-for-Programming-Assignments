@@ -24,7 +24,7 @@ const GeneratePdf = ({ contest }) => {
         setStudents(data.studentsWithGrades);
         
       } catch (error) {
-        console.error("Error fetching students with grades:", error);
+        toast.error("Error fetching students with grades:", error);
       }
       finally {
         setLoading(false);

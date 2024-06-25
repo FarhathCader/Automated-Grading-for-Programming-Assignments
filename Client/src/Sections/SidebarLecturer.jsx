@@ -68,7 +68,6 @@ const SidebarLecturer = () => {
         toast.error(data.response.data.error);
       }
     } catch (error) {
-      console.error("Logout error:", error);
       toast.error("An error occurred during logout.");
       dispatch(authActions.logout())
 

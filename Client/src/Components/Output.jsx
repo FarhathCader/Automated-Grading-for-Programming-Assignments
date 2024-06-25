@@ -48,21 +48,10 @@ export default function Output(props) {
       }
      
     } catch (err) {
-      console.log("Error fetching enrollment:", err.message);
+      toast.error("Error fetching enrollment:", err.message);
     }
   }
 
-  // const fetchContestDuration = async () => {
-  //   try {
-  //     if (contestId === undefined) return;
-  //     const res = await axios.get(`${backendUrl}/api/contest/${contestId}`);
-  //     const data = res.data.contest.duration;
-  //     console.log("contest duration", data);
-  //     if (data) setContestDuration(data);
-  //   } catch (err) {
-  //     console.log("Error fetching contest duration:", err.message);
-  //   }
-  // }
 
   useEffect(() => {
     if(user && contestId){
@@ -89,7 +78,6 @@ export default function Output(props) {
 
   useEffect(() => {
     if (shouldSubmit) {
-      console.log("sending submission");
       const testCases = allTestCases.map(testCase => ({
         input: testCase.input,
         expectedOutput: testCase.expectedOutput,
@@ -110,10 +98,9 @@ export default function Output(props) {
     if(contestId === undefined) contestId = null;
     try {
         const response = await axios.delete(`${backendUrl}/api/draft/${problemId}/${userId}/${contestId}`);
-        console.log('Draft deleted:', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error deleting draft:', error);
+        toast.error('Error deleting draft:', error.message);
         throw error;
     }finally{
       setIsLoading(false)
@@ -134,20 +121,18 @@ export default function Output(props) {
     try {
       setIsLoading(true);
       const response = await executeCode(sourceCode, language, input);
-      console.log("got the response for testcase", index + 1);
       let output = response.run.output;
       if (output.endsWith('\n')) {
         output = output.slice(0, -1);
       }
 
-      const result = expectedOutput === output ? '✅' : '❌';
+      const result = expectedOutput.trimEnd() === output.trimEnd() ? '✅' : '❌';
       setResults(prevResults => [
         ...prevResults,
         { input, expectedOutput, output, result, weight }
       ]);
       setDisplay(true);
       if (result === '✅') {
-        console.log("setting weight", weight, passedWeight);
         setPassedWeight(prevPassedWeight => prevPassedWeight + weight);
       }
     } catch (error) {
@@ -164,7 +149,6 @@ export default function Output(props) {
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const runAllCodeWithInterval = async () => {
-    console.log("All code running started");
     setIsRunning(true);
     setPassedWeight(0);
     setTotalWeight(0);
@@ -177,15 +161,13 @@ export default function Output(props) {
         await delay(400); // Adding a delay of 200ms between each request
       }
     } catch (err) {
-      toast.error('Error running code:');
+      toast.error('Error running code:',err.message);
     } finally {
       setIsRunning(false);
-      console.log("All code running finished");
     }
   };
 
   const submitAllCodeWithInterval = async () => {
-    console.log("All code submission started");
     setIsRunning(true);
     setPassedWeight(0);
     setTotalWeight(0);
@@ -198,14 +180,12 @@ export default function Output(props) {
         await delay(400); // Adding a delay of 200ms between each request
       }
     } catch (err) {
-      toast.error('Error running code:');
+      toast.error('Error running code:',err.message);
     } finally {
       setIsRunning(false);
-      console.log("All code submission finished");
     }
   };
   const sendSubmission = async (grade, testCases, results,status) => {
-    console.log("sending submission with", passedWeight, totalWeight, grade,status);
     try {
 
       const response = await axios.post(`${backendUrl}/api/submission/`, {
@@ -226,11 +206,9 @@ export default function Output(props) {
       });
 
       const data = response.data;
-      console.log('Submission saved successfully:', data);
       toast.success('Submission saved successfully!');
     } catch (error) {
-      toast.error('Error saving submission:');
-      console.log('Error saving submission:', error)
+      toast.error('Error saving submission:',error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -249,7 +227,7 @@ export default function Output(props) {
       await submitAllCodeWithInterval();
       setShouldSubmit(true);
     } catch (error) {
-      console.error('Error saving submission:', error);
+      toast.error('Error saving submission:', error.message);
     }
   };
 
@@ -264,14 +242,14 @@ const handleCancel = ()=>{
           className='bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600'
           type='button'
           onClick={runAllCodeWithInterval}
-          disabled={isRunning}>
+          disabled={isRunning || isSubmitting}>
           {isRunning ? 'Running...' : 'RUN'}
         </button>
         <button
           className='bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600'
           type='button'
           onClick={handleSubmit}
-          disabled={isSubmitting}>
+          disabled={isSubmitting || isRunning}>
           {isSubmitting ? 'Submitting...' : 'SUBMIT'}
         </button>
 
@@ -279,7 +257,7 @@ const handleCancel = ()=>{
           className='bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600'
           type='button'
           onClick={handleCancel}
-          disabled={isSubmitting}>
+          disabled={isSubmitting || isRunning}>
           {isSubmitting ? 'Submitting...' : 'CANCEL'}
         </button>
       </div>
@@ -323,7 +301,7 @@ const handleCancel = ()=>{
         </div>
       )}
       <ToastContainer position="top-right" autoClose={1000} />
-      {isSubmitting && (
+      {isSubmitting || isRunning && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />
         </div>

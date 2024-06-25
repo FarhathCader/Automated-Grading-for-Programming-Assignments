@@ -6,9 +6,7 @@ import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BackButton from "../../Components/BackButton";
-import { FaSearch } from "react-icons/fa";
-import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown, FaArrowLeft } from "react-icons/fa";
 
 const override = {
   display: "block",
@@ -18,10 +16,10 @@ const override = {
 
 const AvailableContest = () => {
   const [contests, setContests] = useState([]);
-  const [filteredContests, setFilteredContests] = useState([]); // State for filtered contests
+  const [filteredContests, setFilteredContests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(5); // Number of contests per page
+  const [perPage] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
   const [enterContest, setEnterContest] = useState(false);
   const [activeContest, setActiveContest] = useState(null);
@@ -30,10 +28,10 @@ const AvailableContest = () => {
   const [showBtn, setShowBtn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [sortField, setSortField] = useState(null); // State for sorting field
+  const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const navigate = useNavigate();
-  const user = useSelector(state => state.user);
+  const user = useSelector((state) => state.user);
   const [sortedContests, setSortedContests] = useState([]);
 
   useEffect(() => {
@@ -59,7 +57,9 @@ const AvailableContest = () => {
         const timeDiff = contestEndDate - currentTime;
 
         const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let hours = Math.floor(
+          (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
         hours += days * 24;
@@ -82,21 +82,23 @@ const AvailableContest = () => {
   const fetchAvailableContests = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${backendUrl}/api/contest/available/${student._id}`);
+      const response = await axios.get(
+        `${backendUrl}/api/contest/available/${student._id}`
+      );
       if (!response.data.availableContests_) {
         throw new Error("Failed to fetch contests");
       }
       const allContests = response.data.availableContests_;
       setContests(allContests);
-      setSortedContests([...allContests]); // Store all contests initially in sortedContests
-      setFilteredContests([...allContests]); // Initialize filtered contests
+      setSortedContests([...allContests]);
+      setFilteredContests([...allContests]);
       const totalContests = allContests.length;
       if (totalContests > 0) setShowSearch(true);
       const total = Math.ceil(totalContests / perPage);
       setTotalPages(total);
       if (total > 1) setShowBtn(true);
     } catch (error) {
-      console.error("Error fetching contests:", error);
+      toast.error("Error fetching contests:", error);
     } finally {
       setLoading(false);
     }
@@ -121,7 +123,7 @@ const AvailableContest = () => {
     const hours = Math.floor((minutes % (24 * 60)) / 60);
     const mins = minutes % 60;
 
-    let durationString = '';
+    let durationString = "";
 
     if (days > 0) {
       durationString += `${days}d `;
@@ -140,17 +142,22 @@ const AvailableContest = () => {
 
   const handleContestDetailsClick = async (contestId) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/enrollment/`, { studentId: student._id, contestId });
+      const response = await axios.post(`${backendUrl}/api/enrollment/`, {
+        studentId: student._id,
+        contestId,
+      });
     } catch (error) {
       toast.error("Error creating enrollment:");
     } finally {
       navigate(`/contestview/${contestId}`);
     }
-  }
+  };
 
   const handleClick = async (contest) => {
     try {
-      const response = await axios.get(`${backendUrl}/api/enrollment/${student._id}/${contest._id}`);
+      const response = await axios.get(
+        `${backendUrl}/api/enrollment/${student._id}/${contest._id}`
+      );
       if (response.data.enrollment) {
         navigate(`/contestview/${contest._id}`);
         return;
@@ -158,7 +165,7 @@ const AvailableContest = () => {
       setEnterContest(true);
       setActiveContest(contest);
     } catch (error) {
-      console.error('Error checking enrollment:', error);
+      toast.error("Error checking enrollment:", error);
     }
   };
 
@@ -187,26 +194,28 @@ const AvailableContest = () => {
       return;
     }
 
-    const searchResults = sortedContests.filter(contest =>
+    const searchResults = sortedContests.filter((contest) =>
       contest.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFilteredContests(searchResults);
   };
+
   const sortContests = () => {
     if (sortField) {
       const sorted = [...contests].sort((a, b) => {
         const aValue = a[sortField];
         const bValue = b[sortField];
-        if (sortField === 'duration') {
-          // Numeric sort for duration (assuming it's in minutes)
-          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-        } else if (sortField === 'problems') {
-          // Numeric sort for problems count
-          return sortDirection === 'asc' ? aValue.length - bValue.length : bValue.length - aValue.length;
+        if (sortField === "duration") {
+          return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+        } else if (sortField === "problems") {
+          return sortDirection === "asc"
+            ? aValue.length - bValue.length
+            : bValue.length - aValue.length;
         } else {
-          // Default to string comparison (if needed for other fields)
-          const compareResult = aValue.localeCompare(bValue, undefined, { sensitivity: 'accent' });
-          return sortDirection === 'asc' ? compareResult : -compareResult;
+          const compareResult = aValue.localeCompare(bValue, undefined, {
+            sensitivity: "accent",
+          });
+          return sortDirection === "asc" ? compareResult : -compareResult;
         }
       });
       setSortedContests(sorted);
@@ -214,9 +223,8 @@ const AvailableContest = () => {
       setSortedContests([...contests]);
     }
   };
-  
+
   const handleSort = (field) => {
-    console.log(field);
     let direction = "asc";
     if (field === sortField && sortDirection === "asc") {
       direction = "desc";
@@ -225,36 +233,44 @@ const AvailableContest = () => {
     setSortDirection(direction);
   };
 
-
-  return (
-    enterContest ? (
-      <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
-        <BackButton />
-        <div className="w-96 p-8 bg-white rounded-lg shadow-md">
-          <h1 className="text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
-          <p className="text-lg mb-6 text-center">Contest ends in: {timeRemaining}</p>
-          <button
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            onClick={() => handleContestDetailsClick(activeContest._id)}
-          >
-            Enter Contest
-          </button>
-        </div>
+  return enterContest ? (
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100">
+      <button
+        onClick={() => setEnterContest(false)}
+        className="bg-blue-500 flex items-center hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-6 text-sm md:text-md lg:text-lg"
+      >
+        <FaArrowLeft className="mr-2" /> Back
+      </button>
+      <div className="w-full max-w-md p-4 bg-blue-100 rounded-lg shadow-md">
+        <h1 className="text-2xl text-violet-600 sm:text-3xl font-semibold mb-4 text-center">
+          {activeContest.name}
+        </h1>
+        <p className="text-lg text-red-500 mb-6 text-center">
+          Contest ends in: {timeRemaining}
+        </p>
+        <button
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          onClick={() => handleContestDetailsClick(activeContest._id)}
+        >
+          Enter Contest
+        </button>
       </div>
-    ) : (
-      <main className="w-full h-screen flex justify-between items-start">
-        {loading ? (
-          <div className="w-full flex justify-center items-center h-screen">
-            <ClipLoader
-              color="blue"
-              loading={true}
-              size={150}
-              css={override}
-            />
-          </div>
-        ) : (
-          <section className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-            {showSearch && <div className="w-full mt-4 mb-4 border border-blue-300 rounded-lg relative">
+    </div>
+  ) : (
+    <main className="w-full h-screen flex flex-col lg:flex-row justify-between items-start">
+      {loading ? (
+        <div className="w-full flex justify-center items-center h-screen">
+          <ClipLoader
+            color="blue"
+            loading={true}
+            size={150}
+            cssOverride={override}
+          />
+        </div>
+      ) : (
+        <section className="w-full lg:w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
+          {showSearch && (
+            <div className="w-full mt-4 mb-4 border border-blue-300 rounded-lg relative">
               <FaSearch className="text-gray-400 absolute top-1/2 transform -translate-y-1/2 left-3" />
               <input
                 type="text"
@@ -264,99 +280,153 @@ const AvailableContest = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            }
-            {filteredContests && filteredContests.length > 0 ? (
-              <div className="w-5/6 p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20">
-                <h2 className="text-xl font-semibold mb-4 text-blue-950">
-                  Available Contests
-                </h2>
+          )}
+          {filteredContests && filteredContests.length > 0 ? (
+            <div className="w-full p-6 bg-blue-400 rounded-xl shadow-lg flex flex-col items-center mt-20 overflow-x-auto">
+              <h2 className="text-xl font-semibold mb-4 text-blue-950">
+                Available Contests
+              </h2>
+              <div className="w-full overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="bg-blue-200">
-                      <th className="px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('name')}
-                        >
-                          Name
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'name' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'name' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
+                      <th className="px-4 sm:px-6 py-3 text-left text-blue-800">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSort("name")}
+                          >
+                            Name
+                          </p>
+                          <div className="text-sm">
+                            <FaSortUp
+                              className={
+                                sortField === "name" && sortDirection === "asc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                            <FaSortDown
+                              className={
+                                sortField === "name" && sortDirection === "desc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
                       </th>
-                      <th className="px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('startDate')}
-                        >
-                          Start Date
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'startDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'startDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
+                      <th className="px-4 sm:px-6 py-3 text-left text-blue-800">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSort("startDate")}
+                          >
+                            Start Date
+                          </p>
+                          <div className="text-sm">
+                            <FaSortUp
+                              className={
+                                sortField === "startDate" &&
+                                sortDirection === "asc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                            <FaSortDown
+                              className={
+                                sortField === "startDate" &&
+                                sortDirection === "desc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
                       </th>
-                      <th className="px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('endDate')}
-                        >
-                          End Date
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'endDate' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'endDate' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
+                      <th className="px-4 sm:px-6 py-3 text-left text-blue-800">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSort("endDate")}
+                          >
+                            End Date
+                          </p>
+                          <div className="text-sm">
+                            <FaSortUp
+                              className={
+                                sortField === "endDate" &&
+                                sortDirection === "asc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                            <FaSortDown
+                              className={
+                                sortField === "endDate" &&
+                                sortDirection === "desc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
                       </th>
-                      <th className="px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('duration')}
-                        >
-                          Duration
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'duration' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'duration' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
+                      <th className="px-4 sm:px-6 py-3 text-left text-blue-800">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSort("duration")}
+                          >
+                            Duration
+                          </p>
+                          <div className="text-sm">
+                            <FaSortUp
+                              className={
+                                sortField === "duration" &&
+                                sortDirection === "asc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                            <FaSortDown
+                              className={
+                                sortField === "duration" &&
+                                sortDirection === "desc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
                       </th>
-                      <th className="px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('problems')}
-                        >
-                          Total Problems
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'problems' && sortDirection === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'problems' && sortDirection === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
+                      <th className="px-4 sm:px-6 py-3 text-left text-blue-800">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSort("problems")}
+                          >
+                            Total Problems
+                          </p>
+                          <div className="text-sm">
+                            <FaSortUp
+                              className={
+                                sortField === "problems" &&
+                                sortDirection === "asc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                            <FaSortDown
+                              className={
+                                sortField === "problems" &&
+                                sortDirection === "desc"
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
                       </th>
                     </tr>
                   </thead>
@@ -364,25 +434,49 @@ const AvailableContest = () => {
                     {filteredContests.map((contest, index) => (
                       <tr
                         key={index}
-                        className={index % 2 === 0 ? "bg-blue-800 cursor-pointer hover:scale-102" : "bg-blue-700 cursor-pointer hover:scale-102"}
+                        className={
+                          index % 2 === 0
+                            ? "bg-blue-800 cursor-pointer hover:scale-102"
+                            : "bg-blue-700 cursor-pointer hover:scale-102"
+                        }
                         onClick={() => handleClick(contest)}
                       >
-                        <td className="px-6 py-4 text-blue-200">{contest.name}</td>
-                        <td className="px-6 py-4 text-blue-200">
-                          {new Date(contest.startDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        <td className="px-4 sm:px-6 py-4 text-blue-200">
+                          {contest.name}
                         </td>
-                        <td className="px-6 py-4 text-blue-200">
-                          {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                        <td className="px-4 sm:px-6 py-4 text-blue-200">
+                          {new Date(contest.startDate).toLocaleString([], {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
                         </td>
-                        <td className="px-6 py-4 text-blue-200">
+                        <td className="px-4 sm:px-6 py-4 text-blue-200">
+                          {new Date(contest.endDate).toLocaleString([], {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </td>
+                        <td className="px-4 sm:px-6 py-4 text-blue-200">
                           {formatDuration(contest.duration)}
                         </td>
-                        <td className="px-6 py-4 text-blue-200">{contest.problems.length}</td>
+                        <td className="px-4 sm:px-6 py-4 text-blue-200">
+                          {contest.problems.length}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                {showBtn && <div className="flex justify-center items-center mt-4">
+              </div>
+              {showBtn && (
+                <div className="flex justify-center items-center mt-4">
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     onClick={handlePrevPage}
@@ -400,31 +494,36 @@ const AvailableContest = () => {
                   >
                     Next
                   </button>
-                </div>}
-              </div>
-            ) : (
-              <div className="w-full h-screen flex justify-center items-center">
-                <div className="w-5/6 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
-                  <h1 className="text-4xl font-bold text-blue-900 mb-4">No available Contests</h1>
-                  <p className="text-lg text-blue-950">There are no available contests right now. Come back later!</p>
                 </div>
+              )}
+            </div>
+          ) : (
+            <div className="w-full bg-white h-screen flex justify-center items-center">
+              <div className="w-5/6 bg-blue-200 max-w-xl p-6 rounded-xl shadow-lg flex flex-col items-center">
+                <h1 className="text-4xl font-bold text-blue-900 mb-4">
+                  No available Contests
+                </h1>
+                <p className="text-lg text-blue-950">
+                  There are no available contests right now. Come back later!
+                </p>
               </div>
-            )}
-          </section>
-        )}
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light" />
-      </main>
-    )
+            </div>
+          )}
+        </section>
+      )}
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </main>
   );
 };
 

@@ -18,7 +18,6 @@ const ViewProblem = (props) => {
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log("props",props)
   useEffect(() => {
     const fetchProblemDetails = async () => {
       try {

@@ -25,10 +25,8 @@ const createDraft = async (req, res) => {
             { new: true, upsert: true, setDefaultsOnInsert: true }  // options
         );
 
-        console.log('Draft saved:', result);
         res.json({ message: 'Draft saved successfully', draft: result });
     } catch (error) {
-        console.error('Error saving draft:', error);
         res.status(500).json({ message: 'Error saving draft', error });
     }
 }
@@ -54,7 +52,6 @@ const deleteDraft = async (req, res) => {
             res.status(404).json({ message: 'Draft not found' });
         }
     } catch (error) {
-        console.error('Error deleting draft:', error);
         res.status(500).json({ message: 'Error deleting draft', error });
     }
 };

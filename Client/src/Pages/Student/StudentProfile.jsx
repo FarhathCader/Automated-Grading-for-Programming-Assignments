@@ -44,7 +44,7 @@ const StudentProfile = () => {
       const data = res && (await res.data);
       if (data) setStudent(data);
     } catch (err) {
-      console.log("error", err.message)
+      toast.error("error in fetching student")
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ const StudentProfile = () => {
         setClient(data.image.url);
       }
     } catch (error) {
-      console.log("error", error.message);
+      toast.error("error in loading image");
     } finally {
       setLoading(false);
     }

@@ -89,7 +89,6 @@ const Sidebar = () => {
       } 
     }
     catch(err){
-      console.log('error',err.message)
       dispatch(authActions.logout())
     }
     // Handle logout

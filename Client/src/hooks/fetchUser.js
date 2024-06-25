@@ -5,6 +5,9 @@ import {authActions} from '../store';
 import axios from 'axios';
 import { backendUrl } from '../../config';
 
+import { toast } from 'react-toastify';
+
+
 axios.defaults.withCredentials = true;
 
 let firstRender = true;
@@ -21,7 +24,6 @@ const useFetchUser = () => {
 
    
         try {
-          console.log("fetching")
 
           const res = await axios.get(`${backendUrl}/api/user/user`, { withCredentials: true });
           const data = res.data;
@@ -29,6 +31,7 @@ const useFetchUser = () => {
             dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
           }
         } catch (err) {
+
         if(err.message === 'Network Error' || err.response.status === 500){
           setError(err);
 
@@ -37,7 +40,6 @@ const useFetchUser = () => {
           dispatch(authActions.logout())
 
         }
-        console.log(err)
         }
         finally{
           setLoading(false);

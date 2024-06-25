@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import axios from 'axios';
 import { backendUrl } from '../../config';
+import { toast } from 'react-toastify';
 export default function Sample() {
 
   const [students, setStudents] = useState([]);
@@ -13,7 +14,7 @@ export default function Sample() {
       console.log(response);
     }
     catch (error) {
-      console.error(error);
+      toast.error(error.message);
     }
   }
 
