@@ -248,7 +248,7 @@ const login = async (req, res) => {
 
 
 const googlelogin = async (req, res) => {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
     try {
         const user = await User.findOne({ email: email.toLowerCase() });
@@ -323,6 +323,10 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(String(token), process.env.ACCESS_TOKEN, (err, user) => {
         if (err) {
+            cookie.split(';').forEach(cookie => {
+                const name = cookie.split('=')[0].trim();
+                res.clearCookie(name, { path: '/' });
+            });
             res.status(403).json({ error: 'Invalid Token' });
             return
             // return;
@@ -355,7 +359,6 @@ const getUser = async (req, res) => {
 
         return res.status(200).json({ user });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
@@ -371,6 +374,10 @@ const refreshToken = async (req, res, next) => {
     }
     jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
         if (err) {
+            cookie.split(';').forEach(cookie => {
+                const name = cookie.split('=')[0].trim();
+                res.clearCookie(name, { path: '/' });
+            });
             return res.status(403).json({ error: 'Authentication Failed' });
         }
 

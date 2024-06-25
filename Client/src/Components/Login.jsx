@@ -57,8 +57,6 @@ const Login = () => {
         try{
           const res = await axios.post(`${backendUrl}/api/user/login`, { email, password },{withCredentials: true, credentials: 'include'})
           const data = await res.data;
-          console.log(data.msg)
-          toast.success(data.msg);
           dispatch(authActions.login({ userType: `${data.msg}`,user : data.user}));
           if(data.msg === 'student'){
             setTimeout(() => {

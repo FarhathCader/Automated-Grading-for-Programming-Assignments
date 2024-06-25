@@ -88,7 +88,7 @@ export default function SelectProblems(props) {
             setTotalProblems(response.data.total);
             setSearchParams({ page: page });
         } catch (error) {
-            console.log("Error fetching questions:", error);
+            toast.error("Error fetching questions:", error);
         } finally {
             setLoading(false);
         }

@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { authActions } from '../store';
 import { backendUrl } from '../../config';
 import { FaGoogle } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export default function Oauth(props) {
 
@@ -17,7 +18,8 @@ export default function Oauth(props) {
 
     const {isLogin} = props;
 
-    const handleGoogleClick = async ()=>{
+    const handleGoogleClick = async (e)=>{
+        e.preventDefault() ;
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({
         prompt: 'select_account'
@@ -25,7 +27,6 @@ export default function Oauth(props) {
       try{
 
         const resultFromGoogle = await signInWithPopup(getAuth(app), provider)
-        console.log(resultFromGoogle.user);
         if(isLogin){
           const response = await axios.post(`${backendUrl}/api/user/googlelogin`, {email : resultFromGoogle.user.email},
             {withCredentials: true, credentials: 'include'}
@@ -50,7 +51,7 @@ export default function Oauth(props) {
         navigate('/googleauth',{state : {username : resultFromGoogle.user.displayName , email : resultFromGoogle.user.email, usertype: props.usertype}})
         }
       }catch(err){
-        console.log(err)
+        toast.error(err.response.data.error);
       }
     }
 
@@ -58,6 +59,7 @@ export default function Oauth(props) {
   return (
     <div>
       <button
+        type="button"
         onClick={handleGoogleClick}
         className="flex items-center justify-center w-80 bg-red-600 text-white font-semibold rounded-full py-2 px-4 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
       >

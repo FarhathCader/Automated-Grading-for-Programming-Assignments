@@ -14,7 +14,7 @@ const SearchProblems = () => {
             });
             setResults(response.data);
         } catch (err) {
-            console.error(err);
+            toast.error(err);
         }
     };
 

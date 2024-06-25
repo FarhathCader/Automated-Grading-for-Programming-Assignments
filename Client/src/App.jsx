@@ -34,7 +34,8 @@ import CodeEditor from "./Components/CodeEditor";
 import ContestView from "./Pages/Student/ContestView";
 import Layout from "./Components/Layout";
 import ErrorComponent from "./Components/ErrorComponent";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loading from './Components/Loading'
 import SearchProblems from "./Components/SearchProblems";
 import RegForm from "./Components/RegForm";
@@ -117,6 +118,19 @@ function App() {
 
       </Route>
     </Routes>
+    <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition:Bounce
+          />
 
  </>
   

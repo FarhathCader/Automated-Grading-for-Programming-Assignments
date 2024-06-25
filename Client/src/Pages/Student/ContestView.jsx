@@ -57,7 +57,7 @@ const ContestView = () => {
       const data = response.data.totalGrade;
       setTotalGrade(data);
     } catch (error) {
-      console.error("Error fetching total grade:", error);
+      toast.error("Error fetching total grade:");
     }
   };
 
@@ -73,7 +73,7 @@ const ContestView = () => {
         setShouldRender(true);
       }
     } catch (err) {
-      console.log("Error fetching enrollment:", err.message);
+      toast.error("Error fetching enrollment:");
     } finally {
       setLoading(false);
     }
@@ -81,9 +81,7 @@ const ContestView = () => {
 
   const fetchProblemsDetails = async (selectedProblems) => {
     setLoading(true);
-    console.log("fethicing Problems")
     try {
-      console.log(selectedProblems)
 
       // Fetch solved status for each problem
       const solvedStatuses = await Promise.all(
@@ -102,7 +100,7 @@ const ContestView = () => {
 
       setProblems(problemsWithStatus);
     } catch (error) {
-      console.error("Error fetching problems:", error);
+      toast.error("Error fetching problems:");
     } finally {
       setLoading(false);
     }
@@ -112,12 +110,11 @@ const ContestView = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/contest/${id}`);
-      console.log(response.data)
       const data = response.data;
       setContest(data.contest);
       fetchProblemsDetails(data.problems);
     } catch (error) {
-      console.error("Error fetching contest:", error);
+      toast.error("Error fetching contest:");
       setNotFound(true);
     } finally {
       setLoading(false);
@@ -132,7 +129,6 @@ const ContestView = () => {
 
   useEffect(() => {
     if(user._id === undefined)return
-    console.log("Sending data")
     const pid = localStorage.getItem('problemId');
     const cid = localStorage.getItem('contestId');
     const codes = JSON.parse(localStorage.getItem('codes'))
@@ -151,9 +147,8 @@ const ContestView = () => {
       const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
         codes
       });
-      console.log('Draft saved:', response.data);
     } catch (error) {
-      console.error('Error saving draft:', error);
+      toast.error('Error saving draft:');
     } finally {
       setLoading(false)
     }

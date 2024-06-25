@@ -27,7 +27,7 @@ const Feed = () => {
         const response = await axios.get(`${backendUrl}/api/contest/upcoming`);
         setUpcomingContests(response.data.upcomingContests);
       } catch (error) {
-        console.log("Error fetching upcoming contests:", error);
+        toast.error("Error fetching upcoming contests:");
       } finally {
         setLoading(false);
       }

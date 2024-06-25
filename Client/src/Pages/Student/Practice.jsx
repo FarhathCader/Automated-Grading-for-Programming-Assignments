@@ -46,14 +46,12 @@ const Practice = () => {
     if(  total > 1)setShowBtn(true)
     else setShowBtn(false)
     if (currentPage > total) {
-      console.log("setting page to 1")
       setSearchParams({ page: 1 });
       setCurrentPage(1);
     }
   },[totalProblems,showBtn,currentPage])
 
   useEffect(() => {
-    console.log("uese effect show search, show problem,current page",showSearch,showProblem,currentPage)
     if (showProblem) {
       fetchQuestions(currentPage,sortField,sortOrder)
       return
@@ -67,14 +65,12 @@ const Practice = () => {
 
 
   useEffect(() => {
-    console.log("show", showSearch)
     if (name !== "") return
     setShowProblem(true)
     setShowSearch(false)
   }, [name])
 
   const fetchQuestions = async (page,sortField,sortOrder) => {
-    console.log("fetching questions for page",page)
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/problems/practice`, {
@@ -89,14 +85,13 @@ const Practice = () => {
       setTotalProblems(response.data.total); // Assuming the backend sends total number of problems
       setSearchParams({ page: page });
     } catch (error) {
-      console.error("Error fetching questions:", error);
+      toast.error("Error fetching questions:");
     } finally {
       setLoading(false);
     }
   };
 
   const fetchSearchedQuestions = async (page,sortField,sortOrder) => {
-    console.log("fetching seacrh questions")
     setLoading(true);
     if (name === "") return
     try {
@@ -113,7 +108,7 @@ const Practice = () => {
       setTotalProblems(response.data.total);
       setSearchParams({ page: page });
     } catch (error) {
-      console.log("Error fetching questions:", error);
+      toast.error("Error fetching questions:");
     } finally {
       setLoading(false);
     }
@@ -128,7 +123,6 @@ const Practice = () => {
     const codes = JSON.parse(localStorage.getItem('codes'))
     const uid = user._id
     if(pid !== null && uid !== null){
-    console.log("Sending data")
 
       sendDraft(pid,uid,cid,codes)
       localStorage.clear();
@@ -150,9 +144,8 @@ const Practice = () => {
       const response = await axios.put(`${backendUrl}/api/draft/${pid}/${uid}/${cid}`, {
         codes
       });
-      console.log('Draft saved:', response.data);
     } catch (error) {
-      console.error('Error saving draft:', error);
+      toast.error('Error saving draft:', error);
     } finally {
       setLoading(false)
     }

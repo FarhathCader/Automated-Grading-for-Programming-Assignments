@@ -43,7 +43,6 @@ const AddContest = ({ onAdd }) => {
     setLoading(true)
     try {
       const response = await axios.get(`${backendUrl}/api/contest/${contestId}`);
-      console.log("response", response.data)
       const contest = response.data.contest;
       const { name, startDate, endDate, duration, problems } = contest;
       setName(name);
@@ -151,7 +150,6 @@ const AddContest = ({ onAdd }) => {
       toast.success("Contest saved successfully");
       navigate("/contest");
     } catch (error) {
-      console.error("Error saving contest:", error);
       toast.error("Failed to save contest");
     }
 
@@ -237,7 +235,6 @@ const AddContest = ({ onAdd }) => {
   };
 
   const addSelections = (problems) => {
-    console.log("f", selectedProblems, problems)
     const filteredProblems = problems.filter(problem => (
       !selectedProblems.some(selectedProblem => selectedProblem._id === problem._id)
     ));

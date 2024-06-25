@@ -47,7 +47,6 @@ const QuestionBank = () => {
 
   useEffect(() => {
     const total = Math.ceil(totalProblems / problemsPerPage)
-    console.log("total", totalProblems, problemsPerPage, "total pages", total)
 
     if (total === 0) return
     setTotalPages(total);
@@ -87,32 +86,11 @@ const QuestionBank = () => {
   }, [showSearch, currentPage, showProblem, sortField, sortOrder]);
 
   useEffect(() => {
-    console.log("show", showSearch)
     if (name !== "") return
     setShowProblem(true)
     setShowSearch(false)
   }, [name])
 
-  // const fetchSearchedQuestions = async (page) => {
-  //   setLoading(true);
-  //   if (name === "") return
-  //   try {
-  //     const response = await axios.get(`${backendUrl}/api/problems/search`, {
-  //       params: {
-  //         name,
-  //         page: page,
-  //         limit: problemsPerPage,
-  //       }
-  //     });
-  //     setProblems(response.data.problems);
-  //     setTotalProblems(response.data.total);
-  //     setSearchParams({ page: page });
-  //   } catch (error) {
-  //     console.log("Error fetching questions:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchSearchedQuestions = async (page, sortField, sortOrder) => {
     setLoading(true);
@@ -131,7 +109,7 @@ const QuestionBank = () => {
       setTotalProblems(response.data.total);
       setSearchParams({ page: page });
     } catch (error) {
-      console.log("Error fetching questions:", error);
+      toast.error("Error fetching questions:", error);
     } finally {
       setLoading(false);
     }
@@ -183,7 +161,7 @@ const QuestionBank = () => {
       setTotalProblems(response.data.total);
       setSearchParams({ page: page });
     } catch (error) {
-      console.log("Error fetching questions:", error);
+      toast("Error fetching questions:");
     } finally {
       setLoading(false);
     }

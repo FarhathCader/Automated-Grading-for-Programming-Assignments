@@ -98,7 +98,7 @@ const AvailableContest = () => {
       setTotalPages(total);
       if (total > 1) setShowBtn(true);
     } catch (error) {
-      console.error("Error fetching contests:", error);
+      toast.error("Error fetching contests:", error);
     } finally {
       setLoading(false);
     }
@@ -165,7 +165,7 @@ const AvailableContest = () => {
       setEnterContest(true);
       setActiveContest(contest);
     } catch (error) {
-      console.error("Error checking enrollment:", error);
+      toast.error("Error checking enrollment:", error);
     }
   };
 
@@ -225,7 +225,6 @@ const AvailableContest = () => {
   };
 
   const handleSort = (field) => {
-    console.log(field);
     let direction = "asc";
     if (field === sortField && sortDirection === "asc") {
       direction = "desc";

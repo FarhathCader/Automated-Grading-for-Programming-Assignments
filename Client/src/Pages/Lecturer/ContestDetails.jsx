@@ -63,7 +63,7 @@ const ContestDetails = () => {
       // Fetch problems using problem IDs
       fetchProblems(response.data.contest.problems);
     } catch (error) {
-      console.error("Error fetching contest details:", error);
+      toast.error("Error fetching contest details:", error);
     }
  
   };
@@ -76,7 +76,7 @@ const ContestDetails = () => {
       const selectedProblems = problemsData.filter((problem) => problemIds.includes(problem._id));
       setProblems(selectedProblems);
     } catch (error) {
-      console.error("Error fetching problems:", error);
+      toast.error("Error fetching problems:", error);
     }   finally{
       setLoading(false);
     }

@@ -32,7 +32,6 @@ const RegForm = () => {
   const dispatch = useDispatch();
 
 
-  console.log("state",state);
 
 
   const handleSubmit = async (e) => {

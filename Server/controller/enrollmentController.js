@@ -202,7 +202,6 @@ const getEnrollmentTime = async (req, res) => {
 
     res.status(200).json({ createdAt: enrollment.createdAt, duration});
   } catch (error) {
-    console.error('Error fetching enrollment time:', error);
     res.status(500).json({ error: 'Failed to fetch enrollment time' });
   }
 };

@@ -37,7 +37,6 @@ const LecturerDashBoard = () => {
         toast.error(data.response.data.error);
       }
     } catch (error) {
-      console.error("Logout error:", error);
       toast.error("An error occurred during logout.");
       dispatch(authActions.logout())
 
@@ -61,7 +60,7 @@ const LecturerDashBoard = () => {
         setIsApproved(data.isApproved);
       }
     } catch (err) {
-      console.log("error", err.message);
+      toast.error("error", err.message);
     }finally{
       setLoading(false);
     }

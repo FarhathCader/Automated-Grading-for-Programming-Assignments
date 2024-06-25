@@ -76,7 +76,6 @@ const Contest = () => {
 
   const fetchSearchedQuestions = async (page) => {
     setLoading(true);
-    console.log("fetching search")
     if (name === "") return
     try {
       const response = await axios.get(`${backendUrl}/api/contest/search`, {
@@ -89,7 +88,7 @@ const Contest = () => {
       setContests(response.data.contests);
       setTotalContests(response.data.total);
     } catch (error) {
-      console.log("Error fetching contests:", error);
+      toast.error("Error fetching contests:");
     } finally {
       setLoading(false);
     }
@@ -101,7 +100,6 @@ const Contest = () => {
 
 
   const fetchCompletedContests = async (page) => {
-    console.log("fetching completed")
 
     setLoading(true)
     try {
@@ -117,7 +115,7 @@ const Contest = () => {
       setContests(response.data.completedContests);
       setTotalContests(response.data.total);
     } catch (error) {
-      console.error("Error fetching contests:", error);
+      toast.error("Error fetching contests:", error);
     } finally {
       if(user._id !== undefined)
       setLoading(false);
@@ -126,7 +124,6 @@ const Contest = () => {
 
 
   const fetchAvailableContests = async (page) => {
-    console.log("fetching available")
     setLoading(true)
     try {
       if(user._id === undefined)return
@@ -142,7 +139,7 @@ const Contest = () => {
       setContests(response.data.availableContests);
       setTotalContests(response.data.total);
     } catch (error) {
-      console.error("Error fetching contests:", error);
+      toast.error("Error fetching contests:", error);
     } finally {
       if(user._id !== undefined)
       setLoading(false);
@@ -184,7 +181,7 @@ const Contest = () => {
         prevContests.filter((contest) => contest._id !== contestId)
       );
     } catch (error) {
-      console.error("Error deleting contest:", error);
+      toast.error("Error deleting contest:", error);
     }
   };
 
@@ -250,7 +247,6 @@ const Contest = () => {
   }
 
   const handleClick = () => {
-    console.log("fetching")
     if (name === "") return
     setShowSearch(true)
     fetchSearchedQuestions(currentPage)

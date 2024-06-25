@@ -222,14 +222,13 @@ const SidebarAdmin = () => {
     );
     const data = await response.data;
     if (response.status === 200) {
-      console.log(data.msg);
       // setTimeout( ()=>
       //   navigate('/login')
       // ,1000)
 
       dispatch(authActions.logout());
     } else {
-      console.log(data.response.data.error);
+      toast.error("Error while logout")
     }
   };
   const location = useLocation();

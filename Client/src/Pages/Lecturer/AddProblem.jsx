@@ -89,7 +89,6 @@ const AddProblem = (props) => {
     const { value } = e.target;
     const updatedTestCases = [...formData.testCases];
     updatedTestCases[index][field] = value;
-    console.log(updatedTestCases[index])
     setFormData({
       ...formData,
       testCases: updatedTestCases
@@ -107,7 +106,6 @@ const AddProblem = (props) => {
   };
 
   const addTestCase = () => {
-    console.log("add test case")
     setFormData({
       ...formData,
       testCases: [...formData.testCases, { input: '', expectedOutput: '', isSample: false, weight: 0 }]
@@ -160,7 +158,7 @@ const AddProblem = (props) => {
         isPractice : problem.isPractice // Ensure examples exist before setting
       });
     } catch (error) {
-      console.error('Error fetching problem details:', error);
+      toast.error('Error fetching problem details:', error.message);
     }
   };
 
@@ -208,7 +206,6 @@ const AddProblem = (props) => {
       toast.error('Test case weight must be greater than zero');
       return;
     }
-    console.log("submitting",formData.initialCode)
 
     const url = id ? `${backendUrl}/api/problems/${id}` : `${backendUrl}/api/problems`;
     const method = id ? 'PUT' : 'POST';
@@ -219,7 +216,6 @@ const AddProblem = (props) => {
         url: url,
         data:{ ...formData,createdBy : user._id},
       });
-      console.log(response)
       toast.success(`${id ? 'Problem updated' : 'Problem added'} successfully!`);
       localStorage.clear();
       if(isContest){
