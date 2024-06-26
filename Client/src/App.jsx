@@ -40,7 +40,6 @@ import Loading from './Components/Loading'
 import SearchProblems from "./Components/SearchProblems";
 import RegForm from "./Components/RegForm";
 import Notify from "./Components/Notify";
-import Notificationlist from "./Components/Notificationlist";
 
 function App() {
 
