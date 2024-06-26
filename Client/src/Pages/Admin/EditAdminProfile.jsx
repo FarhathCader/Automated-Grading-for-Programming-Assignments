@@ -25,7 +25,6 @@ const EditAdminProfile = (props) => {
   const [username, setUsername] = useState(props.admin.username);
   const [email, setEmail] = useState(props.admin.email);
   const [uploading, setUploading] = useState(false);
-  const [upload, setUpload] = useState(false);
   const admin = props.admin;
   const userId = admin.userId;
   const logo = props.logo;
@@ -36,7 +35,6 @@ const EditAdminProfile = (props) => {
   const handleImage = (e) => {
     const file = e.target.files[0];
     setFileToBase(file);
-    setUpload(true);
   }
 
   const setFileToBase = (file) => {
@@ -55,18 +53,11 @@ const EditAdminProfile = (props) => {
         email,
       });
       const data = await res.data;
-      console.log(res);
+
+      uploadImage(image);
 
       if (res.status === 200) {
-
-        setTimeout(() => {
-          props.cancel();
-        }
-          , 1000);
         toast.success('Profile Updated Successfully');
-        window.location.reload();
-
-
       }
 
 
@@ -91,15 +82,13 @@ const EditAdminProfile = (props) => {
     }
     finally {
       setUploading(false);
+      setTimeout(() => {
+        props.cancel();
+      }
+        , 1000);
     }
   };
 
-  useEffect(() => {
-    if (!upload) return;
-    uploadImage(image);
-    setUpload(false);
-  }
-    , [image])
 
 
 
@@ -214,17 +203,6 @@ const EditAdminProfile = (props) => {
           </div>
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={500}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light" />
       {uploading && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />

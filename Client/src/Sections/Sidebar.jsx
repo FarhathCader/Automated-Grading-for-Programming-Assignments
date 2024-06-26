@@ -169,7 +169,6 @@ const Sidebar = () => {
             Logout
           </span>
         </div>
-        <ToastContainer />
       </div>
     </motion.section>
   );

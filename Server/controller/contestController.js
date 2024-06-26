@@ -2,6 +2,7 @@ const contest = require('../models/contest');
 const Contest = require('../models/contest')
 const Enrollment = require('../models/enrollment')
 const Problem = require('../models/problems')
+const Notification = require('../models/notifications')
 
 
 async function addContest(req, res) {
@@ -21,6 +22,17 @@ async function addContest(req, res) {
 
         // Save the contest to the database
         await contest.save();
+        const notification = await Notification.create({ usertype : "student", message : `New Contest ${name} Has Been Created`});
+        const totalUnread = await Notification.countDocuments({ read: false , usertype : "student"});
+
+        const note = {
+            message : `New Contest ${name} Has Been Created`,
+            usertype: 'student',
+            totalUnread
+
+        }
+        const io = req.app.get('socketio');
+        io.emit('databaseChange', note);
 
         res.status(201).json({ message: 'Contest created successfully', contest });
     } catch (error) {

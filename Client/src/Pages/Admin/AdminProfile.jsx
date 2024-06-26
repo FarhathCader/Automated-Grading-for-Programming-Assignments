@@ -74,6 +74,7 @@ const AdminProfile = () => {
 
   const cancel = () => {
     setEditProfile(false);
+    window.location.reload();
   };
 
   return (

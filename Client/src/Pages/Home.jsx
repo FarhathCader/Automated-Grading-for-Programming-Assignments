@@ -14,7 +14,6 @@ const Home = () => {
       <Navbar/>
       <Front/>
       <Footer/>
-      <ToastContainer/>
     </div>
   );
 }

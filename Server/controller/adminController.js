@@ -1,5 +1,6 @@
 const Admin = require('../models/admin');
 const User = require('../models/user');
+const Notification = require('../models/notifications');
 
 const getAdmin = async (req, res) => {
     const { userId } = req.params;
@@ -46,7 +47,32 @@ const updateAdmin = async (req, res) => {
 };
 
 
+changeDatabase = async (req, res) => {
+
+    const {usertype,message} = req.body;
+
+    // Save the change to the database...
+    const notification = await Notification.create({ usertype, message});
+    const totalUnread = await Notification.countDocuments({ read: false });
+
+    const note =  {
+        message,
+        usertype,
+        totalUnread
+    }
+
+
+    
+    // Emit a notification event to all connected clients
+    const io = req.app.get('socketio');
+    io.emit('databaseChange', note);
+    res.sendStatus(200);
+};
+
+
+
 
 module.exports = { getAdmin
-    , updateAdmin
+    , updateAdmin,
+    changeDatabase
 };

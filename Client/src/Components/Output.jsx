@@ -300,7 +300,6 @@ const handleCancel = ()=>{
           )}
         </div>
       )}
-      <ToastContainer position="top-right" autoClose={1000} />
       {isSubmitting || isRunning && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />

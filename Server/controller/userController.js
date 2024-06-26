@@ -4,6 +4,7 @@ const student = require('../models/student');
 const bcrypt = require('bcrypt');
 const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
+const Notification = require('../models/notifications');
 
 const crypto = require('crypto');
 
@@ -116,6 +117,16 @@ const google = async (req, res) => {
 
              user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
             const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
+            const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`});
+            const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
+
+            const note = {
+                message : `New Lecturer ${username} Has Been Created`,
+                usertype: 'admin',
+                totalUnread
+            }
+            const io = req.app.get('socketio');
+            io.emit('databaseChange', note);
 
         } else {
 
@@ -177,6 +188,16 @@ const signup = async (req, res) => {
 
                 const user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
                 const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
+                const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`});
+                const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
+
+                const note = {
+                    message : `New Lecturer ${username} Has Been Created`,
+                    usertype: 'admin',
+                    totalUnread
+                }
+                const io = req.app.get('socketio');
+                io.emit('databaseChange', note);
 
             } else {
 

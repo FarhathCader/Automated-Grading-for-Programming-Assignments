@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../../Sections/Header";
 import Feed from "../../Sections/Feed";
-import Logo from "../../assets/Images/client.jpg";
+import Logo from "../../assets/Images/profile.jpg";
 import SidebarLecturer from "../../Sections/SidebarLecturer";
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
@@ -26,7 +26,6 @@ const EditLectureProfile = (props) => {
   const userId = lecturer.userId;
   const logo = props.logo;
   const [uploading, setUploading] = useState(false);
-  const [upload, setUpload] = useState(false);
   const [image, setImage] = useState(logo);
   const url = `${backendUrl}/api/image`
 
@@ -40,28 +39,17 @@ const EditLectureProfile = (props) => {
   
       const data = await res.data;
   
-      if(res.status === 200){
-  
-        setTimeout(() => {
-          props.cancel();
-          }
-          , 1000);
-          toast.success('Profile Updated Successfully');
-          window.location.reload();
-         
+      uploadImage(image);
 
+      if (res.status === 200) {
+        toast.success('Profile Updated Successfully');
       }
 
 
     }
     catch(err){
-      // toast.error(err.response.data.error);
       const error = await err.response.data.error;
       toast.error(error);
-      // setTimeout(() => {
-      //   props.cancel();
-      //   }
-      //   , 1000);
     }
 
 
@@ -71,7 +59,6 @@ const EditLectureProfile = (props) => {
   const handleImage = (e) => {
     const file = e.target.files[0];
     setFileToBase(file);
-    setUpload(true);
   }
 
   const setFileToBase = (file) => {
@@ -93,15 +80,13 @@ const EditLectureProfile = (props) => {
     }
     finally {
       setUploading(false);
+      setTimeout(() => {
+        props.cancel();
+      }
+        , 1000);
     }
   };
 
-  useEffect(() => {
-    if (!upload) return;
-    uploadImage(image);
-    setUpload(false);
-  }
-    , [image])
 
 
 
@@ -209,18 +194,6 @@ const EditLectureProfile = (props) => {
         </div>
       )}
     </div>
-    <ToastContainer
-      position="top-right"
-      autoClose={1000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
   </div>
   
   );
