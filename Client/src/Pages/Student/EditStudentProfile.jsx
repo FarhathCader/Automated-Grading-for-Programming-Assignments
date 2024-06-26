@@ -26,18 +26,15 @@ const EditStudentProfile = (props) => {
   const [email, setEmail] = useState(props.student.email);
   const [registrationNumber, setRegistrationNumber] = useState(props.student.regNo);
   const [uploading, setUploading] = useState(false);
-  const [upload, setUpload] = useState(false);
   const student = props.student;
   const userId = student.userId;
   const logo = props.logo;
   const [image, setImage] = useState(logo);
   const url = `${backendUrl}/api/image`
 
-  //handle and convert it in base 64
   const handleImage = (e) => {
     const file = e.target.files[0];
     setFileToBase(file);
-    setUpload(true);
   }
 
   const setFileToBase = (file) => {
@@ -59,16 +56,10 @@ const EditStudentProfile = (props) => {
 
       const data = await res.data;
 
+      uploadImage(image);
+
       if (res.status === 200) {
-
-        setTimeout(() => {
-          props.cancel();
-        }
-          , 1000);
         toast.success('Profile Updated Successfully');
-        window.location.reload();
-
-
       }
 
 
@@ -92,15 +83,13 @@ const EditStudentProfile = (props) => {
     }
     finally {
       setUploading(false);
+      setTimeout(() => {
+        props.cancel();
+      }
+        , 1000);
     }
   };
 
-  useEffect(() => {
-    if (!upload) return;
-    uploadImage(image);
-    setUpload(false);
-  }
-    , [image])
 
 
 
@@ -121,10 +110,11 @@ const EditStudentProfile = (props) => {
         toast.success('Image Deleted Successfully');
       }
     } catch (error) {
-      toast.error("Error in deleting image");
+      console.log("Error in deleting image");
     }
     finally {
       setUploading(false);
+
     }
 
   };

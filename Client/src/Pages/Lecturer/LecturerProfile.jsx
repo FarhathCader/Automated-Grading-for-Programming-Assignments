@@ -59,7 +59,7 @@ const LecturerProfile = () => {
         setClient(data.image.url);
       }
     } catch (error) {
-      toast.error("error", error.message);
+      console.log("error", error.message);
     }finally{
       setLoading(false);
     }
@@ -72,6 +72,7 @@ const LecturerProfile = () => {
 
   const cancel = () => {
     setEditProfile(false);
+    window.location.reload();
   };
 
   return (
