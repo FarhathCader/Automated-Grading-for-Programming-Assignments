@@ -84,7 +84,18 @@ const getImage = async (req, res) => {
     }
     const image = await Image.findOne({ userId});
     if (!image) {
-        return res.status(404).json({ message: "Image not found" });
+        const img = {
+           image : {
+                public_id:  "profiles/g4zlps28aeqc8br09k9a",
+                url: "https://res.cloudinary.com/dljbly8ez/image/upload/v1719428575/profiles/g4zlps28aeqc8br09k9a.jpg"
+           },
+           userId
+            
+        }
+
+        await Image.create(img);
+
+        return res.status(404).json(img);
     }
     return res.status(200).json(image);
 }

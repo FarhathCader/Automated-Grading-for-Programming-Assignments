@@ -60,7 +60,7 @@ const StudentProfile = () => {
         setClient(data.image.url);
       }
     } catch (error) {
-      toast.error("error in loading image");
+      console.log("error in loading image");
     } finally {
       setLoading(false);
     }
@@ -72,6 +72,7 @@ const StudentProfile = () => {
 
   const cancel = () => {
     setEditProfile(false);
+    window.location.reload();
   };
 
   return (
