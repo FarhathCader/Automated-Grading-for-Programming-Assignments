@@ -356,6 +356,24 @@ const QuestionBank = () => {
                           />
                         </div>
                       </div></th>
+
+                      <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('grade')}
+                        >
+                          Grade
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'grade' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'grade' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div></th>
+                      
                     <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden lg:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
@@ -382,6 +400,7 @@ const QuestionBank = () => {
                       <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
                       <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
                       <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{difficultyOrder[question.difficulty]}</td>
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.grade}</td>
                       <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden lg:table-cell">{question.addedBy}</td>
 
                       {question.createdBy === user._id ? (

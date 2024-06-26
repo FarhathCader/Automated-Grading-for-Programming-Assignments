@@ -39,6 +39,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Loading from './Components/Loading'
 import SearchProblems from "./Components/SearchProblems";
 import RegForm from "./Components/RegForm";
+import Notify from "./Components/Notify";
+import Notificationlist from "./Components/Notificationlist";
 
 function App() {
 
@@ -58,7 +60,7 @@ function App() {
   return (
  <>
 
-
+<Notify/>
    <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
       <Route element={<Layout bgColor="blue" />}>

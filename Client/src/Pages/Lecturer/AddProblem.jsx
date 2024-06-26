@@ -190,8 +190,8 @@ const AddProblem = (props) => {
       toast.error('Description is required');
       return;
     }
-    if (!formData.grade) {
-      toast.error('Grade is required');
+    if (!formData.grade || formData.grade <= 0) {
+      toast.error('Invalid Grade');
       return;
     }
     if(formData.testCases.length === 0){
@@ -201,11 +201,17 @@ const AddProblem = (props) => {
     if(user._id === undefined){
       return;
     }
+    const hasSampleTestCase = formData.testCases.some(testCase => testCase.isSample);
+    if (!hasSampleTestCase) {
+        toast.error('At least one test case must be marked as a sample');
+        return;
+    }
     const invalidTestCase = formData.testCases.find(testCase => testCase.weight <= 0);
     if (invalidTestCase) {
       toast.error('Test case weight must be greater than zero');
       return;
     }
+    
 
     const url = id ? `${backendUrl}/api/problems/${id}` : `${backendUrl}/api/problems`;
     const method = id ? 'PUT' : 'POST';
