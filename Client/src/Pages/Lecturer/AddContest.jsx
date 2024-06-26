@@ -257,17 +257,6 @@ const AddContest = ({ onAdd }) => {
 
   return (
     <main className="w-full h-screen flex justify-between items-start bg-white text-xs md:text-base">
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light" />
       <section className="w-full lg:w-4/5 bg-white  flex-grow flex flex-col justify-start items-center p-4">
         <div className="w-full lg:max-w-full mx-auto p-6 rounded-xl flex flex-col items-center mt-20">
           <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">

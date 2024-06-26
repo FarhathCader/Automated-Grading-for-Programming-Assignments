@@ -51,90 +51,90 @@ function App() {
     return <ErrorComponent message="Failed to fetch user data" />; // Conditionally render the error component
   }
 
-  if(loading){
-    return <Loading/>
+  if (loading) {
+    return <Loading />
   }
 
 
   return (
- <>
+    <>
 
-<Notify/>
-   <Routes>
-      <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
-      <Route element={<Layout bgColor="blue" />}>
-        <Route path="/dashboard_std" element={<StudentDashboard />} />
-        <Route path="/available" element={<AvailableContest />} />
-        <Route path="/completed" element={<CompletedContest />} />
-        <Route path="/practice" element={<Practice />} />
-        <Route path="/profile_std" element={<StudentProfile />} />
-        <Route path="/profile_std/edit" element={<EditStudentProfile />} />
+      <Routes>
+        <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
+          <Route element={<Layout bgColor="blue" />}>
+            <Route path="/dashboard_std" element={<StudentDashboard />} />
+            <Route path="/available" element={<AvailableContest />} />
+            <Route path="/completed" element={<CompletedContest />} />
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/profile_std" element={<StudentProfile />} />
+            <Route path="/profile_std/edit" element={<EditStudentProfile />} />
 
-</Route>
-<Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
-<Route path="/contestview/:id" element={<ContestView />} />
-<Route path='/problems/:problemId' element={<CodeEditor />} />
-
+          </Route>
+          <Route path='/contests/:contestId/problems/:problemId' element={<CodeEditor />} />
+          <Route path="/contestview/:id" element={<ContestView />} />
+          <Route path='/problems/:problemId' element={<CodeEditor />} />
 
 
-      </Route>
 
-      <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/" />}>
-      <Route element={<Layout bgColor="fuchsia" isLecturer = {true} />}>
+        </Route>
 
-        <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
-        <Route path="/qbank" element={<QuestionBank />} />
-        <Route path="/profile_lec" element={<LecturerProfile />} />
-        <Route path="/contest" element={<Contest />} />
-        <Route path="/addcontest" element={<AddContest />} />
-        <Route path="/editcontest/:id" element={<AddContest />} />
-        <Route path="/contest/:id" element={<ContestDetails />} />
-        <Route path="/problem" element={<QuestionBank />} />
-        <Route path="/addproblem" element={<AddProblem />} />
-        <Route path="/editproblem/:id" element={<AddProblem />} />
-</Route>
+        <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/" />}>
+          <Route element={<Layout bgColor="fuchsia" isLecturer={true} />}>
 
-      </Route>
+            <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
+            <Route path="/qbank" element={<QuestionBank />} />
+            <Route path="/profile_lec" element={<LecturerProfile />} />
+            <Route path="/contest" element={<Contest />} />
+            <Route path="/addcontest" element={<AddContest />} />
+            <Route path="/editcontest/:id" element={<AddContest />} />
+            <Route path="/contest/:id" element={<ContestDetails />} />
+            <Route path="/problem" element={<QuestionBank />} />
+            <Route path="/addproblem" element={<AddProblem />} />
+            <Route path="/editproblem/:id" element={<AddProblem />} />
+          </Route>
 
-      <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
-        <Route path="/admin" element={<AdminDashBoard />} />
-        <Route path="/managelecturer" element={<ManageLecturers />} />
-        <Route path="/managestudent" element={<ManageStudents />} />
-        <Route path="/adminprofile" element={<AdminProfile />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={['admin']} redirectTo="/" />}>
+          <Route path="/admin" element={<AdminDashBoard />} />
+          <Route path="/managelecturer" element={<ManageLecturers />} />
+          <Route path="/managestudent" element={<ManageStudents />} />
+          <Route path="/adminprofile" element={<AdminProfile />} />
 
 
-      </Route>
+        </Route>
 
-      <Route>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<MainSignup />} />
-        <Route path="/contactus" element={<ContactUs />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/reset/:token" element={<Reset />} />
-        <Route path="/forgotpassword" element={<Forgot />} />
-        <Route path = "/googleauth" element = {<RegForm/>}/>
+        <Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<MainSignup />} />
+          <Route path="/contactus" element={<ContactUs />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset/:token" element={<Reset />} />
+          <Route path="/forgotpassword" element={<Forgot />} />
+          <Route path="/googleauth" element={<RegForm />} />
 
-        <Route path="/user" element={<Mycomponent />} />
+          <Route path="/user" element={<Mycomponent />} />
 
-      </Route>
-    </Routes>
-    <ToastContainer
-            position="top-right"
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition:Bounce
-          />
+        </Route>
+      </Routes>
 
- </>
-  
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition:Bounce
+      />
+
+    </>
+
 
   );
 }

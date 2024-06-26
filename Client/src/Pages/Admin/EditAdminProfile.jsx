@@ -203,17 +203,6 @@ const EditAdminProfile = (props) => {
           </div>
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={500}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light" />
       {uploading && (
         <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
           <SyncLoader color="green" loading={true} size={20} css={override} />
