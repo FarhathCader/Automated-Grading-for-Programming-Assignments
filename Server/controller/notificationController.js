@@ -7,7 +7,7 @@ const getAllNotifications = async (req, res) => {
         console.log("usetyppe",usertype);
 
         const notifications = await Notification.find({usertype}).sort({ createdAt: -1 });
-        res.status(200).json(notifications);
+        res.status(200).json({notifications});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -17,8 +17,9 @@ const getTotalUnreadNotifications = async (req, res) => {
     try {
         const {usertype} = req.query;
         console.log("usetyppe",usertype);
+        const notifications = await Notification.find({usertype}).sort({ createdAt: -1 });
         const totalUnread = await Notification.countDocuments({ read: false , usertype });
-        res.status(200).json({ totalUnread });
+        res.status(200).json({ totalUnread,notifications });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,13 +41,15 @@ const markAsRead = async (req, res) => {
 
 const deleteNotification = async (req, res) => {
     const { id } = req.params;
+    const {usertype} = req.query;
 
     try {
         const notification = await Notification.findByIdAndDelete(id);
         if (!notification) {
-            return res.status(404).json({ error: 'Notification not found' });
+            return res.status(404).json({ message: 'Notification not found' });
         }
-        res.status(200).json({ message: 'Notification deleted successfully' });
+        const notifications = await Notification.find({usertype}).sort({ createdAt: -1 });
+        res.status(200).json({ message: 'Notification deleted successfully',notifications });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -69,9 +72,12 @@ const readAllNotifications = async (req, res) => {
 
         // Update all notifications for the given usertype to mark them as read
         await Notification.updateMany({ usertype }, { $set: { read: true } });
+        const notifications = await Notification.find({usertype}).sort({ createdAt: -1 });
+
+        
 
         // Send a success response
-        res.status(200).json({ message: 'All notifications marked as read' });
+        res.status(200).json({ message: 'All notifications marked as read' ,notifications});
     } catch (error) {
         // Handle any errors and send a failure response
         res.status(500).json({ message: error.message });

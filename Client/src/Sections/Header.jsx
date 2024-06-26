@@ -12,6 +12,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import logo from "../assets/Images/profile.jpg";
 import { backendUrl } from "../../config";
+import Notify from "../Components/Notify";
 
 const override = {
   display: "block",
@@ -78,6 +79,7 @@ const Header = ({ bgColor }) => {
         />
       </div>
       <div className="flex-grow flex justify-end items-center gap-4">
+        <Notify/>
         <h1 className="text:sm md:text-base font-semibold text-blue-900">
           {user ? user.username : <ClipLoader color="blue" loading={true} size={150} css={override} />}
         </h1>
@@ -93,7 +95,6 @@ const Header = ({ bgColor }) => {
           />}
         </div>
       </div>
-      <ToastContainer />
     </section>
   );
 };

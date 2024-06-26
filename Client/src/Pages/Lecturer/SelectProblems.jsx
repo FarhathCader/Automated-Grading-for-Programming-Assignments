@@ -211,20 +211,7 @@ export default function SelectProblems(props) {
 
     return (
         <div className="container mx-auto p-4 text-xs md:text-base">
-            {/* ToastContainer (assuming it's a notification component) */}
             <div className="absolute top-4 right-4 z-50">
-                <ToastContainer
-                    position="top-right"
-                    autoClose={1000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                />
             </div>
 
             {/* Save and Cancel buttons moved to the top */}

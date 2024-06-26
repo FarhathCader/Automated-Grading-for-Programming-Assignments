@@ -122,7 +122,6 @@ const SidebarLecturer = () => {
           ))}
         </div>
       </div>
-      <ToastContainer />
       <div
         id="expanded-icon"
         className="bg-fuchsia-300 text-fuchsia-900 p-2 rounded-full cursor-pointer absolute -right-4 bottom-20 md:bottom-40 md:flex hidden hover:bg-fuchsia-200"

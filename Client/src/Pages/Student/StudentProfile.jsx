@@ -178,7 +178,6 @@ const StudentProfile = () => {
           </div>
         )
       )}
-      <ToastContainer />
     </main>
   );
 };

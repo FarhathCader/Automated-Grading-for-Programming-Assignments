@@ -118,7 +118,6 @@ const SubmissionResult = (props) => {
             </tbody>
           </table>
         </div>
-        <ToastContainer />
         {loading && (
           <div className="fixed inset-0 bg-black opacity-80 flex justify-center items-center">
             <ClipLoader color="green" loading={true} size={120} />

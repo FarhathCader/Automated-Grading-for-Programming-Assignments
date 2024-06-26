@@ -212,19 +212,6 @@ const Signup = () => {
               </button>
             </form>
           )}
-          <ToastContainer
-            data-testid='toast'
-            position="top-right"
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
           <div className="text-white text-opacity-70 border-t border-white border-opacity-40 pt-4 space-y-4 text-sm">
             <p>
               If you already have an account?{" "}
