@@ -39,28 +39,26 @@ import "react-toastify/dist/ReactToastify.css";
 import Loading from './Components/Loading'
 import SearchProblems from "./Components/SearchProblems";
 import RegForm from "./Components/RegForm";
-import NotificationList from "./Components/NotificationList";
 
 function App() {
 
 
-  // const { loading, error } = useFetchUser();
+  const { loading, error } = useFetchUser();
 
-  // if (error) {
-  //   console.log(error)
-  //   return <ErrorComponent message="Failed to fetch user data" />; // Conditionally render the error component
-  // }
+  if (error) {
+    console.log(error)
+    return <ErrorComponent message="Failed to fetch user data" />; // Conditionally render the error component
+  }
 
-  // if(loading){
-  //   return <Loading/>
-  // }
+  if(loading){
+    return <Loading/>
+  }
 
 
   return (
  <>
- <NotificationList/>
 
-{/* 
+
    <Routes>
       <Route element={<RequireAuth allowedRoles={['student']} redirectTo="/" />}>
       <Route element={<Layout bgColor="blue" />}>
@@ -119,7 +117,7 @@ function App() {
         <Route path="/user" element={<Mycomponent />} />
 
       </Route>
-    </Routes> */}
+    </Routes>
     <ToastContainer
             position="top-right"
             autoClose={1000}
