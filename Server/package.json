@@ -31,6 +31,8 @@
     "cors-anywhere": "^0.4.4",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
-    "nodemailer": "^6.9.11"
+    "nodemailer": "^6.9.11",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   }
 }
