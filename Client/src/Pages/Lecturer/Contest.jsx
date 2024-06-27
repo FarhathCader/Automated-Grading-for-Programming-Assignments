@@ -26,7 +26,7 @@ const Contest = () => {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [currentPage, setCurrentPage] = useState(1);
-  const [contestsPerPage] = useState(2); // Set the number of problems per page
+  const [contestsPerPage] = useState(10); // Set the number of problems per page
   const [totalContests, setTotalContests] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
@@ -169,6 +169,8 @@ const Contest = () => {
   };
 
   const deleteContest = async (contestId) => {
+    if(loading)return;
+    setLoading(true);
     try {
       const response = await fetch(`${backendUrl}/api/contest/${contestId}`, {
         method: "DELETE",
@@ -182,6 +184,8 @@ const Contest = () => {
       );
     } catch (error) {
       toast.error("Error deleting contest:", error);
+    }finally{
+      setLoading(false);
     }
   };
 

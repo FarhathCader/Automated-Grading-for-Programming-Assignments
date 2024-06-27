@@ -27,7 +27,7 @@ const Practice = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-  const [problemsPerPage] = useState(2); // Set the number of problems per page
+  const [problemsPerPage] = useState(10); // Set the number of problems per page
   const [totalProblems, setTotalProblems] = useState(0);
   const [showBtn, setShowBtn] = useState(false);
   const [totalPages,setTotalPages] = useState(0)
@@ -224,105 +224,133 @@ const Practice = () => {
           <h2 className="text-xl italic font-semibold mb-4 text-blue-950 bg-blue-200 p-4 rounded">
             Practice Makes Perfect
           </h2>
-            <table className="w-full border-collapse">
-              <thead>
-              <tr className="bg-blue-200">
-                    <th className="px-2 md:px-6 py-3 text-left text-blue-800">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('name')}
-                        >
-                          Name
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'name' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'name' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                        </div>
-                      </div>
+          <table className="w-full border-collapse">
+  <thead className="bg-blue-200">
+    <tr className="block md:table-row">
+      <th className="px-2 md:px-6 py-3 text-left text-blue-800">
+        <div className="flex items-center gap-2">
+          <p
+            className="hover:cursor-pointer"
+            onClick={() => handleSort("name")}
+          >
+            Name
+          </p>
+          <div className="text-sm">
+            <FaSortUp
+              className={
+                sortField === "name" && sortOrder === "asc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+            <FaSortDown
+              className={
+                sortField === "name" && sortOrder === "desc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+          </div>
+        </div>
+      </th>
+      <th className="px-2 md:px-6 py-3 text-left text-blue-800 md:table-cell hidden">
+        <div className="flex items-center gap-2">
+          <p
+            className="hover:cursor-pointer"
+            onClick={() => handleSort("difficulty")}
+          >
+            Difficulty
+          </p>
+          <div className="text-sm">
+            <FaSortUp
+              className={
+                sortField === "difficulty" && sortOrder === "asc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+            <FaSortDown
+              className={
+                sortField === "difficulty" && sortOrder === "desc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+          </div>
+        </div>
+      </th>
+      <th className="px-2 md:px-6 py-3 text-left text-blue-800 md:table-cell hidden">
+        <div className="flex items-center gap-2">
+          <p
+            className="hover:cursor-pointer"
+            onClick={() => handleSort("category")}
+          >
+            Category
+          </p>
+          <div className="text-sm">
+            <FaSortUp
+              className={
+                sortField === "category" && sortOrder === "asc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+            <FaSortDown
+              className={
+                sortField === "category" && sortOrder === "desc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+          </div>
+        </div>
+      </th>
+      <th className="px-2 md:px-6 py-3 text-left text-blue-800 md:table-cell hidden">
+        <div className="flex items-center gap-2">
+          <p
+            className="hover:cursor-pointer"
+            onClick={() => handleSort("grade")}
+          >
+            Grade
+          </p>
+          <div className="text-sm">
+            <FaSortUp
+              className={
+                sortField === "grade" && sortOrder === "asc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+            <FaSortDown
+              className={
+                sortField === "grade" && sortOrder === "desc"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }
+            />
+          </div>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {problems.map((problem, index) => (
+      <tr
+        key={index}
+        className={`block md:table-row cursor-pointer ${
+          index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
+        }`}
+        onClick={() => navigate(`/problems/${problem._id}`)}
+      >
+        <td className="px-2 md:px-6 py-3 text-blue-200">{problem.name}</td>
+        <td className="px-2 md:px-6 py-3 text-blue-200 md:table-cell hidden">{difficultyOrder[problem.difficulty]}</td>
+        <td className="px-2 md:px-6 py-3 text-blue-200 md:table-cell hidden">{problem.category}</td>
+        <td className="px-2 md:px-6 py-3 text-blue-200 md:table-cell hidden">{problem.grade}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-
-                    </th>
-                    <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('difficulty')}
-                        >
-                          Difficulty
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'difficulty' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'difficulty' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                        </div>
-                      </div>
-                    </th>
-                    <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('category')}
-                        >
-                          Category
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'category' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'category' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                        </div>
-                      </div>
-                      </th>
-                      <th className="px-2 md:px-6 py-3 text-left text-blue-800 hidden md:table-cell">
-                      <div className="flex items-center gap-2">
-                        <p className="hover:cursor-pointer"
-                          onClick={() => handleSort('grade')}
-                        >
-                          Grade
-                        </p>
-                        <div className="text-sm">
-                          <FaSortUp
-                            className={sortField === 'grade' && sortOrder === 'asc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                          <FaSortDown
-                            className={sortField === 'grade' && sortOrder === 'desc' ? 'text-blue-500' : 'text-gray-500'}
-                          />
-                        </div>
-                      </div>
-                      </th>
-
-                  </tr>
-                {/* <tr className="bg-blue-200">
-                  <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Problem Name</th>
-                  <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Difficulty</th>
-                  <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Category</th>
-                  <th className="px-6 py-3 text-left text-blue-800 border-b border-blue-300">Grade</th>
-                </tr> */}
-              </thead>
-              <tbody>
-                {problems.map((problem, index) => (
-                  <tr
-                    key={index}
-                    className={`cursor-pointer ${
-                      index % 2 === 0 ? "bg-blue-800" : "bg-blue-700"
-                    }`}
-                    onClick={() => navigate(`/problems/${problem._id}`)}
-                  >
-                    <td className="px-6 py-4 text-blue-200">{problem.name}</td>
-                    <td className="px-6 py-4 text-blue-200">{difficultyOrder[problem.difficulty]}</td>
-                    <td className="px-6 py-4 text-blue-200">{problem.category}</td>
-                    <td className="px-6 py-4 text-blue-200">{problem.grade}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
             {showBtn && <div className="w-full flex justify-center items-center mt-4 gap-6">
                 <button
                   onClick={handlePrev}

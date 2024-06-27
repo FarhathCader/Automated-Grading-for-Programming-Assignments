@@ -45,8 +45,12 @@ const Feed = () => {
 
         if (timeDiff > 0) {
           const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-          let hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          let hours = Math.floor(
+            (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeDiff % (1000 * 60 * 60)) / (1000 * 60)
+          );
           const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
           hours += days * 24;
 
@@ -111,10 +115,13 @@ const Feed = () => {
   return (
     <section className="w-full min-h-screen flex justify-center items-center bg-white">
       <div className="w-11/12 sm:w-4/5 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 rounded-xl shadow-lg p-4 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-violet-900 mb-4 text-center">Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-violet-900 mb-4 text-center">
+          Dashboard
+        </h1>
         <div className="mb-6 flex flex-col items-center justify-center text-gray-800">
           <p className="text-base sm:text-lg mb-4 text-center">
-            Manage and create contests to challenge your students and foster their skills.
+            Explore the available contests or start practicing to sharpen your
+            skills.
           </p>
           <div className="flex justify-center items-center gap-4 flex-wrap">
             <Link to="/available">
@@ -130,12 +137,16 @@ const Feed = () => {
           </div>
         </div>
         <div className="mt-8">
-          <h2 className="text-xl sm:text-2xl font-semibold text-violet-900 mb-4 text-center">Upcoming Contests</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold text-violet-900 mb-4 text-center">
+            Upcoming Contests
+          </h2>
           <Slider {...sliderSettings}>
             {upcomingContests.map((contest) => (
               <div key={contest._id} className="p-4">
                 <div className="bg-gradient-to-r from-white via-gray-100 to-gray-200 rounded-lg shadow-md p-4">
-                  <h3 className="text-md sm:text-lg font-semibold text-blue-800 mb-2">{contest.name}</h3>
+                  <h3 className="text-md sm:text-lg font-semibold text-blue-800 mb-2">
+                    {contest.name}
+                  </h3>
                   <p className="text-sm text-green-600 mb-2">
                     Starts: {new Date(contest.startDate).toLocaleString()}
                   </p>
@@ -155,9 +166,15 @@ const Feed = () => {
       {showContestDetails && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
           <div className="bg-blue-100 w-11/12 sm:w-96 p-8 rounded-lg shadow-md">
-            <h1 className="text-2xl text-violet-800 sm:text-3xl font-semibold mb-4 text-center">{activeContest.name}</h1>
-            <p className="text-base text-blue-600 sm:text-lg mb-4 text-center">Total Problems: {activeContest.problems.length}</p>
-            <p className="text-base text-green-600 sm:text-lg mb-6 text-center">Starts in: {timeRemaining}</p>
+            <h1 className="text-2xl text-violet-800 sm:text-3xl font-semibold mb-4 text-center">
+              {activeContest.name}
+            </h1>
+            <p className="text-base text-blue-600 sm:text-lg mb-4 text-center">
+              Total Problems: {activeContest.problems.length}
+            </p>
+            <p className="text-base text-green-600 sm:text-lg mb-6 text-center">
+              Starts in: {timeRemaining}
+            </p>
             <button
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
               onClick={handleCloseDetails}

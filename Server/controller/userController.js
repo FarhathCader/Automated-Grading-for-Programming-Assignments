@@ -465,7 +465,7 @@ const forgotPassword =
                 from: "farhadfd818@gmail.com",
                 to: email,
                 subject: 'Reset Password',
-                text: `This link will expire in 5 minutes\nhttp://localhost:5173/reset/${token}`
+                text: `This link will expire in 5 minutes\nhttps://zee-code-3234074b267f.herokuapp.com/reset/${token}`
             };
 
             transporter.sendMail(mailOptions, function (err, data) {
