@@ -150,7 +150,7 @@ const StudentProfile = () => {
                                   className="block text-blue-700 text-sm font-bold mr-2"
                                   htmlFor="regNumber"
                                 >
-                                  Registration Number:
+                                  Reg Number:
                                 </label>
                                 {student && (
                                   <p className="text-blue-800 text-lg">
