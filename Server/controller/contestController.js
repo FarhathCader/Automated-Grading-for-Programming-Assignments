@@ -133,9 +133,15 @@ async function deleteContest(req, res) {
             return res.status(404).json({ error: 'Contest not found' });
         }
 
-        res.json({ message: 'Contest deleted successfully' });
+        await Enrollment.deleteMany({ contestId });
+        // await Notification.deleteMany({ objectId: contestId });
+        // await Submission.deleteMany({ contestId });
+
+
+
+        res.json({ message: 'Contest deleted successfully' ,deletedContest});
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete contest' });
+        res.status(500).json({ message: 'Failed to delete contest',error });
     }
 }
 
