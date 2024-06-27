@@ -57,7 +57,8 @@ const getLecturers = async (req, res) => {
 
     try {
         
-        const lecturers = await Lecturer.find();
+        const lecturers = await Lecturer.find().sort({ createdAt: -1 });
+        
 
 
         if (!lecturers) {

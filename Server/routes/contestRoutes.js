@@ -10,7 +10,8 @@ const { getContests,
     getCompletedContests,
     getOngoingContests,
     searchContests,
-    getUpcomingContests
+    getUpcomingContests,
+    getContestLocation
 } = require('../controller/contestController')
 
 router.post('/', addContest)
@@ -23,6 +24,7 @@ router.get('/available/:studentId', getAvilabalContests)
 router.get('/:id', getContest)
 router.delete('/:id', deleteContest)
 router.put('/:id', updateContest)
+router.get('/location/:contestId', getContestLocation)
 
 
 module.exports = router

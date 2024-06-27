@@ -3,6 +3,7 @@ const Contest = require('../models/contest')
 const Enrollment = require('../models/enrollment')
 const Problem = require('../models/problems')
 const Notification = require('../models/notifications')
+const User = require('../models/user')
 
 
 async function addContest(req, res) {
@@ -22,14 +23,32 @@ async function addContest(req, res) {
 
         // Save the contest to the database
         await contest.save();
-        const notification = await Notification.create({ usertype : "student", message : `New Contest ${name} Has Been Created`});
-        const totalUnread = await Notification.countDocuments({ read: false , usertype : "student"});
+
+        const users = await User.find({ usertype: 'student' }, '_id');
+
+        // Prepare bulk write operations for notifications
+        const bulkOps = users.map(user => ({
+            insertOne: {
+                document: {
+                    userId: user._id,
+                    usertype: 'student',
+                    message: `New Contest ${name} Has Been Created`,
+                    objectId: contest._id,
+                    read: false
+                }
+            }
+        }));
+
+        // Perform bulk write to create notifications
+        await Notification.bulkWrite(bulkOps);
+        // const notification = await Notification.create({ usertype : "student", message : `New Contest ${name} Has Been Created`,objectId : contest._id});
+        // const totalUnread = await Notification.countDocuments({ read: false , usertype : "student"});
 
         const note = {
             message : `New Contest ${name} Has Been Created`,
             usertype: 'student',
-            totalUnread
-
+            
+            // totalUnread,
         }
         const io = req.app.get('socketio');
         io.emit('databaseChange', note);
@@ -192,10 +211,15 @@ const getAvilabalContests = async (req, res) => {
     const currentDate = new Date();
 
     // Fetch only the contests that are currently ongoing
+    //sort by createdAt
+
     const contests = await Contest.find({
       startDate: { $lte: currentDate },
       endDate: { $gte: currentDate }
-    });
+    })
+    .sort({ createdAt: -1 })
+
+    ;
 
     const contestIds = contests.map(contest => contest._id.toString());
 
@@ -241,13 +265,45 @@ const getUpcomingContests = async (req, res) => {
     const upcomingContests = await Contest.find({
       startDate: { $gt: currentTimestamp }
     })
+    .sort({ createdAt: -1})
+
     return res.status(200).json({ upcomingContests});
   } catch (err) {
     return res.status(400).json({ msg: err.message });
   }
 };
 
+const getContestLocation = async (req, res) => {
+  try {
+    const { contestId } = req.params;
+    const contest = await Contest.findById(contestId);
+    if (!contest) {
+      return res.status(404).json({ error: 'Contest not found' });
+    }
+    const currentTimestamp = new Date().getTime();
+    if (currentTimestamp < contest.startDate) {
+      return res.status(200).json({ location: 'upcoming' });
+    } else{
+      return res.status(200).json({ location: 'available' });
+    } 
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch contest' });
+  }
+};
+
 
   
 
-module.exports = {getContests,addContest,deleteContest,updateContest,getContest,getAvilabalContests,getCompletedContests,getOngoingContests,searchContests,getUpcomingContests}
+module.exports = {
+  getContests,
+  addContest,
+  deleteContest,
+  updateContest,
+  getContest,
+  getAvilabalContests,
+  getCompletedContests,
+  getOngoingContests,
+  searchContests,
+  getUpcomingContests,
+  getContestLocation
+}
