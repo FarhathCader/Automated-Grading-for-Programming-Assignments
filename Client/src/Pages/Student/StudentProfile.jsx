@@ -75,6 +75,8 @@ const StudentProfile = () => {
     window.location.reload();
   };
 
+  
+
   return (
     <main className="w-full h-screen flex justify-between items-start">
       {/* <Sidebar /> */}
@@ -89,9 +91,7 @@ const StudentProfile = () => {
         </div>
       ) : (
         editProfile ? (
-          <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
             <EditStudentProfile cancel={cancel} student={student} logo={client} />
-          </div>
         ) : (
           <div className="w-4/5 grow bg-blue-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
               {/* <Header bgColor="blue" /> */}
@@ -150,7 +150,7 @@ const StudentProfile = () => {
                                   className="block text-blue-700 text-sm font-bold mr-2"
                                   htmlFor="regNumber"
                                 >
-                                  Reg Number:
+                                  Reg No:
                                 </label>
                                 {student && (
                                   <p className="text-blue-800 text-lg">
