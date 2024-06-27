@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 import classNames from "classnames";
 import ClipLoader from "react-spinners/ClipLoader";
-import {  CSSProperties } from "react";
+import { CSSProperties } from "react";
 import logo from "../assets/Images/profile.jpg";
 import { backendUrl } from "../../config";
 import Notify from "../Components/Notify";
@@ -25,7 +25,6 @@ axios.defaults.withCredentials = true;
 const Header = ({ bgColor }) => {
   const shouldLog = useRef(true);
   const navigate = useNavigate();
-  // const [user, setUser] = useState(null);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -48,7 +47,7 @@ const Header = ({ bgColor }) => {
   const fecthImage = async () => {
     setLoading(true);
     try {
-      if(user._id === undefined) return;
+      if (user._id === undefined) return;
       const res = await axios.get(`${backendUrl}/api/image/${user._id}`);
       const data = await res.data;
       if (data) {
@@ -56,43 +55,44 @@ const Header = ({ bgColor }) => {
       }
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
+
   return (
     <section
       className={classNames(
         "w-full lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4",
         {
-          "bg-fuchsia-300": bgColor === "fuchsia", 
-          "bg-blue-300": bgColor === "blue", 
-          "bg-green-300": bgColor === "green", 
+          "bg-fuchsia-300": bgColor === "fuchsia",
+          "bg-blue-300": bgColor === "blue",
+          "bg-green-300": bgColor === "green",
         }
       )}
     >
-      <div>
+      <div className="flex items-center">
         <img
-          className="w-12 h-12 flex items-center justify-center bg-cover bg-center bg-no-repeat"
+          className="w-12 h-12 bg-cover bg-center bg-no-repeat"
           src={LogoImage}
           alt="logo"
         />
       </div>
       <div className="flex-grow flex justify-end items-center gap-4">
-        <Notify/>
-        <h1 className="text:sm md:text-base font-semibold text-blue-900">
-          {user ? user.username : <ClipLoader color="blue" loading={true} size={150} css={override} />}
+        <Notify />
+        <h1 className="text-sm md:text-base font-semibold text-blue-900">
+          {user ? user.username : <ClipLoader color="blue" loading={true} size={20} css={override} />}
         </h1>
         <div className="w-12 h-12 rounded-full overflow-hidden">
           {
-            loading ? <ClipLoader color="blue" loading={true} size={50} css={override} />:
-            <img
-          onClick={handleNavigate}
-
-            src={client_}
-            alt="client-image"
-            className="w-full h-full object-cover cursor-pointer"
-          />}
+            loading ? <ClipLoader color="blue" loading={true} size={50} css={override} /> :
+              <img
+                onClick={handleNavigate}
+                src={client_}
+                alt="client-image"
+                className="w-full h-full object-cover cursor-pointer"
+              />
+          }
         </div>
       </div>
     </section>
