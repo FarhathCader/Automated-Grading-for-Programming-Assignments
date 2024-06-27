@@ -80,8 +80,7 @@ const LecturerDashBoard = () => {
 
             <div className="mb-6 flex flex-col items-center justify-center">
               <p className="text-gray-600 text-sm md:text-base mb-4">
-                Manage and create contests to challenge your students and foster
-                their skills.
+                Organize and create competitions to challenge your students and enhance their skills.
               </p>
               <div className="flex justify-center items-center gap-4">
                 <Link to="/qbank">
