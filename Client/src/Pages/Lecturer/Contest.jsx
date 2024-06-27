@@ -308,7 +308,7 @@ return (
             className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
             onClick={handleShowCompletedClick}
           >
-            {showCompleted ? "Show Active Contests" : "Show Completed Contests"}
+            {showCompleted ? "Show Available Contests" : "Show Completed Contests"}
           </button>
           <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
             onClick={handleAddContestClick}>
@@ -324,7 +324,7 @@ return (
               </h1>
             ) : (
               <h1 className="text-xl md:text-3xl font-bold text-fuchsia-800 mb-4">
-                Active Contests
+                Active and Upcoming Contests
               </h1>
             )}
             <div className="overflow-x-auto w-full">

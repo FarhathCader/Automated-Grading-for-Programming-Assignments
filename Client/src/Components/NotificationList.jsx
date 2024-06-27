@@ -19,6 +19,7 @@ const NotificationList = (props) => {
 
   const [loading, setLoading] = useState(false);
   const usertype = useSelector(state => state.userType);
+  const userId = useSelector(state => state.user._id);
   const {notifications,handleNotifications,toggleDropdown} = props
   const totalUnread = notifications.filter(notification => !notification.read).length;
   const navigate = useNavigate();
@@ -33,11 +34,12 @@ const NotificationList = (props) => {
 
       const response = await axios.delete(`${backendUrl}/api/notification/${notification._id}`,
         {
-          params: { usertype }
+          params: { usertype ,
+            userId
+          }
         }
       );
       const data = response.data;
-      console.log("data",data)
       if (response.status === 200) {
         handleNotifications(data.notifications);
       }
@@ -60,7 +62,9 @@ const NotificationList = (props) => {
 
     try {
       const response = await axios.put(`${backendUrl}/api/notification/read`, null, {
-        params: { usertype }
+        params: { usertype ,
+          userId
+        }
       });
       const data = response.data;
       if (response.status === 200) {
@@ -85,7 +89,10 @@ const NotificationList = (props) => {
 
     try {
       const response = await axios.delete(`${backendUrl}/api/notification/`, {
-        params: { usertype }
+        params: { usertype,
+          userId
+
+         }
       });
       const data = response.data;
       if (response.status === 200) {
@@ -101,6 +108,39 @@ const NotificationList = (props) => {
     }
   };
 
+  const handleNav = async(message) => {
+
+    const res = await axios.put(`${backendUrl}/api/notification/${message._id}`,null, {
+      params: { usertype,
+        userId
+      }
+    });
+    console.log("res",res);
+
+    handleNotifications(res.data.notifications);
+
+
+    if(usertype === "student"){
+      
+      
+      const response = await axios.get(`${backendUrl}/api/contest/location/${message.objectId}`)
+      const data = response.data;
+      toggleDropdown();
+      if(response.status === 200 && data.location === 'upcoming'){
+        navigate(`/dashboard_std`)
+      }else{
+        navigate(`/available`)
+      }
+
+
+  }
+  else if(usertype === "admin"){
+    toggleDropdown();
+    navigate(`/managelecturer`)
+  
+  }
+}
+
 
   if(!notifications) return null;
 
@@ -114,8 +154,8 @@ const NotificationList = (props) => {
 
   return (
     notifications.length > 0 ?
-    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Notifications</h2>
+    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10 text-sm p-2 border-solid border-4 border-blue">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Notifications</h2>
      
       <div className="flex justify-between mb-4">
         <button
@@ -134,7 +174,9 @@ const NotificationList = (props) => {
       </div>
       <ul className="space-y-4">
         {notifications.map((message, index) => (
-          <li key={index} className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
+          <li key={index} className="bg-white p-4 rounded-lg shadow flex justify-between items-center cursor-pointer hover:bg-gray-100 transition duration-300 ease-in-out"
+          onClick={() => handleNav(message)}
+          >
             <span className={message.read ? "text-gray-500" : "text-black"}>{message.message}</span>
             <button
               onClick={() => deleteMessage(message)}
@@ -147,8 +189,8 @@ const NotificationList = (props) => {
       </ul>
     </div>
     :
-    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10">
-      <h2 className="text-md font-bold text-gray-800 mb-4">No Notifications updates</h2>
+    <div className="absolute right-0 mt-1 w-64 bg-white rounded-lg shadow-lg z-10 p-2">
+      <h2 className="text-md font-bold text-gray-800 text-center mb-4">No Notifications updates</h2>
       
       </div>
 

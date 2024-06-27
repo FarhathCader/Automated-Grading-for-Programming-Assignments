@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { backendUrl } from "../../../config";
 import NotFoundPage from "../../Components/NotFoundPage";
 import BackButton from "../../Components/BackButton";
+import { toast } from "react-toastify";
 
 const override = {
   display: "block",
@@ -73,7 +74,9 @@ const ContestView = () => {
         setShouldRender(true);
       }
     } catch (err) {
+      console.log(err);
       toast.error("Error fetching enrollment:");
+      
     } finally {
       setLoading(false);
     }

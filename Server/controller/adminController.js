@@ -49,11 +49,11 @@ const updateAdmin = async (req, res) => {
 
 changeDatabase = async (req, res) => {
 
-    const {usertype,message} = req.body;
+    const {usertype,message,userId,objectId} = req.body;
 
     // Save the change to the database...
-    const notification = await Notification.create({ usertype, message});
-    const totalUnread = await Notification.countDocuments({ read: false });
+    const notification = await Notification.create({ usertype, message,userId,objectId});
+    const totalUnread = await Notification.countDocuments({ read: false, usertype,userId});
 
     const note =  {
         message,
