@@ -13,6 +13,16 @@ const notificationSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    objectId: {
+        type: mongoose.Schema.Types.ObjectId,
+    },
+
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+
+
     }
     , { timestamps: true });
 

@@ -117,7 +117,8 @@ const google = async (req, res) => {
 
              user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
             const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
-            const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`});
+            const admin = await User.findOne({ usertype: 'admin' });
+            const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`, userId: admin._id});
             const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
 
             const note = {
@@ -188,13 +189,15 @@ const signup = async (req, res) => {
 
                 const user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
                 const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
-                const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`});
+                const admin = await User.findOne({ usertype: 'admin' });
+                const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`, userId: admin._id});
                 const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
 
                 const note = {
                     message : `New Lecturer ${username} Has Been Created`,
                     usertype: 'admin',
-                    totalUnread
+                    totalUnread,
+                    userId: admin._id
                 }
                 const io = req.app.get('socketio');
                 io.emit('databaseChange', note);

@@ -12,19 +12,23 @@ const socket = io(backendUrl); // Ensure this matches your server URL
 
 const Notify = () => {
 
-    const usertype = useSelector(state=>state.userType)
+    const usertype = useSelector(state => state.userType)
+    const user = useSelector(state => state.user)
 
     const [totalUnread, setTotalUnread] = useState(0);
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
+        fetchNotifications(usertype);
         socket.on('databaseChange', (change) => {
             fetchNotification(usertype);
+            fetchNotifications(usertype);
             if(change.usertype === usertype){
-                toast(change.message);
-
+                toast.success(change.message);
             }
+   
+           
         });
 
         return () => {
@@ -32,20 +36,39 @@ const Notify = () => {
         };
     }, []);
 
-    useEffect(() => {
-        fetchNotification(usertype);
-
-          }, [usertype]);
 
 
-    const fetchNotification = async (usertype) => {
-        const response = await axios.get(`${backendUrl}/api/notification/unread`,{
-            params: { usertype }
+    const fetchNotifications = async (usertype) => {
+        const response = await axios.get(`${backendUrl}/api/notification`, {
+            params: {
+                usertype,
+                userId: user._id
+            }
         }
         );
         const data = response.data;
+        console.log("data", data.notifications)
+        setNotifications(data.notifications);
+    }
+
+    useEffect(() => {
+        if (user._id === undefined) return;
+        fetchNotification(usertype);
+
+    }, [user._id, usertype]);
+
+
+    const fetchNotification = async (usertype) => {
+        const response = await axios.get(`${backendUrl}/api/notification/unread`, {
+            params: {
+                usertype,
+                userId: user._id
+            }
+        }
+        );
+        const data = response.data;
+        console.log("data", data)
         setTotalUnread(data.totalUnread);
-        setNotifications(data.notifications)
     }
 
     const toggleDropdown = () => {
@@ -57,7 +80,7 @@ const Notify = () => {
 
         setNotifications(notifications);
         setTotalUnread(notifications.filter(notification => !notification.read).length);
-        console.log("notifications",notifications)
+        console.log("notifications", notifications)
     }
 
 
@@ -65,20 +88,20 @@ const Notify = () => {
         <>
 
             <div className="relative inline-block mt-10" >
-      <FaBell className="text-2xl cursor-pointer" onClick={toggleDropdown}  />
-      {totalUnread > 0 && (
-        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer"
-        onClick={toggleDropdown}
-        >
-          {totalUnread}
-        </span>
-      )}
-    {showDropdown && <NotificationList notifications = {notifications}  handleNotifications = {handleNotifications} toggleDropdown = {toggleDropdown} />}
+                <FaBell className="text-2xl cursor-pointer" onClick={toggleDropdown} />
+                {totalUnread > 0 && (
+                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                        onClick={toggleDropdown}
+                    >
+                        {totalUnread}
+                    </span>
+                )}
+                {showDropdown && <NotificationList notifications={notifications} handleNotifications={handleNotifications} toggleDropdown={toggleDropdown} />}
 
-      
-    </div>
 
-            
+            </div>
+
+
         </>
     );
 };
