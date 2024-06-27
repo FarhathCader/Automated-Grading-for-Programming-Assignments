@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../Sections/Sidebar";
-import Header from "../../Sections/Header";
-import Logo from "../../assets/Images/profile.jpg";
-import 'react-toastify/dist/ReactToastify.css';
-import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-
-import { ToastContainer, toast } from 'react-toastify';
-
-
+import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
-axios.defaults.withCredentials = true;
-import useFetchUser from "../../hooks/fetchUser";
+import { ToastContainer, toast } from 'react-toastify';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { backendUrl } from "../../../config";
+import Logo from "../../assets/Images/profile.jpg";
+import 'react-toastify/dist/ReactToastify.css';
 
 const override = {
   display: "block",
@@ -21,41 +14,35 @@ const override = {
 };
 
 const EditStudentProfile = (props) => {
-
   const [username, setUsername] = useState(props.student.username);
   const [email, setEmail] = useState(props.student.email);
   const [registrationNumber, setRegistrationNumber] = useState(props.student.regNo);
   const [uploading, setUploading] = useState(false);
-  const student = props.student;
-  const userId = student.userId;
-  const logo = props.logo;
-  const [image, setImage] = useState(logo);
-  const url = `${backendUrl}/api/image`
+  const [image, setImage] = useState(props.logo);
+  const userId = props.student.userId;
+  const url = `${backendUrl}/api/image`;
 
   const handleImage = (e) => {
     const file = e.target.files[0];
     setFileToBase(file);
-  }
+  };
 
   const setFileToBase = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setImage(reader.result);
-    }
+    };
+  };
 
-  }
   const save = async () => {
-
     try {
       const res = await axios.put(`${backendUrl}/api/student/${props.student._id}`, {
         username,
         email,
         regNo: registrationNumber
       });
-
-      const data = await res.data;
-
+      
       uploadImage(image);
 
 
@@ -64,20 +51,18 @@ const EditStudentProfile = (props) => {
     catch (err) {
       toast.error(err.message);
     }
-
-
-
-  }
+  };
 
   const uploadImage = async (image) => {
     setUploading(true);
     try {
       const res = await axios.post(url, { image, userId });
-      const data = await res.data;
+      if (res.status === 200) {
+        toast.success('Image Uploaded Successfully');
+      }
     } catch (error) {
-      toast.error("erros in uploading image");
-    }
-    finally {
+      toast.error("Error in uploading image");
+    } finally {
       setUploading(false);
       setTimeout(() => {
         props.cancel();
@@ -88,9 +73,6 @@ const EditStudentProfile = (props) => {
     }
   };
 
-
-
-
   const handleUploadButtonClick = () => {
     const fileInput = document.getElementById('formupload');
     if (fileInput) {
@@ -98,25 +80,20 @@ const EditStudentProfile = (props) => {
     }
   };
 
-  const handleDeleteButtonClick = async() => {
+  const handleDeleteButtonClick = async () => {
     setUploading(true);
     try {
       const res = await axios.delete(`${backendUrl}/api/image/${userId}`);
-      const data = await res.data;
       if (res.status === 200) {
         setImage(Logo);
         toast.success('Image Deleted Successfully');
       }
     } catch (error) {
-      console.log("Error in deleting image");
-    }
-    finally {
+      toast.error("Error in deleting image");
+    } finally {
       setUploading(false);
-
     }
-
   };
-
 
   return (
     <div className="relative max-w-md mx-auto md:max-w-2xl mt-10 md:mt-20 px-4">
@@ -327,16 +304,3 @@ const EditStudentProfile = (props) => {
 };
 
 export default EditStudentProfile;
-
-function convertToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
-      resolve(fileReader.result)
-    };
-    fileReader.onerror = (error) => {
-      reject(error)
-    }
-  })
-}
