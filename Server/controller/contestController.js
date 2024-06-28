@@ -12,10 +12,22 @@ async function addContest(req, res) {
         
 
         // Create a new Contest document
+        // const contest = new Contest({
+        //     name,
+        //     startDate,
+        //     endDate,
+        //     duration,
+        //     problems,
+        //     createdBy
+        // });
+        const adjustedStartDate = new Date(new Date(startDate).getTime() - 5.5 * 60 * 60 * 1000);
+        const adjustedEndDate = new Date(new Date(endDate).getTime() - 5.5 * 60 * 60 * 1000);
+
+        // Create a new Contest document
         const contest = new Contest({
             name,
-            startDate,
-            endDate,
+            startDate: adjustedStartDate,
+            endDate: adjustedEndDate,
             duration,
             problems,
             createdBy
@@ -168,10 +180,13 @@ const getContest = async (req, res) => {
 const updateContest = async (req, res) => {
     try {
       const { name, startDate, endDate, duration, problems } = req.body;
+
+      const adjustedStartDate = new Date(new Date(startDate).getTime() - 5.5 * 60 * 60 * 1000);
+      const adjustedEndDate = new Date(new Date(endDate).getTime() - 5.5 * 60 * 60 * 1000);
       const updatedContest = await Contest.findByIdAndUpdate(
         req.params.id,
         {
-            name, startDate, endDate, duration, problems
+            name, startDate : adjustedStartDate, endDate : adjustedEndDate, duration, problems
         },
         { new: true, runValidators: true }
       );
