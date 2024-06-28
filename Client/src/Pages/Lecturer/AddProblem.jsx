@@ -44,7 +44,7 @@ const AddProblem = (props) => {
       onClose();
     }
     else{
-      navigate(-1)
+      navigate('/qbank')
     }
   }
 
@@ -244,7 +244,7 @@ const AddProblem = (props) => {
 
   return (
     <div className="mx-auto p-6 bg-white rounded-xl shadow-md w-full max-w-3xl lg:max-w-full">
-      <BackButton/>
+      {/* <BackButton/> */}
   <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Problem' : 'Add Problem'}</h2>
   <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-8">
 
