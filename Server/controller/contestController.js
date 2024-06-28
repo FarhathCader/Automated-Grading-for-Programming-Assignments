@@ -64,7 +64,7 @@ const getContests = async (req,res)=>{
 
     try{
         const {userId} = req.params;
-        const contests = await Contest.find({createdBy:userId})      
+        const contests = await Contest.find({createdBy:userId}).sort({createdAt:-1});      
         return res.status(200).json({contests})
     }
     catch(err){
@@ -84,7 +84,9 @@ const getCompletedContests = async (req, res) => {
       const completedContests = await Contest.find({
           createdBy: userId,
           endDate: { $lt: currentTimestamp }
-      }).skip(skip).limit(Number(limit));
+      })
+      .sort({ createdAt: -1 })
+      .skip(skip).limit(Number(limit));
 
       const total = await Contest.find({
         createdBy: userId,
@@ -108,7 +110,9 @@ const getOngoingContests = async (req, res) => {
       const availableContests = await Contest.find({
           createdBy: userId,
           endDate: { $gte: currentTimestamp }
-      }).skip(skip).limit(Number(limit));
+      })
+      .sort({ createdAt: -1 })
+      .skip(skip).limit(Number(limit));
 
       const total = await Contest.find({
         createdBy: userId,

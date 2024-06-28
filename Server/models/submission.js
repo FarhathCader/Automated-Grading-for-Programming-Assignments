@@ -46,6 +46,7 @@ const submissionSchema = new mongoose.Schema({
         weight: Number,
         error: Boolean
     }]
-});
+}
+,{timestamps: true});
 
 module.exports = mongoose.model('Submission', submissionSchema);
