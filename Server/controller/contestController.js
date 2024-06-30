@@ -11,15 +11,6 @@ async function addContest(req, res) {
         const { name, startDate, endDate, duration, problems,createdBy } = req.body;
         
 
-        // Create a new Contest document
-        // const contest = new Contest({
-        //     name,
-        //     startDate,
-        //     endDate,
-        //     duration,
-        //     problems,
-        //     createdBy
-        // });
         const adjustedStartDate = new Date(new Date(startDate).getTime() - 5.5 * 60 * 60 * 1000);
         const adjustedEndDate = new Date(new Date(endDate).getTime() - 5.5 * 60 * 60 * 1000);
 
@@ -197,38 +188,6 @@ const updateContest = async (req, res) => {
     }
   };
   
-// const getAvilabalContests = async (req, res) => {
-//     try {
-//       const { studentId } = req.params;
-//       const contests = await Contest.find();
-//       const currentDate = new Date();
-//       const availableContests = contests.filter(contest => {
-//         const startDate = new Date(contest.startDate);
-//         const endDate = new Date(contest.endDate);
-//         return currentDate >= startDate && currentDate <= endDate;
-//       });
-//       const availableContestIds = availableContests.map(contest => contest._id.toString());
-//       const enrollments = await Enrollment.find({ studentId, contestId: { $in: availableContestIds } }).populate('contestId');
-//        const conteststoremove = enrollments.filter(contest => {
-//         return contest.createdAt.getTime() + contest.contestId.duration*60000 < currentDate.getTime();      
-//        }).map(contest => contest.contestId._id.toString());
-
-//        const availableContests_ = availableContests.filter(contest => {
-//         return !conteststoremove.includes(contest._id.toString());
-//       }
-//     )
-//       res.status(200).json({availableContests_});
-      
-      
-
-
-      
-//   }
-//   catch (error) {
-//     console.error('Error fetching available contests:', error);
-//     res.status(500).json({ error: 'Failed to fetch available contests' });
-//   }
-// }
 
 const getAvilabalContests = async (req, res) => {
   try {
