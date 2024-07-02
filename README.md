@@ -14,7 +14,7 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/mern-app.git
+    git clone https://github.com/FarhathCader/Automated-Grading-for-Programming-Assignments.git
     cd mern-app
     ```
 
@@ -60,10 +60,10 @@ Before you begin, ensure you have met the following requirements:
 2. Start the frontend server:
     ```bash
     cd ../client
-    npm start
+    npm run dev
     ```
 
-3. Open your browser and go to `http://localhost:3000` to see the application running.
+3. Open your browser and go to `http://localhost:5173` to see the application running.
 
 ## Folder Structure
 
