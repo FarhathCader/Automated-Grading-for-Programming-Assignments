@@ -135,6 +135,7 @@ const ManageLecturers = () => {
               <thead>
                 <tr className="bg-green-200">
                   <th className="px-6 py-3 text-left text-green-800">Name</th>
+                  <th className="px-6 py-3 text-left text-green-800">Email</th>
                   <th className="px-6 py-3 text-left text-green-800">Status</th>
                   <th className="px-6 py-3 text-left text-green-800">Actions</th>
                 </tr>
@@ -143,6 +144,7 @@ const ManageLecturers = () => {
                 {lecturers.map((lecturer, index) => (
                   <tr key={index} className={index % 2 === 0 ? "bg-green-800" : "bg-green-700"}>
                     <td className="px-6 py-4 text-green-200">{lecturer.username}</td>
+                    <td className="px-6 py-4 text-green-200">{lecturer.email}</td>
                     <td className="px-6 py-4 text-green-200">{lecturer.isApproved ? "Active" : "Inactive"}</td>
                     <td className="px-6 py-4 flex">
                    :

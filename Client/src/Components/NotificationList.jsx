@@ -137,6 +137,7 @@ const NotificationList = (props) => {
   else if(usertype === "admin"){
     toggleDropdown();
     navigate(`/managelecturer`)
+    window.location.reload();
   
   }
 }

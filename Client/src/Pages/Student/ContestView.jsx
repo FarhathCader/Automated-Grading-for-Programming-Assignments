@@ -165,10 +165,14 @@ const ContestView = () => {
     }
   }, [user, contest]);
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
   return (
     notFound === false ?
       <div className="container mx-auto mt-10 ">
-        <BackButton />
+        <BackButton handleCancel = {handleCancel} />
         {shouldRender && (
           <div className="flex justify-center">
             <CountDown contestDuration={duration} enrollmentCreatedAt={enr} />

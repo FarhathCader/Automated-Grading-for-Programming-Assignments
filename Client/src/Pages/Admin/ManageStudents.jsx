@@ -112,7 +112,10 @@ const ManageStudents = () => {
                 <tr className="bg-green-200">
                   <th className="px-6 py-3 text-left text-green-800">Name</th>
                   <th className="px-6 py-3 text-left text-green-800">
-                   Registration Number
+                   Reg No
+                  </th>
+                  <th className="px-6 py-3 text-left text-green-800">
+                   Email
                   </th>
            
                   <th className="px-6 py-3 text-left text-green-800">Actions</th>
@@ -128,6 +131,7 @@ const ManageStudents = () => {
                     <td className="px-6 py-4 text-green-200">
                       {student.regNo}
                     </td>
+                    <td className="px-6 py-4 text-green-200">{student.email}</td>
                   
                     
                     <td className="px-10 py-4 flex ">

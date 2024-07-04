@@ -370,6 +370,7 @@ const verifyToken = (req, res, next) => {
 }
 
 const getUser = async (req, res) => {
+    const cookie = req.headers.cookie;
     try {
         const userId = req.id;
         if (!userId) {
@@ -378,7 +379,10 @@ const getUser = async (req, res) => {
 
         const user = await User.findById(userId, '-password');
         if (!user) {
+            res.clearCookie(String(req.id));
+            req.cookies[`${req.id}`] = '';
             return res.status(404).json({ error: 'User not found' });
+
         }
 
         return res.status(200).json({ user });

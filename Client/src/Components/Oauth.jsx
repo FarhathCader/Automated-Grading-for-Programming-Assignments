@@ -63,7 +63,7 @@ export default function Oauth(props) {
         onClick={handleGoogleClick}
         className="flex items-center justify-center w-80 bg-red-600 text-white font-semibold rounded-full py-2 px-4 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
       >
-        <FaGoogle className="mr-2" /> Sign in with Google
+        <FaGoogle className="mr-2" /> {isLogin ?  'Sign in with Google' : "Sign up with Google"}
       </button>
     </div>
   );

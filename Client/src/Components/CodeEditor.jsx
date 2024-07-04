@@ -118,10 +118,14 @@ export default function CodeEditor() {
       return null
     }
 
+    const handleCancel = () => {
+      navigate(-1);
+    };
+
 
     return (
         <div className='mx-auto px-4 py-8 flex flex-col justify-center items-start space-x-4'>
-          <BackButton/>
+          <BackButton handleCancel =  {handleCancel}/>
             <div className="w-full"> {/* Added w-full class to make the Navbar take full width */}
     <NavbarSubmission handleNavigation = {handleNavigation} viewSubmission=  {viewSubmission}/>
           

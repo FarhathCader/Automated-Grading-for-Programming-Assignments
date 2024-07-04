@@ -35,6 +35,7 @@ const addProblem = async (req, res) => {
             createdBy,
             addedBy: added.username
         })
+        console.log(problem)
 
         return res.status(201).json({ problem })
 
@@ -135,7 +136,7 @@ const updateInitialCode = async (req, res) => {
 
 const updateProblem = async (req, res) => {
     try {
-        const { name, category, description, difficulty, testCases, grade, initialCode, examples } = req.body;
+        const { name, category, description, difficulty, testCases, grade, initialCode, examples,isPractice } = req.body;
         const updatedProblem = await Problem.findByIdAndUpdate(
             req.params.id,
             {
@@ -147,6 +148,7 @@ const updateProblem = async (req, res) => {
                 grade,
                 initialCode,
                 examples,
+                isPractice
             },
             { new: true, runValidators: true }
         );

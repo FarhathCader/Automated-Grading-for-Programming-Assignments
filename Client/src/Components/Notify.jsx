@@ -23,6 +23,8 @@ const Notify = () => {
     socket.on('databaseChange', (change) => {
       fetchNotification(usertype);
       fetchNotifications(usertype);
+      console.log(change);
+      console.log(usertype);
       if (change.usertype === usertype) {
         toast.success(change.message);
       }

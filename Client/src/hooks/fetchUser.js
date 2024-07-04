@@ -53,6 +53,7 @@ const useFetchUser = () => {
         console.log("refreshing")
         const res = await axios.get(`${backendUrl}/api/user/refresh`, { withCredentials: true });
         const data = res.data;
+        console.log(res)
         if (data.user) {
           //dispatch(authActions.login({ userType: `${data.user.usertype}`, user: data.user }));
         }

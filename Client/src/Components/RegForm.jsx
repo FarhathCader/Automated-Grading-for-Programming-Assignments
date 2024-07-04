@@ -98,9 +98,9 @@ const RegForm = () => {
           <button onClick={handleBack} className="text-gray-300 text-2xl absolute top-3 right-3 hover:bg-blue-400 hover:text-white hover:rounded-full hover:p-1">
             <FaTimes />
           </button>
-          <h1 className="text-5xl font-bold text-white">SignUp</h1>
+          <h1 className="text-2xl font-bold text-white">Almost Finished...</h1>
           <p className="text-white text-opacity-70">
-            Create your account. It's free and only takes a minute.
+          Please provide a password to complete the registration
           </p>
 
           <form action="" className="space-y-6 text-white" onSubmit={handleSubmit}>

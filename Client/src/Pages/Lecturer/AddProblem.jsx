@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import CodeEditor from '../../Components/CodeEditor';
 import CodingEditor from '../../Components/CodingEditor';
 import { CODE_SNIPPETS } from '../../constant';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { FaPlus } from 'react-icons/fa';
 import { backendUrl } from "../../../config";
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import BackButton from '../../Components/BackButton';
 
 const AddProblem = (props) => {
   const user = useSelector(state => state.user);
-  const [loading,setLoading] = useState(false);
   const {isContest,onSelection,onClose} = props;
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +46,7 @@ const AddProblem = (props) => {
   }
 
   const handleCheckboxChangePractice = (e) => {
-    const { checked } = e.target;
+    const  {checked}  = e.target;
     setFormData({
       ...formData,
       isPractice: checked,
@@ -244,7 +241,7 @@ const AddProblem = (props) => {
 
   return (
     <div className="mx-auto p-6 bg-white rounded-xl shadow-md w-full max-w-3xl lg:max-w-full">
-      {/* <BackButton/> */}
+      <BackButton handleCancel = {handleCancelAction}/>
   <h2 className="text-2xl font-bold mb-4">{id ? 'Edit Problem' : 'Add Problem'}</h2>
   <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-8">
 
