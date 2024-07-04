@@ -30,6 +30,7 @@ const EditLectureProfile = (props) => {
   const url = `${backendUrl}/api/image`
 
   const save = async () => {
+    setUploading(true)
 
     try{
       const res  = await axios.put(`${backendUrl}/api/lecturer/${props.lecturer._id}`,{
@@ -50,6 +51,11 @@ const EditLectureProfile = (props) => {
     catch(err){
       const error = await err.response.data.error;
       toast.error(error);
+    }
+    finally{
+      setUploading(false);
+      props.cancel();
+      toast.success('Profile Updated Successfully');
     }
 
 
@@ -76,15 +82,9 @@ const EditLectureProfile = (props) => {
       const res = await axios.post(url, { image, userId });
       const data = await res.data;
     } catch (error) {
-      toast("error uploading image",error);
+      // toast("error uploading image",error);
     }
-    finally {
-      setUploading(false);
-      setTimeout(() => {
-        props.cancel();
-      }
-        , 1000);
-    }
+
   };
 
 

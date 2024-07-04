@@ -11,6 +11,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from "react-redux";
 import { authActions } from "../store";
 import { backendUrl } from "../../config";
+import useFetchUser  from "../hooks/fetchUser";
+import io from 'socket.io-client';
+import Approval from "../Pages/Lecturer/Approval";
+
+const socket = io(backendUrl);
 axios.defaults.withCredentials = true;
 
 const variants = {
@@ -41,12 +46,13 @@ const navItems = [
   },
 ];
 
-const SidebarLecturer = () => {
+const SidebarLecturer = (props) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation(); // Get current location
 
+  const {isApproved} = props;
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -144,6 +150,8 @@ const SidebarLecturer = () => {
           </span>
         </div>
       </div>
+      {isApproved === false && <Approval handleLogout={handleLogout} />}
+
     </motion.section>
   );
 };

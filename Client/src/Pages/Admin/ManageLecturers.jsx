@@ -5,6 +5,9 @@ import { FaSearch, FaEdit, FaTrash, FaAdjust, FaToggleOff, FaToggleOn } from "re
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { backendUrl } from "../../../config";
+import io from 'socket.io-client';
+
+const socket = io(backendUrl);
 
 
 const override = {
@@ -22,6 +25,17 @@ const ManageLecturers = () => {
 
   useEffect(() => {
     fetchLecturers();
+    socket.on('lecturercreated', () => {
+      fetchLecturers();
+    });
+    socket.on('lecturerupdated', () => {
+      console.log('lecturer updated');
+      fetchLecturers();
+    });
+    return () => {
+      socket.off('lecturercreated');
+      socket.off('lecturerupdated');
+    };
   }, []);
 
   const fetchLecturers = async () => {
@@ -64,6 +78,7 @@ const ManageLecturers = () => {
     }
   };
   const deleteLecturer = async (lecturerId) => {
+    setLoading(true);
     try {
       const response = await fetch(`${backendUrl}/api/lecturer/${lecturerId}`, {
         method: "DELETE",
@@ -77,6 +92,9 @@ const ManageLecturers = () => {
       );
     } catch (error) {
       console.error("Error deleting lecturer:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 

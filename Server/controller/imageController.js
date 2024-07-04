@@ -2,42 +2,6 @@ const Image = require('../models/image');
 const User = require('../models/user');
 const cloudinary = require('../utils/cloudinary');
 
-// const uploadImage = async (req, res) => {
-//     const { image, userId } = req.body;
-
-
-//     if (!image || image === "") {
-//         return res.status(403).json({ message: "Please upload a file" });
-//     }
-//     if (!userId || userId === "") {
-//         return res.status(403).json({ message: "Please login to continue" });
-//     }
-
-//     const user = await Image.findOne({userId});
-//     const result = await cloudinary.uploader.upload(image, {
-//         folder: "profiles",
-//         // width: 300,
-//         // crop: "scale"
-//     })
-//     if (!user) {
-//         const image = await Image.create({
-//             image: {
-//                 public_id: result.public_id,
-//                 url: result.secure_url
-//             },
-//             userId
-//         });
-//         return res.status(201).json(image);
-//     }
-//     else{
-//         const image = await updateImage(result,userId,user._id);
-//         return res.status(201).json(image);
-//     }
-
-
-
-// }
-
 const uploadImage = async (req, res) => {
     const { image, userId } = req.body;
 
@@ -82,22 +46,28 @@ const getImage = async (req, res) => {
     if (!userId || userId === "") {
         return res.status(403).json({ message: "Please login to continue" });
     }
-    const image = await Image.findOne({ userId});
-    if (!image) {
-        const img = {
-           image : {
-                public_id:  "profiles/g4zlps28aeqc8br09k9a",
-                url: "https://res.cloudinary.com/dljbly8ez/image/upload/v1719428575/profiles/g4zlps28aeqc8br09k9a.jpg"
-           },
-           userId
+    try{
+        const image = await Image.findOne({ userId});
+    // if (!image) {
+    //     const img = {
+    //        image : {
+    //             public_id:  "profiles/g4zlps28aeqc8br09k9a",
+    //             url: "https://res.cloudinary.com/dljbly8ez/image/upload/v1719428575/profiles/g4zlps28aeqc8br09k9a.jpg"
+    //        },
+    //        userId
             
-        }
+    //     }
 
-        await Image.create(img);
+    //     await Image.create(img);
 
-        return res.status(404).json(img);
-    }
+    //     return res.status(404).json(img);
+    // }
     return res.status(200).json(image);
+}
+    catch(err){
+        return res.status(500).json({ message: "Internal Server Error" });
+    
+    }
 }
 
 const updateImage = async (result,userId,id) => {

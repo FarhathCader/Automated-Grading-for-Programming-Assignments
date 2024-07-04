@@ -13,6 +13,10 @@ import { CSSProperties } from "react";
 import logo from "../assets/Images/profile.jpg";
 import { backendUrl } from "../../config";
 import Notify from "../Components/Notify";
+import useFetchUser from "../hooks/fetchUser";
+import io from 'socket.io-client';
+
+const socket = io(backendUrl);
 
 const override = {
   display: "block",
@@ -34,6 +38,8 @@ const Header = ({ bgColor }) => {
     fecthImage();
   }, [user]);
 
+ 
+
   const handleNavigate = () => {
     if (user.usertype === "student") {
       navigate("/profile_std");
@@ -43,6 +49,7 @@ const Header = ({ bgColor }) => {
       navigate("/adminprofile");
     }
   }
+
 
   const fecthImage = async () => {
     setLoading(true);

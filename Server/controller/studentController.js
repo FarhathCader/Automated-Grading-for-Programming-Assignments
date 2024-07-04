@@ -29,7 +29,8 @@ const updateStudent = async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         }
         // Return both updated user and student
-
+        const io = req.app.get('socketio');
+        io.emit('studentupdated');
         res.status(200).json({ updatedUser, updatedStudent });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -79,15 +80,16 @@ const getStudents = async (req, res) => {
 
 const deleteStudent = async (req, res) => {
     const { id } = req.params;
+   
     try {
-        // Find and delete the lecturer by ID
         const deletedStudent = await Student.findByIdAndDelete(id);
         if (!deletedStudent) {
             return res.status(404).json({ error: 'Student not found' });
         }
-
-        // Find and delete the user associated with the lecturer's email
         const deletedUser = await User.findOneAndDelete({ email: deletedStudent.email });
+        const io = req.app.get('socketio');
+        io.emit('userdeleted', deletedStudent.userId);
+        
 
         res.status(200).json({ lecturer: deletedStudent, user: deletedUser });
     } catch (error) {

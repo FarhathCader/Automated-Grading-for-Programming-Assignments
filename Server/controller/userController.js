@@ -115,24 +115,29 @@ const google = async (req, res) => {
         let user;
         if (usertype === 'lecturer') {
 
-             user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
+            user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
             const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
             const admin = await User.findOne({ usertype: 'admin' });
-            const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`, userId: admin._id});
-            const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
+            const notification = await Notification.create({ usertype: "admin", message: `New Lecturer ${username} Has Been Created`, userId: admin._id });
+            const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin' });
 
             const note = {
-                message : `New Lecturer ${username} Has Been Created`,
+                message: `New Lecturer ${username} Has Been Created`,
                 usertype: 'admin',
                 totalUnread
             }
             const io = req.app.get('socketio');
             io.emit('databaseChange', note);
+            io.emit('lecturercreated');
 
         } else {
 
-             user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
+            user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
             const stdnt = await student.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id, regNo: registrationNumber });
+            const io = req.app.get('socketio')
+            io.emit('studentcreated');
+            
+
 
         }
 
@@ -158,7 +163,7 @@ const google = async (req, res) => {
         req.cookies.remo
         req.cookies[`${user._id}`] = token;
 
-        return res.status(200).json({ msg: 'User created successfully',user });
+        return res.status(200).json({ msg: 'User created successfully', user });
     }
     catch (error) {
         return res.status(400).json({ error: error.message });
@@ -190,23 +195,27 @@ const signup = async (req, res) => {
                 const user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
                 const lectr = await Lecturer.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id });
                 const admin = await User.findOne({ usertype: 'admin' });
-                const notification = await Notification.create({ usertype : "admin", message : `New Lecturer ${username} Has Been Created`, userId: admin._id});
-                const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin'});
+                const notification = await Notification.create({ usertype: "admin", message: `New Lecturer ${username} Has Been Created`, userId: admin._id });
+                const totalUnread = await Notification.countDocuments({ read: false, usertype: 'admin' });
 
                 const note = {
-                    message : `New Lecturer ${username} Has Been Created`,
+                    message: `New Lecturer ${username} Has Been Created`,
                     usertype: 'admin',
                     totalUnread,
                     userId: admin._id
                 }
                 const io = req.app.get('socketio');
                 io.emit('databaseChange', note);
+                io.emit('lecturercreated');
+
+
 
             } else {
 
                 const user = await User.create({ username, email: email.toLowerCase(), password: hashedPassword, usertype });
                 const stdnt = await student.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id, regNo: registrationNumber });
-
+                const io = req.app.get('socketio')
+                io.emit('studentcreated');
             }
         }
 

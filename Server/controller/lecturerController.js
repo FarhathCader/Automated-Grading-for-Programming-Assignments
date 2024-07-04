@@ -8,6 +8,14 @@ const updateLecturer = async (req, res) => {
 
         const lec = await Lecturer.findById(id);
         const { email,isApproved } = req.body;
+        if(isApproved === true){
+            const io = req.app.get('socketio');
+            io.emit('lecturerapproved',lec.userId);
+        }
+        else if(isApproved === false){
+            const io = req.app.get('socketio');
+            io.emit('lecturerdisapproved',lec.userId);
+        }
         const existingUser = await User.findOne({ email: email.toLowerCase() });
 
 
@@ -26,6 +34,11 @@ const updateLecturer = async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         }
         // Return both updated user and student
+
+
+        const io = req.app.get('socketio');
+        io.emit('lecturerupdated');
+        
 
         res.status(200).json({ updatedUser, updatedLec });
     } catch (error) {
@@ -83,6 +96,9 @@ const deleteLecturer = async (req, res) => {
 
         // Find and delete the user associated with the lecturer's email
         const deletedUser = await User.findOneAndDelete({ email: deletedLecturer.email });
+
+        const io = req.app.get('socketio');
+        io.emit('lecturerdeleted');
 
         res.status(200).json({ lecturer: deletedLecturer, user: deletedUser });
     } catch (error) {
