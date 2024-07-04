@@ -36,6 +36,7 @@ const EditStudentProfile = (props) => {
   };
 
   const save = async () => {
+    setUploading(true);
     try {
       const res = await axios.put(`${backendUrl}/api/student/${props.student._id}`, {
         username,
@@ -51,26 +52,22 @@ const EditStudentProfile = (props) => {
     catch (err) {
       toast.error(err.message);
     }
+    finally{
+      setUploading(false);
+      props.cancel();
+      toast.success('Profile Updated Successfully');
+    }
   };
 
   const uploadImage = async (image) => {
-    setUploading(true);
     try {
       const res = await axios.post(url, { image, userId });
       if (res.status === 200) {
         toast.success('Image Uploaded Successfully');
       }
     } catch (error) {
-      toast.error("Error in uploading image");
-    } finally {
-      setUploading(false);
-      setTimeout(() => {
-        props.cancel();
-        toast.success('Profile Updated Successfully');
-
-      }
-        , 1000);
-    }
+      // toast.error("Error in uploading image");
+    } 
   };
 
   const handleUploadButtonClick = () => {

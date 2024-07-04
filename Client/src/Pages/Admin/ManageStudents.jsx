@@ -6,6 +6,10 @@ import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { backendUrl } from "../../../config";
+import io from 'socket.io-client';
+import { toast } from "react-toastify";
+
+const socket = io(backendUrl);
 
 const override = {
   display: "block",
@@ -22,6 +26,22 @@ const ManageStudents = () => {
 
   useEffect(() => {    
     fetchStudents();
+  }, []);
+
+  useEffect(() => {
+    fetchStudents();
+    socket.on('studentcreated', () => {
+      toast.success("Student Created")
+      fetchStudents();
+    });
+    socket.on('studentupdated', () => {
+      toast.success("Student Updated")
+      fetchStudents();
+    });
+    return () => {
+      socket.off('studentcreated');
+      socket.off('studentupdated');
+    };
   }, []);
 
   const fetchStudents = async () => {
@@ -43,6 +63,7 @@ const ManageStudents = () => {
     }
   }
   const deleteStudent = async (id) => {
+    setLoading(true);
     try {
       const response = await fetch(`${backendUrl}/api/student/${id}`, {
         method: "DELETE",
@@ -56,6 +77,9 @@ const ManageStudents = () => {
       );
     } catch (error) {
       console.error("Error deleting student:", error);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
