@@ -14,8 +14,7 @@ import logo from "../assets/Images/profile.jpg";
 import { backendUrl } from "../../config";
 import Notify from "../Components/Notify";
 import useFetchUser from "../hooks/fetchUser";
-import io from 'socket.io-client';
-
+import io from "socket.io-client";
 const socket = io(backendUrl);
 
 const override = {
@@ -37,6 +36,23 @@ const Header = ({ bgColor }) => {
   useEffect(() => {
     fecthImage();
   }, [user]);
+
+
+  useEffect(() => {
+    socket.on("userdeleted", (p) => {
+      if (user._id === p) {
+        toast.success("You account has been deleted by admin");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }
+    });
+
+    return () => {
+      socket.off("userdeleted");
+    };
+
+  }, []);
 
  
 

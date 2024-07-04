@@ -6,6 +6,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import {  CSSProperties } from "react";
 import { backendUrl } from "../../../config";
 import io from 'socket.io-client';
+import { toast } from "react-toastify";
 
 const socket = io(backendUrl);
 
@@ -26,6 +27,7 @@ const ManageLecturers = () => {
   useEffect(() => {
     fetchLecturers();
     socket.on('lecturercreated', () => {
+      toast.success('New lecturer added');
       fetchLecturers();
     });
     socket.on('lecturerupdated', () => {

@@ -1,3 +1,4 @@
+const student = require('../models/student');
 const Student = require('../models/student');
 const User = require('../models/user');
 
@@ -91,7 +92,7 @@ const deleteStudent = async (req, res) => {
         io.emit('userdeleted', deletedStudent.userId);
         
 
-        res.status(200).json({ lecturer: deletedStudent, user: deletedUser });
+        res.status(200).json({student: deletedStudent, user: deletedUser});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
