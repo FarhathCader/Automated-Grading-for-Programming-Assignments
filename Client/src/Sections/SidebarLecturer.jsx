@@ -86,14 +86,14 @@ const SidebarLecturer = () => {
       <div className="flex flex-col justify-center items-center gap-8">
         {isExpanded ? (
           <div id="logo-box">
-            <h1 className="text-fuchsia-400 font-bold text-4xl ">
-              ZEE <span className="italic text-fuchsia-200">CODE</span>
+            <h1 className="text-violet-400 font-bold text-4xl ">
+              ZEE <span className="italic text-violet-200">CODE</span>
             </h1>
           </div>
         ) : (
           <div className="flex justify-center items-center">
-            <h1 className="text-fuchsia-400 font-bold text-3xl">Z</h1>
-            <span className="italic text-fuchsia-200 text-3xl">C</span>
+            <h1 className="text-violet-400 font-bold text-3xl">Z</h1>
+            <span className="italic text-violet-200 text-3xl">C</span>
           </div>
         )}
         <div
@@ -106,13 +106,13 @@ const SidebarLecturer = () => {
               className={
                 "flex justify-start items-center gap-4 w-full cursor-pointer rounded-xl " +
                 (location.pathname === item.link // Check if current path matches the link's path
-                  ? "bg-fuchsia-300 text-fuchsia-900" // Apply active styles
+                  ? "bg-violet-300 text-violet-900" // Apply active styles
                   : "text-white") +
                 (isExpanded ? " px-6 py-2" : " p-2")
               }
               onClick={() => navigate(item.link)}
             >
-              <div className="bg-fuchsia-100 text-fuchsia-900 p-2 rounded-full ">
+              <div className="bg-violet-100 text-violet-900 p-2 rounded-full ">
                 <item.icon className="md:w-6 w-4 h-4 md:h-6" />
               </div>
               <span className={"text-lg " + (isExpanded ? "flex" : "hidden")}>
@@ -124,7 +124,7 @@ const SidebarLecturer = () => {
       </div>
       <div
         id="expanded-icon"
-        className="bg-fuchsia-300 text-fuchsia-900 p-2 rounded-full cursor-pointer absolute -right-4 bottom-20 md:bottom-40 md:flex hidden hover:bg-fuchsia-200"
+        className="bg-violet-300 text-violet-900 p-2 rounded-full cursor-pointer absolute -right-4 bottom-20 md:bottom-40 md:flex hidden hover:bg-violet-200"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <FaArrowRight />
@@ -134,11 +134,11 @@ const SidebarLecturer = () => {
         className="w-full flex flex-col justify-start items-center gap-4 cursor-pointer"
         onClick={handleLogout}
       >
-        <div className="bg-fuchsia-300 w-full h-[0.5px]"></div>
+        <div className="bg-violet-300 w-full h-[0.5px]"></div>
         <div className="flex justify-center items-center gap-2 ">
-          <MdLogout className="w-6 h-6 text-white hover:text-fuchsia-400" />
+          <MdLogout className="w-6 h-6 text-white hover:text-violet-400" />
           <span
-            className={"text-white text-lg hover:text-fuchsia-400 " + (isExpanded ? "flex" : "hidden")}
+            className={"text-white text-lg hover:text-violet-400 " + (isExpanded ? "flex" : "hidden")}
           >
             Logout
           </span>
