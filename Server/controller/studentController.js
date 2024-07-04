@@ -63,9 +63,12 @@ const getStudents = async (req, res) => {
    
 
     try {
-        
-        // Find all students
-        const students = await Student.find({});
+
+        const {sortField = 'createdAt', sortOrder = 'desc' } = req.query;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+        const students = await Student.find()
+        .collation({ locale: "en" , strength: 2})
+        .sort(sortOptions);
 
 
         if (!students) {

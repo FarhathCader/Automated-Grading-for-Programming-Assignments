@@ -70,7 +70,12 @@ const getLecturers = async (req, res) => {
 
     try {
         
-        const lecturers = await Lecturer.find().sort({ createdAt: -1 });
+        const {sortField = 'createdAt', sortOrder = 'asc'} = req.query;
+        const sortOptions = {
+            [sortField]: sortOrder === 'asc' ? 1 : -1
+        };
+
+        const lecturers = await Lecturer.find().sort(sortOptions);
         
 
 
