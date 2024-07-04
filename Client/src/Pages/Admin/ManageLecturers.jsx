@@ -29,7 +29,6 @@ const ManageLecturers = () => {
       fetchLecturers();
     });
     socket.on('lecturerupdated', () => {
-      console.log('lecturer updated');
       fetchLecturers();
     });
     return () => {
