@@ -105,7 +105,10 @@ const Signup = () => {
     navigate('/login');
   };
 
+
+
   return (
+    state &&
     <div className="bg-gradient-to-r from-[#F28383] from-10% via-[#9D6CD2] to-[#481EDC] to-90% flex items-center justify-center h-screen">
       <div className="max-w-[960px] relative bg-black bg-opacity-50 grid grid-cols-1 md:grid-cols-2 items-center p-5 rounded-2xl gap-10 md:gap-20">
         <div className="relative hidden md:block">

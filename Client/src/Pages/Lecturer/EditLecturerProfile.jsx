@@ -42,10 +42,6 @@ const EditLectureProfile = (props) => {
   
       uploadImage(image);
 
-      if (res.status === 200) {
-        toast.success('Profile Updated Successfully');
-      }
-
 
     }
     catch(err){

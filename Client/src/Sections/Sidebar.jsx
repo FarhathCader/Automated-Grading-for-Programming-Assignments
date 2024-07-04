@@ -14,6 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store";
 import { backendUrl } from "../../config";
 import { useSearchParams } from 'react-router-dom';
+import io from 'socket.io-client';
+
+const socket = io(backendUrl);
 
 axios.defaults.withCredentials = true;
 
@@ -57,6 +60,11 @@ const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const user = useSelector((state) => state.user);
+
+  useEffect(()=>{
+
+  },[])
 
 
   useEffect(() => {

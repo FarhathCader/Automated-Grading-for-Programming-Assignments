@@ -12,10 +12,8 @@ import { useDispatch } from "react-redux";
 import { authActions } from "../store";
 import { backendUrl } from "../../config";
 import useFetchUser  from "../hooks/fetchUser";
-import io from 'socket.io-client';
 import Approval from "../Pages/Lecturer/Approval";
 
-const socket = io(backendUrl);
 axios.defaults.withCredentials = true;
 
 const variants = {

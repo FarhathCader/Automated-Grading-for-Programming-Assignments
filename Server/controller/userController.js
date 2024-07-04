@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const Notification = require('../models/notifications');
+const Otp = require('../models/otp');
 
 const crypto = require('crypto');
 
@@ -20,11 +21,6 @@ function generateSecureOTP(length) {
 
     return OTP;
 }
-
-// Example usage:
-
-let otp;
-
 const sendOtp = async (req, res) => {
     try {
         const { username, email, password, usertype, registrationNumber } = req.body;
@@ -56,7 +52,17 @@ const sendOtp = async (req, res) => {
             return res.status(400).json({ error: 'Registration Number already exists' });
         }
 
-        otp = generateSecureOTP(6);
+        const otp = generateSecureOTP(6);
+
+        await Otp.deleteMany({ email: email.toLowerCase() });
+        await Otp.create({ email: email.toLowerCase(), otp, expiry: Date.now() + 5*60 * 1000 });
+
+
+
+
+
+
+
         let transporter = nodeMailer.createTransport({
             service: 'gmail',
             auth: {
@@ -76,7 +82,7 @@ const sendOtp = async (req, res) => {
             from: "farhadfd818@gmail.com",
             to: email,
             subject: 'Account Verification',
-            text: `OTP is ${otp}`
+            text: `OTP is ${otp}  This OTP will expire in 5 minutes`
         };
 
         transporter.sendMail(mailOptions, function (err, data) {
@@ -136,7 +142,7 @@ const google = async (req, res) => {
             const stdnt = await student.create({ username, email: email.toLowerCase(), password: hashedPassword, userId: user._id, regNo: registrationNumber });
             const io = req.app.get('socketio')
             io.emit('studentcreated');
-            
+
 
 
         }
@@ -178,16 +184,30 @@ const signup = async (req, res) => {
 
     try {
         const { username, email, password, usertype, OTP, registrationNumber } = req.body;
-        console.log(`OTP ${OTP} otp ${otp}`)
+
         hashedPassword = await bcrypt.hash(password, 10);
 
         if (!OTP) {
             return res.status(400).json({ error: 'Please enter the OTP' });
         }
-        if (OTP !== otp) {
+        const otp = await Otp.findOne({ email: email.toLowerCase() });
+        console.log(otp);
+        if (!otp) {
+            return res.status(400).json({ error: 'OTP expired' });
+        }
+
+        if (OTP !== otp.otp) {
             return res.status(400).json({ error: 'Invalid OTP' });
         }
+
+        if(otp.expiry < Date.now()){
+            return res.status(400).json({ error: 'OTP expired' });
+        }
+
+
+
         else {
+
 
 
             if (usertype === 'lecturer') {

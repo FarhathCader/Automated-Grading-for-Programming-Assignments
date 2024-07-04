@@ -31,11 +31,9 @@ const ManageStudents = () => {
   useEffect(() => {
     fetchStudents();
     socket.on('studentcreated', () => {
-      toast.success("Student Created")
       fetchStudents();
     });
     socket.on('studentupdated', () => {
-      toast.success("Student Updated")
       fetchStudents();
     });
     return () => {
