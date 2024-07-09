@@ -265,8 +265,8 @@ const QuestionBank = () => {
 
       {!loading ? (
         <section className="w-full md:w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
-          {/* <Header bgColor="fuchsia" /> */}
-          <div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-10 md:mt-20 mb-5">
+          {/* <Header bgColor="violet" /> */}
+          <div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-violet-300 rounded-xl shadow-lg flex flex-col items-center mt-10 md:mt-20 mb-5">
             <div className="flex flex-col md:flex-row items-center justify-between w-full mb-4">
               <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 mr-0 md:mr-4">
                 <input
@@ -281,7 +281,7 @@ const QuestionBank = () => {
               </div>
               <div>
                 <button
-                  className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                  className="w-full md:w-auto bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 flex items-center"
                   onClick={handleClick}
                 >
                   <FaSearch className="mr-2" />
@@ -292,19 +292,19 @@ const QuestionBank = () => {
           </div>
           <div className="w-full flex justify-center mb-5">
             <button
-              className="w-full md:w-auto bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center justify-center "
+              className="w-full md:w-auto bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 flex items-center justify-center "
               onClick={addProblem}
             >
               <FaPlus className="mr-2" />
               Add Question
             </button>
           </div>
-          {problems && problems.length > 0 ? (<div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+          {problems && problems.length > 0 ? (<div className="w-full max-w-screen-lg mx-auto p-4 md:p-6 bg-violet-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
             <div className="overflow-x-auto w-full">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-fuchsia-200">
-                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">
+                  <tr className="bg-violet-200">
+                    <th className="px-2 md:px-6 py-3 text-left text-violet-800">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
                           onClick={() => handleSort('name')}
@@ -313,17 +313,17 @@ const QuestionBank = () => {
                         </p>
                         <div className="text-sm">
                           <FaSortUp
-                            className={sortField === 'name' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'name' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                           <FaSortDown
-                            className={sortField === 'name' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'name' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                         </div>
                       </div>
 
 
                     </th>
-                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                    <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
                           onClick={() => handleSort('category')}
@@ -332,15 +332,15 @@ const QuestionBank = () => {
                         </p>
                         <div className="text-sm">
                           <FaSortUp
-                            className={sortField === 'category' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'category' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                           <FaSortDown
-                            className={sortField === 'category' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'category' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                         </div>
                       </div>
                     </th>
-                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                    <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
                           onClick={() => handleSort('difficulty')}
@@ -349,15 +349,15 @@ const QuestionBank = () => {
                         </p>
                         <div className="text-sm">
                           <FaSortUp
-                            className={sortField === 'difficulty' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'difficulty' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                           <FaSortDown
-                            className={sortField === 'difficulty' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'difficulty' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                         </div>
                       </div></th>
 
-                      <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">
+                      <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
                           onClick={() => handleSort('grade')}
@@ -366,15 +366,15 @@ const QuestionBank = () => {
                         </p>
                         <div className="text-sm">
                           <FaSortUp
-                            className={sortField === 'grade' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'grade' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                           <FaSortDown
-                            className={sortField === 'grade' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'grade' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                         </div>
                       </div></th>
                       
-                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden lg:table-cell">
+                    <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden lg:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
                           onClick={() => handleSort('addedBy')}
@@ -383,25 +383,25 @@ const QuestionBank = () => {
                         </p>
                         <div className="text-sm">
                           <FaSortUp
-                            className={sortField === 'addedBy' && sortOrder === 'asc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'addedBy' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                           <FaSortDown
-                            className={sortField === 'addedBy' && sortOrder === 'desc' ? 'text-fuchsia-500' : 'text-gray-500'}
+                            className={sortField === 'addedBy' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
                           />
                         </div>
                       </div>
                     </th>
-                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-violet-800">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {problems.map((question, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"}>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 text-xs md:text-base">{question.name}</td>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.category}</td>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{difficultyOrder[question.difficulty]}</td>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">{question.grade}</td>
-                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden lg:table-cell">{question.addedBy}</td>
+                    <tr key={index} className={index % 2 === 0 ? "bg-violet-800" : "bg-violet-700"}>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 text-xs md:text-base">{question.name}</td>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{question.category}</td>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{difficultyOrder[question.difficulty]}</td>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{question.grade}</td>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden lg:table-cell">{question.addedBy}</td>
 
                       {question.createdBy === user._id ? (
                         <td className="px-2 md:px-6 py-4 flex">
@@ -410,7 +410,7 @@ const QuestionBank = () => {
                             onClick={() => editProblem(question)}
                           />
                           <FaEye
-                            className="mr-2 text-red-500 hover:text-red-600 cursor-pointer text-xs md:text-base"
+                            className="mr-2 text-blue-500 hover:text-blue-600 cursor-pointer text-xs md:text-base"
                             onClick={() => handleViewProblem(question)}
                           />
                           <FaTrash
@@ -422,7 +422,7 @@ const QuestionBank = () => {
                       ) : (
                         <td className="px-2 md:px-6 py-4 flex ml-5">
                           <FaEye
-                            className="text-red-500 text-center hover:text-red-600 cursor-pointer text-xs md:text-base"
+                            className="text-blue-500 text-center hover:text-blue-600 cursor-pointer text-xs md:text-base"
                             onClick={() => handleViewProblem(question)}
                           />
                         </td>)}
@@ -436,17 +436,17 @@ const QuestionBank = () => {
               <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
                 <button
                   onClick={handlePrev}
-                  className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 md:px-4 md:py-2 bg-violet-500 text-white font-semibold rounded-lg hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage === 1}
                 >
                   Prev
                 </button>
-                <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
+                <span className="text-violet-800 font-semibold text-sm md:text-base">
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
                   onClick={handleNext}
-                  className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 md:px-4 md:py-2 bg-violet-500 text-white font-semibold rounded-lg hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -456,9 +456,9 @@ const QuestionBank = () => {
           </div>
           ) : (
             <div className="w-full flex justify-center items-center mt-5">
-              <div className="w-full max-w-xl p-4 md:p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
-                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No Questions Found</h1>
-                <p className="text-lg text-fuchsia-700 text-center">
+              <div className="w-full max-w-xl p-4 md:p-6 bg-violet-100 rounded-lg shadow-md flex flex-col items-center">
+                <h1 className="text-3xl font-bold text-violet-800 mb-4">No Questions Found</h1>
+                <p className="text-lg text-violet-700 text-center">
                   There are no questions in the Question Bank as your request. Start by adding questions to build your collection.
                 </p>
               </div>
