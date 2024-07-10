@@ -9,6 +9,7 @@ import { backendUrl } from "../../../config";
 import io from 'socket.io-client';
 import { toast } from "react-toastify";
 import axios from "axios";
+import { set } from "lodash";
 
 
 const socket = io(backendUrl);
@@ -21,24 +22,57 @@ const override = {
 
 const ManageStudents = () => {
 
+  const studentsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showSearch, setShowSearch] = useState(false);
   const [students, setStudents] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sortField, setSortField] = useState('createdAt'); // Sorting field
   const [sortOrder, setSortOrder] = useState('desc'); // Sorting order
+  const [name, setName] = useState('')
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [showBtn, setShowBtn] = useState(false);
+  const [showStudent, setShowStudent] = useState(true);
+  const [totalPages, setTotalPages] = useState(0)
 
   useEffect(() => {
-    fetchStudents(sortField, sortOrder);
-  }, [sortField, sortOrder]);
+    const total = Math.ceil(totalStudents / studentsPerPage)
+
+    if (total === 0) return
+    setTotalPages(total);
+    if (total > 1) {
+      setShowBtn(true)
+    }
+    else {
+      setShowBtn(false)
+    }
+    if (currentPage > total) {
+      setCurrentPage(1)
+    }
+  }, [totalStudents, showBtn, currentPage])
 
   useEffect(() => {
-    fetchStudents();
+
+    if (showStudent) {
+      fetchStudents(currentPage, sortField, sortOrder)
+      return
+    }
+    if (showSearch) {
+      fetchSearchedStudents(currentPage, sortField, sortOrder)
+      return
+    }
+  }, [showSearch, currentPage, showStudent, sortField, sortOrder]);
+  
+
+  useEffect(() => {
+    fetchStudents(currentPage, sortField, sortOrder);
     socket.on('studentcreated', () => {
-      fetchStudents();
+      fetchStudents(currentPage, sortField, sortOrder);
     });
     socket.on('studentupdated', () => {
-      fetchStudents();
+      fetchStudents(currentPage, sortField, sortOrder);
     });
     return () => {
       socket.off('studentcreated');
@@ -46,25 +80,35 @@ const ManageStudents = () => {
     };
   }, []);
 
-  const fetchStudents = async (sortField, sortOrder) => {
+  useEffect(() => {
+    if (name !== "") return
+    setShowStudent(true)
+    setShowSearch(false)
+  }, [name])
+
+  const fetchStudents = async (page,sortField, sortOrder) => {
+    console.log("fetching students");
     setLoading(true);
     try {
       const response = await axios.get(`${backendUrl}/api/student`,
         {
           params: {
-            // page: page,
-            // limit: problemsPerPage,
+            page: page,
+            limit: studentsPerPage,
             sortField,
             sortOrder
           },
         }
       );
       if (response.status === 200) {
-        setStudents(response.data);
+        setStudents(response.data.students);
+        setTotalStudents(response.data.total);
+
       }
     }
     catch (error) {
-      console.error(error);
+      console.log(error);
+      toast.error(error);
     }
     finally {
       setLoading(false);
@@ -109,11 +153,63 @@ const ManageStudents = () => {
     setShowConfirmation(false);
   };
 
+  const fetchSearchedStudents = async (page, sortField, sortOrder) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${backendUrl}/api/student/search`, {
+        params: {
+          name,
+          page: page,
+          limit: studentsPerPage,
+          sortField,
+          sortOrder
+        }
+      });
+      if (response.status === 200) {
+        setStudents(response.data.students);
+        setTotalStudents(response.data.total);
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  const handleNext = () => {
+    if (currentPage !== totalPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
+
+  const handlePrev = () => {
+    if (currentPage !== 1) {
+      setCurrentPage((prev) => prev - 1)
+
+    }
+  }
+
+
   const handleSort = (field) => {
     const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
     setSortField(field);
     setSortOrder(order);
   }
+
+  const handleChange = (e) => {
+    setName(e.target.value)
+  }
+
+
+  const handleClick = () => {
+    if (name === "") return
+    setShowSearch(true)
+    fetchSearchedStudents(currentPage)
+    setShowStudent(false)
+  }
+
 
 
   return (
@@ -135,13 +231,25 @@ const ManageStudents = () => {
           <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
             <Header bgColor="green" />
             <div className="w-full max-w-screen-lg mx-auto flex items-center mt-6">
-              <div className="relative flex-grow">
+            <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 mr-0 md:mr-4">
                 <input
                   type="text"
-                  placeholder="Search..."
-                  className="pl-10 pr-4 py-2 w-full border rounded-md focus:border-green-500"
+                  placeholder="Search Student.."
+                  className="pl-10 pr-4 py-2 w-full border rounded-md"
+                  value={name}
+                  onChange={handleChange}
+                  disabled={loading}
                 />
                 <FaSearch className="absolute top-3 left-3 text-gray-400" />
+              </div>
+              <div>
+                <button
+                  className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center"
+                  onClick={handleClick}
+                >
+                  <FaSearch className="mr-2" />
+                  Search
+                </button>
               </div>
             </div>
             <div className="w-full p-6 bg-green-100 rounded-xl shadow-lg flex flex-col items-center mt-8">
@@ -236,7 +344,7 @@ const ManageStudents = () => {
                         key={index}
                         className={index % 2 === 0 ? "bg-green-800" : "bg-green-700"}
                       >
-                        <td className="px-6 py-4 text-green-200">
+                        <td className="px-6 py-4 text-green-200 text-sm">
                           {`${new Date(student.createdAt).toLocaleDateString('en-GB', {
                             day: '2-digit',
                             month: '2-digit',
@@ -265,6 +373,27 @@ const ManageStudents = () => {
                   </tbody>
                 </table>
               </div>
+              {showBtn && (
+              <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
+                <button
+                  onClick={handlePrev}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === 1}
+                >
+                  Prev
+                </button>
+                <span className="text-green-800 font-semibold text-sm md:text-base">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNext}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
             </div>
           </section>}
       {showConfirmation && (
