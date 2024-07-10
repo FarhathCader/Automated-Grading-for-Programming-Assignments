@@ -21,16 +21,63 @@ const override = {
 
 const ManageLecturers = () => {
 
+  const studentsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showSearch, setShowSearch] = useState(false);
   const [lecturers, setLecturers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lecturerToDelete, setLecturerToDelete] = useState(null);
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+  const [name, setName] = useState('')
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [showBtn, setShowBtn] = useState(false);
+  const [showStudent, setShowStudent] = useState(true);
+  const [totalPages, setTotalPages] = useState(0)
+
 
   useEffect(() => {
-    fetchLecturers(sortField, sortOrder);
-  }, [sortField, sortOrder]);
+    const total = Math.ceil(totalStudents / studentsPerPage)
+
+    if (total === 0) return
+    setTotalPages(total);
+    if (total > 1) {
+      setShowBtn(true)
+    }
+    else {
+      setShowBtn(false)
+    }
+    if (currentPage > total) {
+      setCurrentPage(1)
+    }
+  }, [totalStudents, showBtn, currentPage])
+
+  useEffect(() => {
+
+    if (showStudent) {
+      fetchLecturers(currentPage, sortField, sortOrder)
+      return
+    }
+    if (showSearch) {
+      fetchSeachedLecturers(currentPage, sortField, sortOrder)
+      return
+    }
+  }, [showSearch, currentPage, showStudent, sortField, sortOrder]);
+
+
+
+  // useEffect(() => {
+  //   fetchLecturers(sortField, sortOrder);
+  // }, [sortField, sortOrder]);
+
+  useEffect(() => {
+    if (name !== "") return
+    setShowStudent(true)
+    setShowSearch(false)
+  }, [name])
+
+
 
   useEffect(() => {
     fetchLecturers();
@@ -49,29 +96,62 @@ const ManageLecturers = () => {
 
 
 
-  const fetchLecturers = async (sortField, sortOrder) => {
+  const fetchLecturers = async (page,sortField, sortOrder) => {
     setLoading(true); // Set loading to true when fetching data
     try {
       const response = await axios.get(`${backendUrl}/api/lecturer`,
 
         {
           params: {
-            // page: page,
-            // limit: problemsPerPage,
+            page: page,
+            limit: studentsPerPage,
             sortField,
             sortOrder
           },
         }
 
       );
-      const data = response.data;
-      setLecturers(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false); // Set loading to false when data fetching is done
+      if (response.status === 200) {
+        setLecturers(response.data.lecturers);
+        setTotalStudents(response.data.total);
+
+      }
+    }
+    catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+    finally {
+      setLoading(false);
     }
   };
+
+  const fetchSeachedLecturers = async (page, sortField, sortOrder) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${backendUrl}/api/lecturer/search`, {
+        params: {
+          name,
+          page: page,
+          limit: studentsPerPage,
+          sortField,
+          sortOrder
+        }
+      });
+      if (response.status === 200) {
+        setLecturers(response.data.lecturers);
+        setTotalStudents(response.data.total);
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+
 
   const toggleApprovalStatus = async (id, isApproved, email) => {
     setLoading(true); // Set loading to true when updating data
@@ -140,6 +220,33 @@ const ManageLecturers = () => {
     setSortOrder(order);
   }
 
+  const handleNext = () => {
+    if (currentPage !== totalPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
+
+  const handlePrev = () => {
+    if (currentPage !== 1) {
+      setCurrentPage((prev) => prev - 1)
+
+    }
+  }
+
+
+
+  const handleChange = (e) => {
+    setName(e.target.value)
+  }
+
+
+  const handleClick = () => {
+    if (name === "") return
+    setShowSearch(true)
+    fetchSeachedLecturers(currentPage)
+    setShowStudent(false)
+  }
+
 
 
   return (
@@ -162,16 +269,29 @@ const ManageLecturers = () => {
 
           <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
             <Header bgColor="green" />
-            <div className="w-full max-w-screen-lg mx-auto flex items-center mt-6">
-              <div className="relative flex-grow">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="pl-10 pr-4 py-2 w-full border rounded-md"
-                />
-                <FaSearch className="absolute top-3 left-3 text-gray-400" />
-              </div>
-            </div>
+            <div className="w-full max-w-screen-lg mx-auto flex flex-col md:flex-row items-center mt-6 space-y-4 md:space-y-0 md:space-x-4">
+  <div className="relative flex-grow w-full md:w-auto">
+    <input
+      type="text"
+      placeholder="Search..."
+      className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+      value={name}
+      onChange={handleChange}
+      disabled={loading}
+    />
+    <FaSearch className="absolute top-3 left-3 text-gray-400" />
+  </div>
+  <div className="w-full md:w-auto">
+    <button
+      className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center"
+      onClick={handleClick}
+    >
+      <FaSearch className="mr-2" />
+      Search
+    </button>
+  </div>
+</div>
+
             <div className="w-full p-6 bg-green-100 rounded-xl shadow-lg flex flex-col items-center mt-8">
               <div className="overflow-x-auto w-full">
                 <table className="w-full">
@@ -306,6 +426,27 @@ const ManageLecturers = () => {
                   </tbody>
                 </table>
               </div>
+              {showBtn && (
+              <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
+                <button
+                  onClick={handlePrev}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === 1}
+                >
+                  Prev
+                </button>
+                <span className="text-green-800 font-semibold text-sm md:text-base">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNext}
+                  className="px-3 py-2 md:px-4 md:py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
             </div>
           </section>}
       {showConfirmation && (

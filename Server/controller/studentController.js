@@ -99,7 +99,7 @@ const deleteStudent = async (req, res) => {
 const searchStudents = async (req, res) => {
     try {
         const { name } = req.query;
-        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
+        const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc' } = req.query;
         const skip = (page - 1) * limit;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
 

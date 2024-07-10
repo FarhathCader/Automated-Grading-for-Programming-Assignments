@@ -230,28 +230,29 @@ const ManageStudents = () => {
         ) :
           <section className="w-4/5 grow bg-green-100 h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
             <Header bgColor="green" />
-            <div className="w-full max-w-screen-lg mx-auto flex items-center mt-6">
-            <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 mr-0 md:mr-4">
-                <input
-                  type="text"
-                  placeholder="Search Student.."
-                  className="pl-10 pr-4 py-2 w-full border rounded-md"
-                  value={name}
-                  onChange={handleChange}
-                  disabled={loading}
-                />
-                <FaSearch className="absolute top-3 left-3 text-gray-400" />
-              </div>
-              <div>
-                <button
-                  className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center"
-                  onClick={handleClick}
-                >
-                  <FaSearch className="mr-2" />
-                  Search
-                </button>
-              </div>
-            </div>
+            <div className="w-full max-w-screen-lg mx-auto flex flex-col md:flex-row items-center mt-6 space-y-4 md:space-y-0 md:space-x-4">
+  <div className="relative flex-grow w-full md:w-auto">
+    <input
+      type="text"
+      placeholder="Search..."
+      className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+      value={name}
+      onChange={handleChange}
+      disabled={loading}
+    />
+    <FaSearch className="absolute top-3 left-3 text-gray-400" />
+  </div>
+  <div className="w-full md:w-auto">
+    <button
+      className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center"
+      onClick={handleClick}
+    >
+      <FaSearch className="mr-2" />
+      Search
+    </button>
+  </div>
+</div>
+
             <div className="w-full p-6 bg-green-100 rounded-xl shadow-lg flex flex-col items-center mt-8">
               <div className="overflow-x-auto w-full">
                 <table className="w-full">
