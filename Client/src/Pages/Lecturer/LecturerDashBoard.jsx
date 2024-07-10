@@ -4,8 +4,8 @@ const LecturerDashBoard = () => {
   return (
     <main className="w-full h-screen flex justify-between items-start text-xs md:text-base">
         <section className="w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-          <div className="w-100 p-6 bg-fuchsia-100 rounded-xl shadow-lg flex flex-col items-center mt-20">
-            <h1 className="text-xl md:text-2xl font-bold text-fuchsia-700 mb-4">
+          <div className="w-100 p-6 bg-violet-100 rounded-xl shadow-lg flex flex-col items-center mt-20">
+            <h1 className="text-xl md:text-2xl font-bold text-violet-700 mb-4">
               Welcome to your Dashboard!
             </h1>
 
@@ -15,7 +15,7 @@ const LecturerDashBoard = () => {
               </p>
               <div className="flex justify-center items-center gap-4">
                 <Link to="/qbank">
-                  <button className="bg-fuchsia-500 text-white px-6 py-2 rounded-md hover:bg-fuchsia-600 focus:outline-none">
+                  <button className="bg-violet-500 text-white px-6 py-2 rounded-md hover:bg-violet-600 focus:outline-none">
                     Questions Bank
                   </button>
                 </Link>
