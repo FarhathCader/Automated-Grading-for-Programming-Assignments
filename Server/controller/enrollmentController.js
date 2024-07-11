@@ -21,28 +21,45 @@ const getEnrolledStudentsWithGrades = async (req, res) => {
 
     // Calculate total grades for each student in the contest
     const studentsWithGrades = await Promise.all(students.map(async (student) => {
-      const submissions = await Submission.find({ userId: student.userId, contestId });
+      // const submissions = await Submission.find({ userId: student.userId, contestId });
 
-      // Group submissions by problem ID
-      const submissionGroups = {};
-      submissions.forEach(submission => {
-        if (!submissionGroups[submission.problemId]) {
-          submissionGroups[submission.problemId] = [];
-        }
-        submissionGroups[submission.problemId].push(submission);
-      });
+      // // Group submissions by problem ID
+      // const submissionGroups = {};
+      // submissions.forEach(submission => {
+      //   if (!submissionGroups[submission.problemId]) {
+      //     submissionGroups[submission.problemId] = [];
+      //   }
+      //   submissionGroups[submission.problemId].push(submission);
+      // });
 
-      // Calculate highest grade for each problem
-      const highestGrades = {};
-      for (const [problemId, problemSubmissions] of Object.entries(submissionGroups)) {
-        const highestGrade = Math.max(...problemSubmissions.map(submission => submission.grade));
-        highestGrades[problemId] = highestGrade;
-      }
+      // // Calculate highest grade for each problem
+      // const highestGrades = {};
+      // for (const [problemId, problemSubmissions] of Object.entries(submissionGroups)) {
+      //   const highestGrade = Math.max(...problemSubmissions.map(submission => submission.grade));
+      //   highestGrades[problemId] = highestGrade;
+      // }
 
-      // Sum highest grades for each problem
+      // // Sum highest grades for each problem
+      // let totalGrade = 0;
+      // for (const grade of Object.values(highestGrades)) {
+      //   totalGrade += grade;
+      // }
+
+      // return {
+      //   regNo: student.regNo,
+      //   username: student.username,
+      //   totalGrade
+      // };
+
+      const contest = await Contest.findById(contestId);
+      const problems = contest.problems;
+
       let totalGrade = 0;
-      for (const grade of Object.values(highestGrades)) {
-        totalGrade += grade;
+
+      // Loop through each problem and sum up the highest grades
+      for (const problemId of problems) {
+        const highestGrade = await getHighestGrade(student.userId, problemId, contestId);
+        totalGrade += highestGrade;
       }
 
       return {
@@ -64,6 +81,17 @@ const getEnrolledStudentsWithGrades = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch enrolled students with grades' });
   }
 };
+
+const getHighestGrade = async (userId, problemId, contestId) => {
+  const submissions = await Submission.find({ problemId, userId, contestId });
+  if (submissions.length === 0) {
+    return 0;
+  }
+  const highestGrade = submissions.reduce((prev, current) => {
+    return prev.grade > current.grade ? prev : current;
+  });
+  return highestGrade.grade;
+}
 
 
 const getEnrolledStudents = async (req, res) => {
