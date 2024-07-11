@@ -4,7 +4,6 @@ const Notification = require("../models/notifications");
 const getAllNotifications = async (req, res) => {
     try {
         const {usertype,userId} = req.query;
-        console.log("usetyppe",usertype,userId);
         const notifications = await Notification.find({usertype,userId}).sort({ createdAt: -1 });
         res.status(200).json({notifications});
     } catch (error) {
@@ -15,7 +14,6 @@ const getAllNotifications = async (req, res) => {
 const getTotalUnreadNotifications = async (req, res) => {
     try {
         const {usertype,userId} = req.query;
-        console.log("usetyppe",usertype,"userId",userId);
         const notifications = await Notification.find({usertype,userId}).sort({ createdAt: -1 });
         const totalUnread = await Notification.countDocuments({ read: false , usertype,userId });
         res.status(200).json({ totalUnread,notifications });

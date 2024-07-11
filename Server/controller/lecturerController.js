@@ -68,23 +68,19 @@ const getLecturer = async (req, res) => {
 
 const getLecturers = async (req, res) => {
 
+
     try {
+
+        const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc' } = req.query;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+        const lecturers = await Lecturer.find()
+            .collation({ locale: "en", strength: 2 })
+            .sort(sortOptions)
+            .skip((page - 1) * limit)
+            .limit(limit);
         
-        const {sortField = 'createdAt', sortOrder = 'asc'} = req.query;
-        const sortOptions = {
-            [sortField]: sortOrder === 'asc' ? 1 : -1
-        };
-
-        const lecturers = await Lecturer.find().sort(sortOptions);
-        
-
-
-        if (!lecturers) {
-            return res.status(404).json({ error: 'Lecturer not found' });
-        }
-
-        // Return the student
-        res.status(200).json(lecturers);
+        const total = await Lecturer.countDocuments();
+        res.status(200).json({lecturers, total});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -111,10 +107,52 @@ const deleteLecturer = async (req, res) => {
     }
 };
 
+const searchLectures = async (req, res) => {
+    try {
+        const { name } = req.query;
+        const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc' } = req.query;
+        console.log("page",page,"sortField",sortField,"sortOrder",sortOrder,"searchValue",name);
+
+        const skip = (page - 1) * limit;
+        const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+
+        // Construct query object
+        const query = {};
+        if (name) {
+            query.$or = [
+                { username: new RegExp(name, 'i') },
+                { email: new RegExp(name, 'i') }
+            ];
+        }
+
+        const lecturers = await Lecturer.find(query)
+            .collation({ locale: 'en', strength: 2 })
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(Number(limit));
+        
+        const total = await Lecturer.countDocuments(query);
+
+        return res.status(200).json({lecturers, total});
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+    // try {
+    //     const students = await Student.find({ [searchField]: { $regex: searchValue, $options: 'i' } });
+    //     if (!students) {
+    //         return res.status(404).json({ error: 'Student not found' });
+    //     }
+    //     res.status(200).json(students);
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
+}
+
 
 module.exports = {
     updateLecturer,
     getLecturer,
     getLecturers,
-    deleteLecturer
+    deleteLecturer,
+    searchLectures
 };

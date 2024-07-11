@@ -52,9 +52,9 @@ mongoose
 
 app.set('socketio', io);
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  // console.log('a user connected');
   socket.on('disconnect', () => {
-      console.log('user disconnected');
+      // console.log('user disconnected');
   });
 });
 const PORT = process.env.PORT || 3000;

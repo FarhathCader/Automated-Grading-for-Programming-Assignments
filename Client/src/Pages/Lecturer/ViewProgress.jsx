@@ -87,7 +87,7 @@ const formatDuration = (minutes) => {
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           onClick={onClose}
         >
-          Cancel
+          Back
         </button>
         <GeneratePdf contest={contest} />
       </div>
@@ -113,7 +113,7 @@ const formatDuration = (minutes) => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {students.map((student) => (
           <div key={student.regNo} className="p-4 border rounded-lg shadow-sm bg-gray-50">
             <div className="flex flex-col justify-between h-full">
@@ -128,7 +128,30 @@ const formatDuration = (minutes) => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
+     {students && students.length > 0 &&
+      <div className="overflow-x-auto">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-semibold mb-4 text-center">Students Progress</h2>
+  <table className="min-w-full bg-white border rounded-lg shadow-sm">
+    <thead>
+      <tr>
+        <th className="py-2 px-4 border-b text-left text-sm md:text-md lg:text-lg font-semibold text-gray-700">Username</th>
+        <th className="py-2 px-4 border-b text-left text-sm md:text-md lg:text-lg font-semibold text-gray-700">Reg No</th>
+        <th className="py-2 px-4 border-b text-left text-sm md:text-md lg:text-lg font-semibold text-gray-700">Total Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      {students.map((student) => (
+        <tr key={student.regNo} className="even:bg-gray-50">
+          <td className="py-2 px-4 border-b text-sm md:text-md lg:text-lg">{student.username}</td>
+          <td className="py-2 px-4 border-b text-sm md:text-md lg:text-lg">{student.regNo}</td>
+          <td className="py-2 px-4 border-b text-sm md:text-md lg:text-lg font-bold text-right">{student.totalGrade}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>}
+{/* 
       <div className="flex justify-center mt-6">
         <button
           className={`px-4 py-2 mx-1 ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-500 hover:bg-blue-600'} text-white font-semibold rounded focus:outline-none`}
@@ -144,7 +167,7 @@ const formatDuration = (minutes) => {
         >
           Next
         </button>
-      </div>
+      </div> */}
 
     </div>
   </div>
