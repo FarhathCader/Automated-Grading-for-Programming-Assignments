@@ -16,6 +16,12 @@ const override = {
   borderColor: "blue",
 };
 
+const difficultyMap = {
+  1 : 'Easy',
+  2 : 'Medium',
+  3 : 'Hard'
+}
+
 const ContestView = () => {
   const formatDuration = (minutes) => {
     const days = Math.floor(minutes / (24 * 60));
@@ -39,7 +45,7 @@ const ContestView = () => {
     return durationString.trim();
   };
 
-  const [contest, setContest] = useState({});
+  const [contest, setContest] = useState(null);
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -59,6 +65,7 @@ const ContestView = () => {
       setTotalGrade(data);
     } catch (error) {
       toast.error("Error fetching total grade:");
+      console.log(error);
     }
   };
 
@@ -86,24 +93,25 @@ const ContestView = () => {
     setLoading(true);
     try {
 
-      // Fetch solved status for each problem
       const solvedStatuses = await Promise.all(
         selectedProblems.map(async (problem) => {
-          if (user._id === undefined || problem._id === undefined || contest._id === undefined) return;
-          const isSolvedResponse = await axios.get(`${backendUrl}/api/submission/is-solved/${user._id}/${problem._id}/${contest._id}`);
+          if (user._id === undefined || problem === undefined || contest._id === undefined) return;
+          const isSolvedResponse = await axios.get(`${backendUrl}/api/submission/is-solved/${user._id}/${problem}/${contest._id}`);
           return isSolvedResponse.data.isSolved;
         })
       );
 
       // Combine problem data with solved statuses
-      const problemsWithStatus = selectedProblems.map((problem, index) => ({
+      const problemsWithStatus = problems.map((problem, index) => ({
         ...problem,
         solved: solvedStatuses[index]
       }));
 
+
       setProblems(problemsWithStatus);
     } catch (error) {
       toast.error("Error fetching problems:");
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -115,7 +123,8 @@ const ContestView = () => {
       const response = await axios.get(`${backendUrl}/api/contest/${id}`);
       const data = response.data;
       setContest(data.contest);
-      fetchProblemsDetails(data.problems);
+      setProblems(data.problems);
+      // fetchProblemsDetails(data.problems);
     } catch (error) {
       toast.error("Error fetching contest:");
       setNotFound(true);
@@ -143,6 +152,12 @@ const ContestView = () => {
 
   }, [])
 
+  useEffect(() => {
+    if (contest && contest.problems) {
+      fetchProblemsDetails(contest.problems);
+    }
+  }, [contest]);
+
 
   const sendDraft = async (pid,uid,cid,codes) => {
     setLoading(true);
@@ -166,7 +181,7 @@ const ContestView = () => {
   }, [user, contest]);
 
   const handleCancel = () => {
-    navigate(-1);
+    navigate("/available");
   };
 
   return (
@@ -183,7 +198,7 @@ const ContestView = () => {
           <div className="flex justify-center bg-blue-100 p-8 rounded-lg shadow-xl">
             <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
           </div>
-        ) : (
+        ) : contest && (
           <div className="bg-blue-200 p-8 rounded-lg shadow-xl mt-10 ml-3 mr-3">
             <h2 className="text-3xl text-violet-800 font-bold mb-6">{contest.name}</h2>
             <div className="flex bg-blue-50 justify-between items-center mb-6">
@@ -222,7 +237,7 @@ const ContestView = () => {
                   </header>
                   <div className="text-gray-700 mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-blue-600">{problem.difficulty}</span>
+                      <span className="text-sm text-blue-600">{difficultyMap[problem.difficulty]}</span>
                       <span className="text-sm text-blue-600">Category: {problem.category}</span>
                       <span className="text-sm text-blue-600">Max Grade: {problem.grade}</span>
                     </div>

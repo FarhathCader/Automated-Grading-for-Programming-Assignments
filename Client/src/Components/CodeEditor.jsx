@@ -119,7 +119,10 @@ export default function CodeEditor() {
     }
 
     const handleCancel = () => {
-      navigate(-1);
+      if(contestId){
+        navigate(`/contestview/${contestId}`)
+      }
+      else navigate(-1);
     };
 
 

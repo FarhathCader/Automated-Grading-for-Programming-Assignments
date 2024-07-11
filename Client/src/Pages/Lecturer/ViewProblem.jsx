@@ -13,6 +13,13 @@ const override = {
     borderColor: "red",
   };
 
+  const difficultyMap = {
+    1: 'Easy',
+    2: 'Medium',
+    3: 'Hard'
+
+  }
+
 const ViewProblem = (props) => {
   const { id,onClose } = props
   const [problem, setProblem] = useState(null);
@@ -54,7 +61,7 @@ const ViewProblem = (props) => {
       <h2 className="text-xl md:text-2xl l:text-3xl font-extrabold mb-8 text-center text-gray-800">{problem.name}</h2>
 
       <div className="mb-8">
-        <p className=" mb-2"><strong>Difficulty:</strong> {problem.difficulty}</p>
+        <p className=" mb-2"><strong>Difficulty:</strong> {difficultyMap[problem.difficulty]}</p>
         <p className=" mb-2"><strong>Category:</strong> {problem.category}</p>
         <p className=" mb-2"><strong>Description:</strong> {problem.description}</p>
         <p className=" mb-2"><strong>Added By:</strong> {problem.addedBy}</p>

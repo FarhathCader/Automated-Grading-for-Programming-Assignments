@@ -49,7 +49,7 @@ const deleteDraft = async (req, res) => {
         if (result) {
             res.status(200).json({ message: 'Draft deleted successfully' });
         } else {
-            res.status(404).json({ message: 'Draft not found' });
+            res.status(200).json({ message: 'Draft not found' });
         }
     } catch (error) {
         res.status(500).json({ message: 'Error deleting draft', error });
