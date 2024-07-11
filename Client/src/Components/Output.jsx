@@ -100,7 +100,8 @@ export default function Output(props) {
         const response = await axios.delete(`${backendUrl}/api/draft/${problemId}/${userId}/${contestId}`);
         return response.data;
     } catch (error) {
-        toast.error('Error deleting draft:', error.message);
+        console.error('Error deleting draft:', error.message);
+        console.log(error)
         throw error;
     }finally{
       setIsLoading(false)
