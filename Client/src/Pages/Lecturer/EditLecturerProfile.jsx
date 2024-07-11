@@ -113,7 +113,7 @@ const EditLectureProfile = (props) => {
 
 
   return (
-    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl text-sm md:text-base">
+    <div className="relative max-w-md mx-auto md:max-w-2xl mt-20 min-w-0 break-words bg-violet-900 w-full mb-6 shadow-lg rounded-xl text-sm md:text-base">
     <div className="px-6">
       <div className="flex-grow flex flex-col items-center justify-start">
         <div className="flex flex-col items-center mt-4">
@@ -137,43 +137,43 @@ const EditLectureProfile = (props) => {
             <div className="w-full text-center mt-2">
               <div className="flex justify-center lg:pt-4 pb-0">
                 <div className="w-full lg:w-1/2">
-                  <div className="bg-slate-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-fuchsia-700">
-                    <h2 className="text-xl md:text-2xl font-bold text-fuchsia-800 mb-4 md:mb-6">
+                  <div className="bg-slate-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-violet-700">
+                    <h2 className="text-xl md:text-2xl font-bold text-violet-800 mb-4 md:mb-6">
                       Your Profile
                     </h2>
                     <div className="flex flex-col items-start mb-4">
                       <label
-                        className="block text-fuchsia-700 text-sm font-bold mb-1"
+                        className="block text-violet-700 text-sm font-bold mb-1"
                         htmlFor="name"
                       >
                         Name:
                       </label>
                       <input
                         type="text"
-                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
+                        className="w-full border-b border-violet-500 rounded text-violet-800 focus:outline-none px-2 py-1"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                       />
                     </div>
                     <div className="flex flex-col items-start mb-6">
                       <label
-                        className="block text-fuchsia-700 text-sm font-bold mb-1"
+                        className="block text-violet-700 text-sm font-bold mb-1"
                         htmlFor="email"
                       >
                         Email:
                       </label>
                       <input
                         type="email"
-                        className="w-full border-b border-fuchsia-500 rounded text-fuchsia-800 focus:outline-none px-2 py-1"
+                        className="w-full border-b border-violet-500 rounded text-violet-800 focus:outline-none px-2 py-1"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                     <div className="flex justify-center text-center">
-                      <button onClick={props.cancel} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-2">
+                      <button onClick={props.cancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2">
                         Cancel
                       </button>
-                      <button onClick={save} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded ml-2">
+                      <button onClick={save} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
                         Save
                       </button>
                     </div>
