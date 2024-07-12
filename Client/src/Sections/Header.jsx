@@ -88,7 +88,7 @@ const Header = ({ bgColor }) => {
       className={classNames(
         "w-full lg:h-20 h-fit flex justify-between items-center p-4 rounded-xl lg:gap-2 gap-4",
         {
-          "bg-fuchsia-300": bgColor === "fuchsia",
+          "bg-violet-300": bgColor === "violet",
           "bg-blue-300": bgColor === "blue",
           "bg-green-300": bgColor === "green",
         }

@@ -242,7 +242,7 @@ export default function SelectProblems(props) {
                     />
                 </div>
                 <button
-                    className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
+                    className="bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 flex items-center"
                     onClick={handleClick}
                 >
                     <FaSearch className="mr-2" />
@@ -304,7 +304,7 @@ export default function SelectProblems(props) {
                 <div className="w-full flex justify-center items-center mt-10">
                     <div className="w-full max-w-xl p-6 bg-blue-100 rounded-lg shadow-md flex flex-col items-center">
                         <h1 className="text-3xl font-bold text-blue-800 mb-4">No Questions Found</h1>
-                        <p className="text-lg text-fuchsia-700 text-center">
+                        <p className="text-lg text-violet-700 text-center">
                             There are no questions in the Question Bank as per your request.
                         </p>
                     </div>

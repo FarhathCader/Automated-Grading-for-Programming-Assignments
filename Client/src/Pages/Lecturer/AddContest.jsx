@@ -277,82 +277,82 @@ const AddContest = ({ onAdd }) => {
               </button>
             </div>
             <div className="mb-4">
-              <label htmlFor="name" className="block text-fuchsia-800 mb-2 font-semibold">Name:</label>
+              <label htmlFor="name" className="block text-violet-800 mb-2 font-semibold">Name:</label>
               <input
                 type="text"
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter contest name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="startDate" className="block text-fuchsia-800 mb-2 font-semibold">Start Date:</label>
+              <label htmlFor="startDate" className="block text-violet-800 mb-2 font-semibold">Start Date:</label>
               <input
                 type="datetime-local"
                 id="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="endDate" className="block text-fuchsia-800 mb-2 font-semibold">End Date:</label>
+              <label htmlFor="endDate" className="block text-violet-800 mb-2 font-semibold">End Date:</label>
               <input
                 type="datetime-local"
                 id="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
             <div className="mb-4 flex justify-between space-x-4">
               <div>
-                <label htmlFor="durationDays" className="block text-fuchsia-800 mb-2 font-semibold">Days:</label>
+                <label htmlFor="durationDays" className="block text-violet-800 mb-2 font-semibold">Days:</label>
                 <input
                   type="number"
                   id="durationDays"
                   value={durationDays}
                   onChange={(e) => setDurationDays(e.target.value)}
                   placeholder="Days"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 />
               </div>
               <div>
-                <label htmlFor="durationHours" className="block text-fuchsia-800 mb-2 font-semibold">Hours:</label>
+                <label htmlFor="durationHours" className="block text-violet-800 mb-2 font-semibold">Hours:</label>
                 <input
                   type="number"
                   id="durationHours"
                   value={durationHours}
                   onChange={handleHoursChange}
                   placeholder="Hours"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 />
               </div>
               <div>
-                <label htmlFor="durationMinutes" className="block text-fuchsia-800 mb-2 font-semibold">Minutes:</label>
+                <label htmlFor="durationMinutes" className="block text-violet-800 mb-2 font-semibold">Minutes:</label>
                 <input
                   type="number"
                   id="durationMinutes"
                   value={durationMinutes}
                   onChange={handleMinutesChange}
                   placeholder="Minutes"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 />
               </div>
             </div>
             <div className="mb-6">
-              <h3 className="block text-fuchsia-800 mb-2 font-semibold">Problems</h3>
+              <h3 className="block text-violet-800 mb-2 font-semibold">Problems</h3>
               <div className="flex flex-col md:flex-row justify-center items-center  gap-4 mb-4 text-sm">
                 <button
                   type="button"
-                  className="w-full px-4 py-2 bg-fuchsia-500 text-white font-semibold rounded-md shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-fuchsia-500 hover:bg-fuchsia-600"
+                  className="w-full px-4 py-2 bg-violet-500 text-white font-semibold rounded-md shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-violet-500 hover:bg-violet-600"
                   onClick={handleShowSelection}
                 >
                   Select from Question Bank
                 </button>
-                <span className="text-center text-fuchsia-800 font-semibold">Or</span>
+                <span className="text-center text-violet-800 font-semibold">Or</span>
 
 
                 <button
@@ -365,9 +365,9 @@ const AddContest = ({ onAdd }) => {
 
               </div>
               {selectedProblems.map((problem, index) => (
-                <div key={index} className="w-full bg-white border border-fuchsia-500 rounded-md p-4 mb-2 flex justify-between items-center">
+                <div key={index} className="w-full bg-white border border-violet-500 rounded-md p-4 mb-2 flex justify-between items-center">
                   <div className="flex flex-col">
-                    <h1 className="text-2xl font-bold text-fuchsia-800"> {problem.name}</h1>
+                    <h1 className="text-2xl font-bold text-violet-800"> {problem.name}</h1>
                     <div className="text-sm text-gray-500 mt-1">
                       <p>Difficulty: {problem.difficulty}</p>
                       <p>Grade: {problem.grade}</p>

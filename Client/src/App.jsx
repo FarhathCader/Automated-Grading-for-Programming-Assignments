@@ -79,7 +79,7 @@ function App() {
         </Route>
 
         <Route element={<RequireAuth allowedRoles={['lecturer']} redirectTo="/" />}>
-          <Route element={<Layout bgColor="fuchsia" isLecturer={true} />}>
+          <Route element={<Layout bgColor="violet" isLecturer={true} />}>
 
             <Route path="/dashboard_lec" element={<LecturerDashBoard />} />
             <Route path="/qbank" element={<QuestionBank />} />
