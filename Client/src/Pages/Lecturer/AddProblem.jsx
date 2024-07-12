@@ -13,10 +13,14 @@ import BackButton from '../../Components/BackButton';
 const AddProblem = (props) => {
   const user = useSelector(state => state.user);
   const {isContest,onSelection,onClose} = props;
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  
+  const predefinedCategories = ["Algorithm", "Data Structures", "Math", "Dynamic Programming"];
   const [formData, setFormData] = useState({
     name: '',
     difficulty: '',
     category: '',
+    customCategory: '',
     description: '',
     initialCode: null,
     testCases: [],
@@ -32,6 +36,11 @@ const AddProblem = (props) => {
       ...formData,
       [name]: value,
     });
+    if (name === "category" && value === "Other") {
+      setIsCustomCategory(true);
+    } else if (name === "category") {
+      setIsCustomCategory(false);
+    }
   };
 
 
@@ -152,8 +161,12 @@ const AddProblem = (props) => {
         testCases: problem.testCases,
         grade: problem.grade,
         examples: problem.examples || [],
-        isPractice : problem.isPractice // Ensure examples exist before setting
+        isPractice : problem.isPractice ,
+        customCategory : problem.customCategory || ''
       });
+      if(problem.category === "Other"){
+        setIsCustomCategory(true);
+      }
     } catch (error) {
       toast.error('Error fetching problem details:', error.message);
     }
@@ -208,6 +221,15 @@ const AddProblem = (props) => {
       toast.error('Test case weight must be greater than zero');
       return;
     }
+
+    if(formData.category === "Other" && !formData.customCategory){
+      toast.error('Custom Category is required');
+    }
+
+    if(formData.category !== "Other"){
+      formData.customCategory = '';
+    }
+
     
 
     const url = id ? `${backendUrl}/api/problems/${id}` : `${backendUrl}/api/problems`;
@@ -238,6 +260,12 @@ const AddProblem = (props) => {
       }
     }
   };
+
+  
+
+   
+  
+
 
   return (
     <div className="mx-auto p-6 bg-white rounded-xl shadow-md w-full max-w-3xl lg:max-w-full">
@@ -274,7 +302,7 @@ const AddProblem = (props) => {
             <option value="Hard">Hard</option>
           </select>
         </div>
-        <div>
+        {/* <div>
           <label htmlFor="category" className="block mb-1 text-sm font-medium text-gray-700">Category:</label>
           <input
             type="text"
@@ -284,7 +312,43 @@ const AddProblem = (props) => {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
           />
+        </div> */}
+
+<div>
+      <label htmlFor="category" className="block mb-1 text-sm font-medium text-gray-700">
+        Category:
+      </label>
+      <select
+        id="category"
+        name="category"
+        value={formData.category}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+      >
+        <option value="">Select a category</option>
+        {predefinedCategories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+        <option value="Other">Other</option>
+      </select>
+      {isCustomCategory && (
+        <div className="mt-2">
+          <label htmlFor="customCategory" className="block mb-1 text-sm font-medium text-gray-700">
+            Custom Category:
+          </label>
+          <input
+            type="text"
+            id="customCategory"
+            name="customCategory"
+            value={formData.customCategory}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-indigo-500"
+          />
         </div>
+      )}
+    </div>
         <div className="col-span-2">
           <label htmlFor="description" className="block mb-1 text-sm font-medium text-gray-700">Description:</label>
           <textarea

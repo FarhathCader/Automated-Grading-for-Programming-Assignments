@@ -285,8 +285,8 @@ return (
       </div>
     ) : (
       <section className="w-full md:w-4/5 h-screen bg-white flex-grow flex flex-col justify-start items-center p-4">
-        {/* <Header bgColor="violet" /> */}
-        <div className="w-full max-w-screen-lg mx-auto p-6 bg-violet-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
+        {/* <Header bgColor="fuchsia" /> */}
+        <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-20">
           <div className="flex flex-col md:flex-row items-center justify-between w-full mb-4">
             <div className="relative flex-grow w-full md:w-auto mb-4 md:mb-0 md:mr-4">
               <input
@@ -299,7 +299,7 @@ return (
               <FaSearch className="absolute top-3 left-3 text-gray-400" />
             </div>
             <div>
-              <button className="bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 flex items-center"
+              <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
                 onClick={handleClick}
               >
                 <FaSearch className="mr-2" /> Search
@@ -309,36 +309,36 @@ return (
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
           <button
-            className="bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+            className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2"
             onClick={handleShowCompletedClick}
           >
             {showCompleted ? "Show Available Contests" : "Show Completed Contests"}
           </button>
-          <button className="bg-violet-500 hover:bg-violet-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 flex items-center"
+          <button className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 flex items-center"
             onClick={handleAddContestClick}>
             <FaPlus className="mr-2" /> Add Contest
           </button>
         </div>
 
         {contests && contests.length > 0 ?
-          <div className="w-full max-w-screen-lg mx-auto p-6 bg-violet-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
             {showCompleted ? (
-              <h1 className="text-xl md:text-3xl font-bold text-violet-800 mb-4">
+              <h1 className="text-xl md:text-3xl font-bold text-fuchsia-800 mb-4">
                 Completed Contests
               </h1>
             ) : (
-              <h1 className="text-xl md:text-3xl font-bold text-violet-800 mb-4">
+              <h1 className="text-xl md:text-3xl font-bold text-fuchsia-800 mb-4">
                 Active and Upcoming Contests
               </h1>
             )}
             <div className="overflow-x-auto w-full">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-violet-200">
-                    <th className="px-2 md:px-6 py-3 text-left text-violet-800">Name</th>
-                    <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">Deadline</th>
-                    <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">Duration</th>
-                    <th className="px-2 md:px-6 py-3 text-left text-violet-800">Actions</th>
+                  <tr className="bg-fuchsia-200">
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Name</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Deadline</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800 hidden md:table-cell">Duration</th>
+                    <th className="px-2 md:px-6 py-3 text-left text-fuchsia-800">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -346,17 +346,17 @@ return (
                     <tr
                       key={index}
                       className={
-                        index % 2 === 0 ? "bg-violet-800" : "bg-violet-700"
+                        index % 2 === 0 ? "bg-fuchsia-800" : "bg-fuchsia-700"
                       }
                     >
-                      <td className="px-2 md:px-6 py-4 text-violet-200 cursor-pointer hover:text-violet-300 text-xs md:text-base"
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 cursor-pointer hover:text-fuchsia-300 text-xs md:text-base"
                         onClick={() => handleContestDetailsClick(contest._id)}>
                         {contest.name}
                       </td>
-                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell text-xs md:text-base">
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell text-xs md:text-base">
                         {new Date(contest.endDate).toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                       </td>
-                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">
+                      <td className="px-2 md:px-6 py-4 text-fuchsia-200 hidden md:table-cell">
                         {formatDuration(contest.duration)}
                       </td>
                       <td className="px-2 md:px-6 py-4 flex items-center gap-4">
@@ -400,17 +400,17 @@ return (
             {showBtn && <div className="w-full flex flex-col md:flex-row justify-center gap-2 md:gap-6 items-center mt-4">
               <button
                 onClick={handlePrev}
-                className="px-3 py-2 md:px-4 md:py-2 bg-violet-500 text-white font-semibold rounded-lg hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={currentPage === 1}
               >
                 Prev
               </button>
-              <span className="text-violet-800 font-semibold text-sm md:text-base">
+              <span className="text-fuchsia-800 font-semibold text-sm md:text-base">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={handleNext}
-                className="px-3 py-2 md:px-4 md:py-2 bg-violet-500 text-white font-semibold rounded-lg hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 md:px-4 md:py-2 bg-fuchsia-500 text-white font-semibold rounded-lg hover:bg-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={currentPage === totalPages}
               >
                 Next
@@ -418,11 +418,11 @@ return (
             </div>}
           </div>
           :
-          <div className="w-full max-w-screen-lg mx-auto p-6 bg-violet-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
+          <div className="w-full max-w-screen-lg mx-auto p-6 bg-fuchsia-300 rounded-xl shadow-lg flex flex-col items-center mt-5">
             <div className="w-full flex justify-center items-center mt-5">
-              <div className="w-full max-w-xl p-6 bg-violet-100 rounded-lg shadow-md flex flex-col items-center">
-                <h1 className="text-3xl font-bold text-violet-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
-                <p className="text-lg text-violet-700 text-center">
+              <div className="w-full max-w-xl p-6 bg-fuchsia-100 rounded-lg shadow-md flex flex-col items-center">
+                <h1 className="text-3xl font-bold text-fuchsia-800 mb-4">No {!showCompleted ? 'active' : 'completed'} Contests</h1>
+                <p className="text-lg text-fuchsia-700 text-center">
                   There are no {!showCompleted ? 'active' : 'completed'} contests. Start by adding a contest.
                 </p>
               </div>

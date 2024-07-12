@@ -41,8 +41,8 @@ const QuestionBank = () => {
   const [showSearch, setShowSearch] = useState(false)
   const [showProblem, setShowProblem] = useState(true)
   const [name, setName] = useState('')
-  const [sortField, setSortField] = useState('name'); // Sorting field
-  const [sortOrder, setSortOrder] = useState('asc'); // Sorting order
+  const [sortField, setSortField] = useState('updatedAt'); // Sorting field
+  const [sortOrder, setSortOrder] = useState('desc'); // Sorting order
 
 
   useEffect(() => {
@@ -304,6 +304,25 @@ const QuestionBank = () => {
               <table className="w-full">
                 <thead>
                   <tr className="bg-violet-200">
+                  <th className="px-2 md:px-6 py-3 text-left text-violet-800">
+                      <div className="flex items-center gap-2">
+                        <p className="hover:cursor-pointer"
+                          onClick={() => handleSort('updatedAt')}
+                        >
+                          Date Modified
+                        </p>
+                        <div className="text-sm">
+                          <FaSortUp
+                            className={sortField === 'updatedAt' && sortOrder === 'asc' ? 'text-violet-500' : 'text-gray-500'}
+                          />
+                          <FaSortDown
+                            className={sortField === 'updatedAt' && sortOrder === 'desc' ? 'text-violet-500' : 'text-gray-500'}
+                          />
+                        </div>
+                      </div>
+
+
+                    </th>
                     <th className="px-2 md:px-6 py-3 text-left text-violet-800">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
@@ -323,6 +342,8 @@ const QuestionBank = () => {
 
 
                     </th>
+
+    
                     <th className="px-2 md:px-6 py-3 text-left text-violet-800 hidden md:table-cell">
                       <div className="flex items-center gap-2">
                         <p className="hover:cursor-pointer"
@@ -397,8 +418,15 @@ const QuestionBank = () => {
                 <tbody>
                   {problems.map((question, index) => (
                     <tr key={index} className={index % 2 === 0 ? "bg-violet-800" : "bg-violet-700"}>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 text-xs md:text-base">
+                      {`${new Date(question.updatedAt).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })} `}
+                      </td>
                       <td className="px-2 md:px-6 py-4 text-violet-200 text-xs md:text-base">{question.name}</td>
-                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{question.category}</td>
+                      <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{question.category === 'Other' ? question.customCategory : question.category}</td>
                       <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{difficultyOrder[question.difficulty]}</td>
                       <td className="px-2 md:px-6 py-4 text-violet-200 hidden md:table-cell">{question.grade}</td>
                       <td className="px-2 md:px-6 py-4 text-violet-200 hidden lg:table-cell">{question.addedBy}</td>
