@@ -19,6 +19,7 @@ const ViewProgress = ({ contest, onClose }) => {
   const [name, setName] = useState('')
   const [showStudent, setShowStudent] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredStudents, setFilteredStudents] = useState([]);
 
 
 
@@ -46,6 +47,7 @@ const ViewProgress = ({ contest, onClose }) => {
 
 
   const fetchStudents = async (sortField, sortOrder) => {
+    console.log("fetching students",sortField,sortOrder)
     try {
       const response = await axios.get(`${backendUrl}/api/enrollment/contest/${contest._id}/enrolled-students-grades`, {
         params: {
@@ -55,6 +57,7 @@ const ViewProgress = ({ contest, onClose }) => {
       });
       const data = response.data;
       setStudents(data.studentsWithGrades);
+      setFilteredStudents(data.studentsWithGrades);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -62,43 +65,12 @@ const ViewProgress = ({ contest, onClose }) => {
     }
   };
 
-  const fetchSearchedStudents = async (sortField, sortOrder) => {
-    try {
-      const response = await axios.get(`${backendUrl}/api/enrollment/search/${contest._id}`, {
-        params: {
-          name,
-          sortField,
-          sortOrder
-        },
-      });
 
-      const data = response.data;
-      setStudents(data.studentsWithGrades);
-      setLoading(false);
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
-    }
-  };
-
-  const handleSearchChange = (e) => {
-    console.log(e.target.value);
-    setSearchQuery(e.target.value);
-    const searchResults = students.filter((contest) =>
-      contest.username.toLowerCase().includes(e.target.value.toLowerCase())
-      ||
-      contest.regNo.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setStudents(searchResults);
-    if(e.target.value === ""){
-      setShowStudent(true)
-    }
-  };
 
 
 
   useEffect(() => {
-    // Fetch data initially based on the conditions
+    // Fetch data initially based on the conditions'
     if (showStudent) {
       setLoading(true);
       fetchStudents(sortField, sortOrder);
@@ -109,7 +81,7 @@ const ViewProgress = ({ contest, onClose }) => {
       if (showStudent) {
         fetchStudents(sortField, sortOrder);
       } 
-    }, 50000);
+    }, 5000);
 
     // Clear the interval when the component unmounts or when dependencies change
     return () => clearInterval(interval);
@@ -119,11 +91,23 @@ const ViewProgress = ({ contest, onClose }) => {
   useEffect(() => {
     if (searchQuery !== "") {
       setShowStudent(false)
+      handleSearchChange(searchQuery);
       return
     }
     setShowStudent(true)
   }, [searchQuery])
 
+
+
+  const handleSearchChange = (searchQuery) => {
+
+      const searchResults = students.filter((student) =>
+        student.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.regNo.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredStudents(searchResults);
+    
+  };
 
 
   const handleSort = (field) => {
@@ -213,7 +197,7 @@ const ViewProgress = ({ contest, onClose }) => {
                   placeholder="Search..."
                   className="pl-10 pr-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={searchQuery}
-                onChange={handleSearchChange}
+                onChange={(e)=> setSearchQuery(e.target.value)}
                 />
                 <FaSearch className="absolute top-3 left-3 text-gray-400" />
               </div>
@@ -227,7 +211,7 @@ const ViewProgress = ({ contest, onClose }) => {
                 </button>
               </div> */}
             </div>
-            {students && students.length > 0 ?
+            {filteredStudents && filteredStudents.length > 0 ?
             <>
             <h2 className="text-lg md:text-xl lg:text-2xl font-semibold mb-4 text-center">Students Progress</h2>
             <table className="min-w-full bg-white border rounded-lg shadow-sm">
@@ -316,7 +300,7 @@ const ViewProgress = ({ contest, onClose }) => {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student,index) => (
+                {filteredStudents.map((student,index) => (
                   <tr key={student.regNo} className="even:bg-gray-50">
                     <td className="py-2 px-4 border-b text-sm md:text-md lg:text-lg">{student.rank}</td>
                     <td className="py-2 px-4 border-b text-sm md:text-md lg:text-lg">{student.username}</td>
