@@ -98,8 +98,8 @@ const LecturerProfile = () => {
             </div>
           ) : (
             <div className="w-full md:w-4/5 grow bg-white h-screen overflow-y-auto flex flex-col justify-start items-center gap-4 p-4">
-              {/* <Header bgColor="fuchsia" /> */}
-              <div className="relative max-w-md mx-auto md:max-w-2xl mt-10 min-w-0 break-words bg-fuchsia-900 w-full mb-6 shadow-lg rounded-xl">
+              {/* <Header bgColor="violet" /> */}
+              <div className="relative max-w-md mx-auto md:max-w-2xl mt-10 min-w-0 break-words bg-violet-900 w-full mb-6 shadow-lg rounded-xl">
                 <div className="px-6">
                   <div className="flex-grow flex flex-col items-center justify-start">
                     <div className="w-full flex justify-center mt-4">
@@ -116,35 +116,35 @@ const LecturerProfile = () => {
     <div className="w-full text-center mt-2">
       <div className="flex justify-center lg:pt-4 pb-0">
         <div className="w-full lg:w-1/2">
-          <div className="bg-fuchsia-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-fuchsia-700">
-            <h2 className="text-lg md:text-base font-bold text-fuchsia-800 mb-4 md:mb-6">
+          <div className="bg-violet-100 p-6 md:p-8 rounded-lg mb-10 md:mb-20 shadow-violet-700">
+            <h2 className="text-lg md:text-base font-bold text-violet-800 mb-4 md:mb-6">
               Your Profile
             </h2>
             <div className="flex items-center mb-4 text-sm md:text-base">
               <label
-                className="block text-fuchsia-700 font-bold mr-2"
+                className="block text-violet-700 font-bold mr-2"
                 htmlFor="name"
               >
                 Name:
               </label>
               {lecturer && 
-              <p className="text-fuchsia-800  break-words max-w-full">{lecturer.username}</p>
+              <p className="text-violet-800  break-words max-w-full">{lecturer.username}</p>
               }
             </div>
             <div className="flex items-center mb-6">
               <label
-                className="block text-fuchsia-700 font-bold mr-2"
+                className="block text-violet-700 font-bold mr-2"
                 htmlFor="email"
               >
                 Email:
               </label>
               {lecturer && 
-              <p className="text-fuchsia-800  break-words max-w-full">
+              <p className="text-violet-800  break-words max-w-full">
                 {lecturer.email}
               </p>}
             </div>
             <div className="text-center text-sm md:text-base">
-              <button onClick={handleProfile} className="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded text-sm md:text-base">
+              <button onClick={handleProfile} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm md:text-base">
                 Edit Profile
               </button>
             </div>
