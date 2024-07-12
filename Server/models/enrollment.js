@@ -11,6 +11,10 @@ const enrollmentSchema = new mongoose.Schema({
       ref: 'Contest', // Reference to the Contest model
       required: true
     },
+    totalGrade:{
+      type: Number,
+      default: 0
+    },
     createdAt: {
       type: Date,
       default: Date.now // Set the default value to the current date/time

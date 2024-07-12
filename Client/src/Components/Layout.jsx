@@ -64,7 +64,6 @@ const Layout = ({ bgColor,isLecturer }) => {
       const res =
         user && (await axios.get(`${backendUrl}/api/lecturer/${user._id}`));
       const data = res && (await res.data);
-      console.log(data);
       if (data) {
         setIsApproved(data.isApproved);
       }
