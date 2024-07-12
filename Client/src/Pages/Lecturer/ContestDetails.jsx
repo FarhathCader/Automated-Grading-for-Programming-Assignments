@@ -94,7 +94,7 @@ const ContestDetails = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen  bg-gray-100">
     <div className="container mx-auto px-4 py-8 rounded-lg shadow-lg mt-20 bg-white">
     <button
     onClick={()=> navigate(-1)} // Replace with your actual back functionality
