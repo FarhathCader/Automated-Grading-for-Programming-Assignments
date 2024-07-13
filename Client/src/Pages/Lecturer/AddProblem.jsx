@@ -22,7 +22,10 @@ const AddProblem = (props) => {
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   
   const predefinedCategories = [
+    
     "Basic",
+    "Algorithms",
+    "Data Structures",
     "Arithmetic",
     "Loops",
     "Control Flow",

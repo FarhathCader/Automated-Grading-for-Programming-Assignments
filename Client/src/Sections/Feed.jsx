@@ -136,7 +136,7 @@ const Feed = () => {
             </Link>
           </div>
         </div>
-        <div className="mt-8">
+        {upcomingContests && upcomingContests.length > 0 && <div className="mt-8">
           <h2 className="text-xl sm:text-2xl font-semibold text-violet-900 mb-4 text-center">
             Upcoming Contests
           </h2>
@@ -160,7 +160,7 @@ const Feed = () => {
               </div>
             ))}
           </Slider>
-        </div>
+        </div>}
       </div>
 
       {showContestDetails && (

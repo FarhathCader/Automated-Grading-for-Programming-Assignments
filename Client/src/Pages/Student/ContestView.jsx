@@ -9,6 +9,8 @@ import { backendUrl } from "../../../config";
 import NotFoundPage from "../../Components/NotFoundPage";
 import BackButton from "../../Components/BackButton";
 import { toast } from "react-toastify";
+import ContestNavBar from "./ContestNavBar";
+import LeaderBoard from "./LeadeBoard";
 
 const override = {
   display: "block",
@@ -56,6 +58,7 @@ const ContestView = () => {
   const [notFound, setNotFound] = useState(false);
   const [duration, setDuration] = useState(0);
   const [shouldRender, setShouldRender] = useState(false);
+  const [show, setShow] = useState(false);
 
   const fetchTotalGrade = async () => {
     try {
@@ -184,6 +187,16 @@ const ContestView = () => {
     navigate("/available");
   };
 
+  const showLeader = ()=> {
+    setShow(prev => !prev);
+  }
+
+  const onClose = () => {
+    setShow(false);
+  }
+
+  
+
   return (
     notFound === false ?
       <div className="container mx-auto mt-10 ">
@@ -194,11 +207,16 @@ const ContestView = () => {
           </div>
         )}
 
+        <ContestNavBar contestId = {id} showLeader = {showLeader} activeTab = {show}/>
+
         {loading ? (
           <div className="flex justify-center bg-blue-100 p-8 rounded-lg shadow-xl">
             <ClipLoader color="blue" loading={true} size={150} cssOverride={override} />
           </div>
         ) : contest && (
+          show === true ?
+          <LeaderBoard contest = {contest} onClose = {onClose} />
+          :
           <div className="bg-blue-200 p-8 rounded-lg shadow-xl mt-10 ml-3 mr-3">
             <h2 className="text-3xl text-violet-800 font-bold mb-6">{contest.name}</h2>
             <div className="flex bg-blue-50 justify-between items-center mb-6">
