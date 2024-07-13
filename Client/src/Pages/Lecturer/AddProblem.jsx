@@ -10,12 +10,54 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import BackButton from '../../Components/BackButton';
 
+const difficultyOrder = {
+  1: 'Easy',
+  2: 'Medium',
+  3: 'Hard'
+};
+
 const AddProblem = (props) => {
   const user = useSelector(state => state.user);
   const {isContest,onSelection,onClose} = props;
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   
-  const predefinedCategories = ["Algorithm", "Data Structures", "Math", "Dynamic Programming"];
+  const predefinedCategories = [
+    "Basic",
+    "Arithmetic",
+    "Loops",
+    "Control Flow",
+    "Functions",
+    "Arrays",
+    "Strings",
+    "Lists",
+    "Dictionaries",
+    "Sets",
+    "File Handling",
+    "Exception Handling",
+    "Recursion",
+    "Sorting",
+    "Searching",
+    "Linked Lists",
+    "Stacks",
+    "Queues",
+    "Trees",
+    "Graphs",
+    "Hashing",
+    "Dynamic Programming",
+    "Greedy Algorithms",
+    "Backtracking",
+    "Bit Manipulation",
+    "Mathematical",
+    "Simulation",
+    "Regex",
+    "Object-Oriented Programming",
+    "Functional Programming",
+    "Concurrency",
+    "Database Queries",
+    "API Integration",
+    "Unit Testing"
+  ];
+  
   const [formData, setFormData] = useState({
     name: '',
     difficulty: '',
@@ -154,7 +196,7 @@ const AddProblem = (props) => {
       const problem = response.data.problem;
       setFormData({
         name: problem.name,
-        difficulty: problem.difficulty,
+        difficulty: difficultyOrder[problem.difficulty],
         category: problem.category,
         description: problem.description,
         initialCode: problem.initialCode,
@@ -258,6 +300,7 @@ const AddProblem = (props) => {
         toast.error(`Error ${id ? 'updating' : 'adding'} problem. ${error}`);
 
       }
+      console.log(error);
     }
   };
 

@@ -111,8 +111,6 @@ const searchLectures = async (req, res) => {
     try {
         const { name } = req.query;
         const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc' } = req.query;
-        console.log("page",page,"sortField",sortField,"sortOrder",sortOrder,"searchValue",name);
-
         const skip = (page - 1) * limit;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
 

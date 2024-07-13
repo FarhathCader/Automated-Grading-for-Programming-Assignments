@@ -60,21 +60,11 @@ const QuestionBank = () => {
       setCurrentPage(1)
       setSearchParams({ page: 1 })
     }
-  }, [totalProblems, showBtn, currentPage])
+  }, [totalProblems, currentPage])
 
-  // useEffect(() => {
-
-  //   if (showProblem) {
-  //     fetchQuestions(currentPage)
-  //     return
-  //   }
-  //   if (showSearch) {
-  //     fetchSearchedQuestions(currentPage)
-  //     return
-  //   }
-  // }, [showSearch, currentPage, showProblem]);
   useEffect(() => {
 
+    console.log(sortField, sortOrder, currentPage, showProblem, showSearch)
     if (showProblem) {
       fetchQuestions(currentPage, sortField, sortOrder)
       return
@@ -90,6 +80,73 @@ const QuestionBank = () => {
     setShowProblem(true)
     setShowSearch(false)
   }, [name])
+
+  
+  useEffect(() => {
+    localStorage.clear();
+  }, [])
+
+  // const fetchSearchedQuestions = async (page, sortField, sortOrder) => {
+  //   const controller = new AbortController();
+  //   setLoading(true);
+  //   if (name === "") return;
+  //   try {
+  //     const response = await axios.get(`${backendUrl}/api/problems/search`, {
+  //       params: {
+  //         name,
+  //         page,
+  //         limit: problemsPerPage,
+  //         sortField,
+  //         sortOrder
+  //       },
+  //       signal: controller.signal
+  //     });
+  //     setProblems(response.data.problems);
+  //     setTotalProblems(response.data.total);
+  //     setSearchParams({ page });
+  //   } catch (error) {
+  //     if (axios.isCancel(error)) {
+  //       console.log('Request canceled:', error.message);
+  //     } else {
+  //       console.error("Error fetching questions:", error);
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // };
+
+  // const fetchQuestions = async (page, sortField, sortOrder) => {
+  //   const controller = new AbortController();
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(`${backendUrl}/api/problems`, {
+  //       params: {
+  //         page,
+  //         limit: problemsPerPage,
+  //         sortField,
+  //         sortOrder
+  //       },
+  //       signal: controller.signal
+  //     });
+  //     setProblems(response.data.problems);
+  //     setTotalProblems(response.data.total);
+  //     setSearchParams({ page });
+  //   } catch (error) {
+  //     if (axios.isCancel(error)) {
+  //       console.log('Request canceled:', error.message);
+  //     } else {
+  //       console.error("Error fetching questions:", error);
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // };
 
 
   const fetchSearchedQuestions = async (page, sortField, sortOrder) => {
@@ -115,35 +172,6 @@ const QuestionBank = () => {
     }
   };
 
-
-
-
-
-  useEffect(() => {
-    localStorage.clear();
-  }, [])
-
-
-  // const fetchQuestions = async (page) => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get(`${backendUrl}/api/problems`,
-  //       {
-  //         params: {
-  //           page: page,
-  //           limit: problemsPerPage,
-  //         },
-  //       }
-  //     );
-  //     setProblems(response.data.problems);
-  //     setTotalProblems(response.data.total);
-  //     setSearchParams({ page: page });
-  //   } catch (error) {
-  //     console.log("Error fetching questions:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const fetchQuestions = async (page, sortField, sortOrder) => {
     setLoading(true);
     try {

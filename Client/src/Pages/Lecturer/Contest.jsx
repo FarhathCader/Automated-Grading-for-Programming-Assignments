@@ -36,16 +36,28 @@ const Contest = () => {
   const [activeContest, setActiveContest] = useState(null)
   const [name, setName] = useState('')
 
+  
+
   useEffect(()=>{
     const total = Math.ceil(totalContests / contestsPerPage)
     if(total === 0)return
     setTotalPages(total);
-    if(  total > 1)setShowBtn(true)
-  },[totalContests,showBtn])
 
-  useEffect(() => {
-    fetchData(currentPage);
-  }, [user,showCompleted]);
+    if (total > 1) {
+      setShowBtn(true)
+    }
+    else {
+      setShowBtn(false)
+    }
+    console.log(currentPage,"current page",total,"total")
+      if (currentPage > total) {
+        setCurrentPage(1)
+      }
+  },[totalContests,currentPage])
+
+  // useEffect(() => {
+  //   fetchData(currentPage);
+  // }, [user,showCompleted]);
 
   const fetchData = (page)=>{
     if(showCompleted){
@@ -66,7 +78,7 @@ const Contest = () => {
       fetchSearchedQuestions(currentPage)
       return
     }
-  }, [showSearch, showContest,currentPage]);
+  }, [showSearch, showContest,currentPage,showCompleted,user]);
 
   useEffect(() => {
     if (name !== "") return
@@ -251,6 +263,7 @@ const Contest = () => {
   }
 
   const handleClick = () => {
+    console.log(currentPage,"current page")
     if (name === "") return
     setShowSearch(true)
     fetchSearchedQuestions(currentPage)

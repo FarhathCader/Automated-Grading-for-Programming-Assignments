@@ -202,7 +202,6 @@ const createEnrollment = async (req, res) => {
 };
 
 const getEnrolledStudent = async (req, res) => {
-  console.log('search')
 
   try {
     const { studentId, contestId } = req.params;

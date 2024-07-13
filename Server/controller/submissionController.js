@@ -50,7 +50,6 @@ const getTotalGradeForContest = async (req, res) => {
     // Find the contest and its problems
     const contest = await Contest.findById(contestId);
     const problems = contest.problems;
-    console.log(problems);
 
     // Initialize total grade to 0
     let totalGrade = 0;

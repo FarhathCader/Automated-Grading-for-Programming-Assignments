@@ -22,7 +22,7 @@ const override = {
 
 const ManageStudents = () => {
 
-  const studentsPerPage = 10;
+  const studentsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [showSearch, setShowSearch] = useState(false);
   const [students, setStudents] = useState([]);
@@ -51,7 +51,7 @@ const ManageStudents = () => {
     if (currentPage > total) {
       setCurrentPage(1)
     }
-  }, [totalStudents, showBtn, currentPage])
+  }, [totalStudents, currentPage])
 
   useEffect(() => {
 
@@ -204,6 +204,7 @@ const ManageStudents = () => {
 
 
   const handleClick = () => {
+    console.log("current page", currentPage)
     if (name === "") return
     setShowSearch(true)
     fetchSearchedStudents(currentPage)

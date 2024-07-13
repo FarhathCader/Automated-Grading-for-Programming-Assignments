@@ -11,8 +11,8 @@ export const LANGUAGE_VERSIONS = {
 
 
 export const CODE_SNIPPETS ={
-    javascript: ``,
-    python: ``,
+    javascript: `//your code here`,
+    python: `#your code here`,
     java: `public class Main {
         public static void main(String[] args) {
             

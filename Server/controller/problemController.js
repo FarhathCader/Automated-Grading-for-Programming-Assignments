@@ -35,7 +35,6 @@ const addProblem = async (req, res) => {
             createdBy,
             addedBy: added.username
         })
-        console.log(problem)
 
         return res.status(201).json({ problem })
 
@@ -62,7 +61,7 @@ const getProblems = async (req, res) => {
     //     return res.status(400).json({msg : err.message})
     // }
     try {
-        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
+        const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc' } = req.query;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const problems = await Problem.find()
         .collation({ locale: 'en', strength: 2 })
@@ -136,19 +135,20 @@ const updateInitialCode = async (req, res) => {
 
 const updateProblem = async (req, res) => {
     try {
-        const { name, category, description, difficulty, testCases, grade, initialCode, examples,isPractice } = req.body;
+        const { name, category, description, difficulty, testCases, grade, initialCode, examples,isPractice , customCategory} = req.body;
         const updatedProblem = await Problem.findByIdAndUpdate(
             req.params.id,
             {
                 name,
                 category,
                 description,
-                difficulty,
+                difficulty : difficultyOrder[difficulty.toLowerCase()],
                 testCases,
                 grade,
                 initialCode,
                 examples,
-                isPractice
+                isPractice,
+                customCategory
             },
             { new: true, runValidators: true }
         );
@@ -161,7 +161,7 @@ const updateProblem = async (req, res) => {
 
 const getPracticeProblems = async (req, res) => {
     try {
-        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc'  } = req.query;
+        const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc'  } = req.query;
 
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
         const skip = (page - 1) * limit;
@@ -182,7 +182,7 @@ const getPracticeProblems = async (req, res) => {
 const searchProblems = async (req, res) => {
     try {
         const { name } = req.query;
-        const { page = 1, limit = 10, sortField = 'name', sortOrder = 'asc' } = req.query;
+        const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc' } = req.query;
         const skip = (page - 1) * limit;
         const sortOptions = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
 

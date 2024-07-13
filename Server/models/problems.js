@@ -12,6 +12,9 @@ const problemSchema = new mongoose.Schema({
         type : String,
         required: true
     },
+    customCategory : {
+        type : String,
+    },
     description: {
         type: String,
     },
