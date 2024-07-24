@@ -93,3 +93,47 @@ mern-app/
 ├── .gitignore
 ├── README.md
 └── package.json
+
+## Features
+
+### Lecturer
+
+- **Dashboard**: Overview of all activities.
+- **Contest Management**:
+  - View active and upcoming contests.
+  - Create new contests.
+- **Question Bank**:
+  - Add, edit, view, and delete personal questions.
+  - View other lecturers' questions (without edit permissions).
+- **Profile Management**:
+  - Edit name, email, and avatar.
+
+### Student
+
+- **Dashboard**: Overview of all activities.
+- **Contests**:
+  - **Available Contests**: View upcoming contests.
+  - **Completed Contests**: View completed contests with grades and leaderboard.
+- **Practice**:
+  - Practice coding problems filtered by difficulty, category, and grade.
+- **Profile Management**:
+  - Edit name, email, and avatar.
+
+### Admin
+
+- **Dashboard**: Overview of all activities.
+- **Lecturer Management**:
+  - Change lecturer status (active/inactive).
+  - View and remove lecturer details.
+- **Student Management**:
+  - View and remove student details.
+- **Profile Management**:
+  - Edit name, email, and avatar.
+
+### Additional Features
+
+- **Automated Grading**: Automatically grade programming assignments based on predefined test cases.
+- **Real-Time Notifications**: Receive instant notifications for important events.
+- **Google Signup/Login**: Seamless authentication with Google.
+- **Email Notifications**: Automatic email notifications for important events.
+- **Cloudinary Integration**: Store and manage user-submitted files using Cloudinary.
