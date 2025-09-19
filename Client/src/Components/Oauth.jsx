@@ -51,6 +51,7 @@ export default function Oauth(props) {
         navigate('/googleauth',{state : {username : resultFromGoogle.user.displayName , email : resultFromGoogle.user.email, usertype: props.usertype}})
         }
       }catch(err){
+        console.log(err)
         toast.error(err.response.data.error);
       }
     }
